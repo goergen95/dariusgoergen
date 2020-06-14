@@ -2,7 +2,7 @@
 output: md_document
 ---
 
-In this project I made use of the MODIS cloud (MOD/MYD06) and aerosol (MOD/MYD04)
+In this project I made use of the MODIS [cloud (MOD/MYD06)](https://modis.gsfc.nasa.gov/data/dataprod/mod06.php) and [aerosol (MOD/MYD04)](https://modis.gsfc.nasa.gov/data/dataprod/mod04.php)
 products to investigate the relationship between cloud micro-physics and aerosol
 loadings in the Aral Sea region. The terminal lake of the two tributaries 
 Syr Darya and Amu Darya has suffered from a significant reduction of water inflow
@@ -20,8 +20,10 @@ knitr::include_graphics("../assets/images/animation.gif")
 
 ---
 
-The interaction of aerosols with cloud micro-physics is very complex and subject
-to inaccuracies as a result of limited observational capacity. For example, 
+The interaction of aerosols with cloud micro-physics is very complex and one
+of the mechanisms in our atmosphere we barely understand (see [Boucher et al. 2013](https://www.ipcc.ch/site/assets/uploads/2018/02/WG1AR5_Chapter07_FINAL-1.pdf)).
+In addition, our understanding of the process is subject to inaccuracies as a 
+result of our limited observational capacity. For example, 
 from passive optical instruments aboard satellites it is only possible to retrieve
 information on aerosols when clear-sky conditions are met. Evidently, the opposite
 is true for cloud parameters, rendering every analysis to significant differences 

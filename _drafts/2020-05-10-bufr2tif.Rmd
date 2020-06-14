@@ -156,8 +156,8 @@ r = raster("../assets/files/bufr2tif.tif")
 names(r) = "K Index"
 cnt = ne_countries()
 cnt = crop(cnt, r)
-plot(r)
-plot(cnt, add =T)
+plot(r, col = grey(1:250/250))
+plot(cnt, add =T, border = "red")
 ```
 
 
