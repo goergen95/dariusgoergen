@@ -52,6 +52,7 @@ for m, msg in enumerate(bufr):
 
 # show parameter names and units
 print('\n'.join(map(str, names_units[0][0])))
+# close file
 bufr.close()
 ```
 
