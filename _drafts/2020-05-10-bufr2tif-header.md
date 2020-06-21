@@ -1,7 +1,7 @@
 ---
-title: "Translating BUFR files to GTiff"
+title: "Translating .bfr files to GTiff"
 layout: post
-date: 2020-05-10 09:00
+date: 2020-05-01 09:00
 tag: 
  - BUFR
  - TIFF

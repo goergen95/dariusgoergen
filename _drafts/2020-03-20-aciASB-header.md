@@ -6,6 +6,7 @@ tag:
  - MODIS
  - clouds
  - R
+ - precipitation
 # image: https://github.com/goergen95/sensorbox-docu/blob/master/images/index_background.jpg
 headerImage: true
 projects: true

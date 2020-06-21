@@ -365,14 +365,14 @@ summary {
 </div>
 
 
-<p>I recently came across <a href="https://navigator.eumetsat.int/product/EO:EUM:DAT:MSG:RIIE">EUMETSAT</a> Regional Instability Index dataset which is shipped in the less known bufr format. In this tutorial I am going to show how you can use Python to translate <em>.bufr</em> files to <em>.tiff</em> files. Besides the gdal library for writting, we will also need the <a href="https://pyresample.readthedocs.io/en/latest/">pyresample</a> and the <a href="https://github.com/jdkloe/pybufr-ecmwf">pybufr_ecmwf</a> libraries. <em>pyresample</em> currently does not support the <em>.bufr</em> format natively, however, it is very likely to be supported in the future.</p>
+<p>I recently came across the <a href="https://navigator.eumetsat.int/product/EO:EUM:DAT:MSG:RIIE">EUMETSAT</a> Regional Instability Index dataset which is shipped in the less known <em>BUFR</em> format. In this tutorial I am going to show how you can use Python to translate <em>.bfr</em> files to <em>.tiff</em> files. Besides the gdal library for writing, we will also need the <a href="https://pyresample.readthedocs.io/en/latest/">pyresample</a> and the <a href="https://github.com/jdkloe/pybufr-ecmwf">pybufr_ecmwf</a> libraries. <em>pyresample</em> currently does not support the <em>.bfr</em> format natively, however, it is very likely to be supported in the future.</p>
 <hr />
 <pre class="python"><code>import numpy as np
 import gdal
 import osr
 import pyresample as pr
 from pybufr_ecmwf.bufr import BUFRReader</code></pre>
-<p>The <a href="https://www.wmo.int/pages/prog/www/WDM/Guides/Guide-binary-1A.html">bufr format</a> is a standardized format defined by the World Meteorological Organization (WMO) and it stands for <strong>B</strong>inary <strong>U</strong>niversal <strong>F</strong>orm for the <strong>R</strong>epresentation of meteorological data. It is a self describing format, shipping data together with its meta to be used by end users. Within a <em>bufr</em> file we find a number of <em>messages</em> with each of it having a specific number of <em>entries</em>. We will use the functionality of the <em>pybufr_ecmwf</em> library to read in the data.</p>
+<p>The <a href="https://www.wmo.int/pages/prog/www/WDM/Guides/Guide-binary-1A.html">BUFR format</a> is a standardized format defined by the World Meteorological Organization (WMO) and it stands for <strong>B</strong>inary <strong>U</strong>niversal <strong>F</strong>orm for the <strong>R</strong>epresentation of meteorological data. It is a self describing format, shipping data together with its meta to be used by end users. Within a <em>.bfr</em> file we find a number of <em>messages</em> with each of it having a specific number of <em>entries</em>. We will use the functionality of the <em>pybufr_ecmwf</em> library to read in the data.</p>
 <pre class="python"><code>file = &quot;../assets/files/MSG2-SEVI-MSGRIIE-0101-0101-20160526000000.000000000Z-20160526000602-1403456.bfr&quot;
 # read the file
 bufr = BUFRReader(file, warn_about_bufr_size = False, expand_flags = False)
@@ -419,7 +419,7 @@ print(&#39;\n&#39;.join(map(str, names_units[0][0])))</code></pre>
 ## PRESSURE
 ## PRECIPITABLE WATER</code></pre>
 <pre class="python"><code>bufr.close()</code></pre>
-<p>Based on the above output we can decide which parameters we are interested in and which metadata we are going to need. Say we are only interested in the parameter <em>K Index</em>. We can see that the index for this dataset is 16. Also, since we are interested in writting a <em>tiff</em> as output, the datasets of latitude and longitude are going to be of interest to us (index 13 and 14, respectively). Note, that we are reopening the file once again, in order to start from the very first message.</p>
+<p>Based on the above output we can decide which parameters we are interested in and which metadata we are going to need. Say we are only interested in the parameter <em>K Index</em>. We can see that the index for this dataset is 16. Also, since we are interested in writing a <em>.tiff</em> as output, the datasets of latitude and longitude are going to be of interest to us (index 13 and 14, respectively). Note, that we are reopening the file once again, in order to start from the very first message.</p>
 <pre class="python"><code># initiate arrays
 lats = np.zeros([0])
 lons = np.zeros([0])
@@ -436,7 +436,7 @@ for msg in bufr:
   vals = np.append(vals, data[:,16])
 # don&#39;t forget to close the file
 bufr.close()</code></pre>
-<p>With this loop, we obtained all the necessary data to create a <em>tiff</em> file. We have got the values we are interested in, as well as the geographic information of each location’s latitude and longitude data. We can now use functionality from the <em>pyresample</em> library to resample our data to a location of interest. Let’s say we are interested in a studyarea roughly having the extent of France. We can resample to this area, by declaring a area definition first.</p>
+<p>With this loop, we obtained all the necessary data to create a <em>.tiff</em> file. We have got the values we are interested in, as well as the geographic information of each location’s latitude and longitude data. We can now use functionality from the <em>pyresample</em> library to resample our data to a location of interest. Let’s say we are interested in a studyarea roughly having the extent of France. We can resample to this area, by declaring a area definition first.</p>
 <pre class="python"><code># define some general properties of our projection
 area_id = &quot;France&quot;
 description = &quot;Custom Geographical CRS of France&quot;
@@ -463,7 +463,7 @@ print(area_def)</code></pre>
 ## 
 ## /home/marus200/miniconda3/envs/bufr2netcdf/lib/python3.7/site-packages/pyproj/crs/crs.py:543: UserWarning: You will likely lose important projection information when converting to a PROJ string from another format. See: https://proj.org/faq.html#what-is-the-best-format-for-describing-coordinate-reference-systems
 ##   proj_string = self.to_proj4()</code></pre>
-<p>With this area definition we can resample our data using the nearest neighbor algorithm and use our defined variables about the location to create a <em>tiff</em> file as output.</p>
+<p>With this area definition we can resample our data using the nearest neighbor algorithm and use our defined variables about the location to create a <em>.tiff</em> file as output.</p>
 <pre class="python"><code>swath_def = pr.geometry.SwathDefinition(lons = lons, lats = lats)
 res_data = pr.kd_tree.resample_nearest(swath_def, vals, area_def,
 radius_of_influence=16000,epsilon=1000,fill_value=False)

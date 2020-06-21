@@ -1,10 +1,13 @@
 ---
-output: md_document
+output:
+ html_document:
+   keep_md: true
 ---
 
 ![Screenshot](../assets/images/sensorbox.png)
+*Screenshot of the project website.*
 
-What is is about
+### What is it about?
 
 This project website documents a master's seminar work at the University of 
 Marburg on a fully automated, low-cost and self-build environmental sensor unit 
@@ -28,7 +31,7 @@ Core Components
 
 ---
 
-What it does
+### What it can do!
 
 The SensorBox is a fully automated sensing unit which can be used in conjunction
 with a cable car mounted on specific trees to monitor environmental variables

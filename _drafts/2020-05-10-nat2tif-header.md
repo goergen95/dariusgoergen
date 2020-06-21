@@ -1,5 +1,5 @@
 ---
-title: "Translating nat files to GTiff"
+title: "Translating .nat files to GTiff"
 layout: post
 date: 2020-05-10 10:00
 tag: 
