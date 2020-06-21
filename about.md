@@ -4,9 +4,9 @@ layout: page
 ---
 ![Profile Image]({% if site.external-image %}{{ site.picture }}{% else %}{{ site.url }}/{{ site.picture }}{% endif %})
 
-<p>I am working on a broad range of topics concerned with the environment and the coping strategies of our societies. I have been studying Geography and Political Sciences of the MENA region at the University of Marburg focusing on Remote Sensing, Climatology and Hydrogeography. Currently, I am working part-time as a freelance consultant tasked with developing reproducible GIS solutions to strategic environmental issues in the development cooperation sector.  </p>
+<p>I am working on a range of topics concerned with environmental change and the associated coping strategies of our societies. I have been studying Geography and Political Sciences of the MENA region at the University of Marburg focusing on Remote Sensing, Climatology and Hydrogeography. Currently, I am working part-time as a freelance consultant tasked with developing reproducible GIS solutions to strategic environmental issues in the development cooperation sector.  </p>
 
-<p>I am passionate about using new technologies and tools to create information from data to help people understand environmental processes and act upon the findings. Mostly, I am using R as the scripting language of my choice to create geographic workflows, but I am also using Python or specific GIS command line tools, such as SAGA, depending on the problem at hand. </p>
+<p>I am passionate about using new technologies and tools to create information from data so people can understand environmental processes and act upon the insights. Mostly, I am using R as the scripting language of my choice to create geographic workflows, but I am also using Python or specific GIS command line tools, such as SAGA, depending on the problem at hand. </p>
 
 
 <h2>Skills</h2>

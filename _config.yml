@@ -1,5 +1,5 @@
 # main text of home
-name: Darius Görgen
+name: Darius A. Görgen
 bio: Passionate about environmental sciences and human-environmental interactions
 
 # twitter summary info
@@ -14,7 +14,7 @@ picture: assets/images/dg.png
 # and specify source (external or local).
 resume: true
 resume-external: false
-resume-url: assets/cv.pdf
+resume-url: assets/cv-darius-goergen.pdf
 
 url: https://goergen95.github.io
 # your url: http://USERNAME.github.io
@@ -54,7 +54,7 @@ email: Darius2402@web.de
 
 authors:
     darius:
-        name: Darius Görgen
+        name: Darius A. Görgen
         bio: Passionate about environmental sciences and human-environmental interactions
         external-image: false
         picture: assets/images/dg.png
@@ -63,7 +63,7 @@ authors:
 # do you want a larger site? change the option below
 # options: [normal, large] | default: normal
 # normal = 560px / large = 810px
-width: normal
+width: large
 
 # if you do/don't need pagination, toggle 'enabled' between true/false below
 pagination:

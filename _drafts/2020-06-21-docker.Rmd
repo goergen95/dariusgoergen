@@ -13,7 +13,8 @@ in a stable environment.
 I assume here that the necessary dependencies such as the [docker](https://docs.docker.com/get-docker/) and 
 [docker-compose](https://docs.docker.com/compose/install/) engines are already met.
 
----
+![PostGIS Logo](https://www.osgeo.org/wp-content/uploads/postgis-logo-1.png)
+![Rocker Logo](https://secure.gravatar.com/avatar/5809d093183fe6ca0174066078054949.jpg?s=80&r=g&d=mm)
 
 What we need is a simple .yaml file which defines the parameters of our application.
 In the example I am going to demonstrate, the application consists of two services,
@@ -37,6 +38,8 @@ services:
   environment:
     POSTGRES_USER: postgis
     POSTGRES_PASSWORD: postgis
+  ports:
+    - 8888:5432
   volumes:
     - ~/pgdata:/var/lib/postgresql/data
 
@@ -125,10 +128,53 @@ shape_dplyr = shape %>%
   group_by(SID74) %>%
   summarise(AREA = sum(AREA, na.rm = TRUE))
 
-shape_postigs = st_read(con, query = sprintf(paste0('SELECT "SID74", SUM("AREA") as "AREA", ST_UNION(geom) as geom \n',
+shape_postgis = st_read(con, query = sprintf(paste0('SELECT "SID74", SUM("AREA") as "AREA", ST_UNION(geom) as geom \n',
                                     'FROM \"%s\" \n',
                                     'GROUP BY "SID74";')), table_name)
 ```
 
+But how can we manage our postgis server now? There are two ways (well, actually
+three ways I'll explain in a minute) how we can access the server. The first one is using psql from the host 
+machine. In the configuration file we specified that the postgis containers port
+is mapped to the hostmachines port 8888. Well, we simply use that information
+to connect to the database using psql.
 
+```{bash eval=F}
+psql --host localhost --port 8888 --dbname postgres --user postgis
+```
+
+The command line will ask us for the password and then we are connected. 
+Additionally, we can also chose to use a program with a graphical user interface
+to manage the data base. One which ich highly recommend is [pgAdmin](https://www.pgadmin.org/).
+After installing and running the program, we just have to specify a new connection.
+After adding a name for the connection in the _General_ tab we switch to the
+_Connection_ tab and fill in all the information as in the screenshot below.  
+
+![pgAdmin](../assets/images/pgAdmin.png)
+
+You already guessed the third option I promised you before? Well of course we can
+use the psql approach explained above from the terminal in our R-Studio container.
+Of course, the hostname will be slightly different, but the basic idea is the same.
+Now, it comes in handy that we have root access in the R-Studio container, because
+we are going to need to install external software first, namely the postgres client.
+Thus we enter the following two lines into the terminal. Enter _Yes_ in case
+you are asked if you wanted to install the software.
+
+```{bash , eval=F}
+sudo apt update
+sudo apt install postgresql-client
+```
+
+Now our container has the psql command installed and we can use a slightly different
+version of the above command to connect to the databse.
+
+```{bash, eval=F}
+psql --host postgres --port 5432 --dbname postgres --user postgis
+```
+
+What are the differences here? Well, first the container is not found at _localhost_
+but as explained before we have got an entry in the _/etc/hosts_ file for our
+container name _postgres_. Additionally, we are connecting directly to the container
+and not to the mapped port on our host machine which is why we have to specify 5432
+as the right port. Besides that, everything remains the same.
 
