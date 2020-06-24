@@ -1,0 +1,156 @@
+---
+title: "Fox"
+author: "Darius Görgen"
+date: "6/23/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE, eval = F}
+knitr::opts_chunk$set(echo = TRUE)
+library(rvest)
+library(dplyr)
+library(magrittr)
+library(Rcrawler)
+library(stringr)
+
+url = "https://jungefreiheit.de/?s=corona"
+webpage = read_html(url)
+titles = webpage %>%
+  html_nodes(css = "h2.ee-post__title__heading") %>%
+  html_text()
+
+links = webpage %>%
+  html_nodes(css = ".elementor-post__title > a") %>%
+  html_attr("href")
+
+# loop through search results
+base_url = c("https://jungefreiheit.de/page/", "/?s=corona")
+pages = 2:45
+
+link_results = lapply(pages, function(i){
+  url = paste0(base_url[1], i, base_url[2], sep = "")
+  print(url)
+  links = read_html(url) %>%
+    html_nodes(css = ".elementor-post__title > a") %>%
+    html_attr("href")
+  return(links)
+})
+
+all_links = c(links, unlist(link_results))
+
+results = lapply(1:length(all_links), function(i){
+  print(i)
+  url = all_links[i]
+  page = read_html(url)
+  title = html_node(page, "h1") %>% html_text()
+  if(is.na(title)) return(NULL)
+  content = html_nodes(page, "p") %>% html_text()
+  content = content[1:(length(content)-3)]
+  content = paste(content, collapse = " ")
+  info = html_nodes(page, ".elementor-post-info__item") %>% html_text()
+  date = info[2]
+  author = info[3]
+  results = data.frame(data = date, author = author, title = title, content = content, url = url)
+  return(results)
+})
+
+results = do.call(rbind, results)
+saveRDS(results, "../assets/jf_results.rds")
+
+```
+
+
+```{r}
+results = readRDS("../assets/jf_results.rds")
+
+# cleaning dates
+results$data = str_remove_all(results$data, "[\\t|\\n|.]")
+Sys.setlocale("LC_ALL","de_DE.utf8")
+errors = which(is.na(as.Date(results$data, "%d %B %Y")))
+results$data[errors]
+results$data[errors] = c("27 März 2020", "20 März 2020", NA)
+results$data = as.Date(results$data, "%d %B %Y")
+
+results = results[results$data > as.Date("2020-01-01"),]
+# plotting in 2020
+freq = table(results$data)
+plot_data = data.frame(date = as.Date(attributes(freq)$dimnames[[1]]),
+                       freq = as.numeric(freq))
+
+ggplot(plot_data)+
+  geom_line(aes(x=date, y = freq)) 
+
+# look at authors
+results$author = str_remove_all(results$author, "[\\t|\\n]")
+results$author = as.factor(results$author)
+summary(results$author)
+results$author = reorder(results$author, results$author, FUN = length)
+
+library(ggplot2)
+plot_data = results[-which(results$author == "JF"),]
+plot_data = na.omit(plot_data)
+ggplot(plot_data) +
+  geom_histogram(aes(x=author), stat = "count")+
+  coord_flip()+
+  theme_minimal()
+
+
+```
+```{r}
+library(tidytext)
+# analysing titles
+results$title = str_to_lower(str_remove_all(results$title, '[\\t|\\n|.|!|,|...|:|„|“]'))
+results$id = 1:nrow(results)
+
+title_words = results %>%
+  select(title, id ) %>%
+  unnest_tokens(word, title)
+stopwords = stopwords::stopwords("de")
+stopwords = tibble::enframe(stopwords, name="lexicon",value="word")
+
+
+removeWords <- function(str, stopwords) {
+  x <- unlist(strsplit(str, " "))
+  paste(x[!x %in% stopwords], collapse = " ")
+}
+for (i in 1:nrow(results)){
+  tmp = results$title[i]
+  results$title[i] = removeWords(tmp, stopwords$word)
+}
+
+title_clean = title_words %>%
+  anti_join(stopwords) 
+
+title_ngrams = results %>%
+  select(title, id) %>%
+  unnest_tokens(word, title,  n = 2, token="ngrams")
+
+count_1n = title_clean %>%
+  count(word, sort=TRUE) 
+threshold = count_1n$n[20]
+count_1n %>%
+  filter(n > threshold) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word, n)) +
+  geom_col() +
+  xlab("terms") +
+  ylab("ouccrences") +
+  coord_flip() +
+  theme_minimal()
+
+
+count_2n = title_ngrams %>%
+  count(word, sort=TRUE)
+
+threshold = count_2n$n[20]
+count_2n %>%
+  filter(n > threshold) %>%
+  mutate(word = reorder(word, n)) %>%
+  ggplot(aes(word, n)) +
+  geom_col() +
+  xlab(NULL) +
+  ylab("ouccrences") +
+  coord_flip() +
+  theme_minimal()
+```
+

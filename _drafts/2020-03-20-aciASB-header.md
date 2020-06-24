@@ -1,7 +1,7 @@
 ---
 title: "Aerosol-Cloud Interactions and Precipitation in the Aral Sea basin"
 layout: post
-date: 2020-03-20 15:00
+date: 2020-01-20 15:06
 tag: 
  - MODIS
  - clouds
