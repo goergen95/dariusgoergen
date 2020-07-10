@@ -118,6 +118,7 @@ plugins:
   - jekyll-paginate-v2
   - jekyll-fontawesome-svg
   - font-awesome-less
+  - jekyll-sitemap
 
 
 jekyll-mentions:
