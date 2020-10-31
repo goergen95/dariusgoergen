@@ -11,8 +11,8 @@ output:
 ### What is it about?
 
 The [WaPOR](https://wapor.apps.fao.org/home/WAPOR_2/1) project is a project by FAO offering awesome remote sensing products 
-concerned with water usgage in agriculture on the African continent. A great
-variety of different products among them net and gross biomass water productiviy, 
+concerned with water usage in agriculture on the African continent. A great
+variety of different products among them net and gross biomass water productivity, 
 data on evaporation, transpiration and interception as well as biomass production
 are provided at a spatial resolution ranging between 250 meters for the whole
 continent to 30 meters for selected agricultural regions. 
@@ -33,7 +33,7 @@ if(!"wapoR" %in% installed.packages()[,1]){
 }
 library(wapoR)
 ```
-From there it is quite straigt forward to query available collections. Note, that
+From there it is quite straight forward to query available collections. Note, that
 there are other collections present for which in general it should be possible
 to download the data in the same way. But this package was primarily intended to
 interact with the WaPOR collections.
@@ -43,12 +43,12 @@ cols = wapor_collections()
 cols[rev(seq(1,nrow(cols),)),c(1:2)]
 ```
 I reversed the order of the collections vector so that you can see that there
-are two available WaPOR collections representing version 1 and 2 respectivley.
+are two available WaPOR collections representing version 1 and 2 respectively.
 I would advise using the more update version 2 if you do not have other reasons
 to use the first version.
 
 We can query the available products with in a collection by using `wapor_products`
-together witht he collection we wish to query.
+together with he collection we wish to query.
 
 ```{r query-prods}
 prods = wapor_products(collection = "WAPOR_2")
@@ -58,19 +58,19 @@ str(prods[1])
 names(prods)[1:10]
 ```
 The total number of products is quite high. The product names are consist first of
-the level a respective prodcut belongs to. Level 1 means this product belongs to the
+the level a respective product belongs to. Level 1 means this product belongs to the
 continental products covering the African continent at a spatial resolution of about 
 250 meters. Level 2 product show a resolution of 100 meters, however, they are
 only available for selected countries. Finally, level 3 data is available for only
-a few specific agricultural regions but the spatial resoultion is about 30 meters. 
+a few specific agricultural regions but the spatial resolution is about 30 meters. 
 
 The second component in the product name specifies the variable. For example, 
-GBWP stands for **G**ross **B**iomass **W**ater **P**roductivty or AETI for
+GBWP stands for **G**ross **B**iomass **W**ater **P**roductivity or AETI for
 **A**ctual **E**vapo**t**ranspiraton and **I**nterception. You can check out the
 [WaPOR catalog](https://wapor.apps.fao.org/catalog/WAPOR_2/1) to see all available products, or you search through the 
 product list as some metadata is also included in the above object.
 
-The last component of a product name specifies its temporal resultion where A stands
+The last component of a product name specifies its temporal resolution where A stands
 for annual, M for monthly, D for decadal and S for a seasonal temporal resolution.
 
 Let's assume we decided to download some level 3 data for the Office du Niger agricultural region.
@@ -92,7 +92,7 @@ the product is available between 2009 and the present year and is provided in
 a projected coordinate reference system. We also can see that the unit of the pixel
 values is in millimeters bit that the pixel value shall be multiplied with a scale
 factor of 0.1. This is very important information and it should be checked for all 
-WaPOR prodcuts since most of them were rescaled in order to reduce file size. 
+WaPOR products since most of them were rescaled in order to reduce file size. 
 
 Maybe the most important aspect of above output for the next step which is downloading
 is the dimensions dataframe. Here we can see that the selected product only shows
@@ -121,7 +121,7 @@ We very quickly downloaded some important data for an assessment of agricultural
 practices in ODN. The download functionality provided by this package can be used to 
 download specific regions from Level 2 or 3 datasets by providing an sf object
 of an area of interest. Additionally complete time series can be downloaded by
-addapting the start and end date. Check out the [README](https://github.com/goergen95/wapoR) of the package for another
+adapting the start and end date. Check out the [README](https://github.com/goergen95/wapoR) of the package for another
 example to download some data and leave an issue if you face any problems while using
 this package. 
 
