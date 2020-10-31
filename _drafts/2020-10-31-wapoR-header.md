@@ -1,14 +1,14 @@
 ---
-title: "R API to download FAO's WaPOR raster datasets"
+title: "R API to download FAO's WaPOR datasets"
 layout: post
 date: 2020-10-31 11:15
 tag: 
- - raster
- - WaPOR API
+ - FAO WaPOR
  - R
+ - raster
 headerImage: false
 hidden: false # don't count this post in blog pagination
-description: "An R API to easily query and download raster datasets from FAO's WaPOR."
+description: "A R API package to query and download FAO's WaPOR raster datasets."
 category: blog
 author: darius
 ---
