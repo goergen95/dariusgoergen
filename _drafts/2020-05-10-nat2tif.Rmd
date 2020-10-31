@@ -158,7 +158,7 @@ nat2tif(file = file,
         label = "HRV", 
         dtype = "float32", 
         radius = 16000, 
-        epsilon = 1000, 
+        epsilon = .5, 
         nodata = -3.4E+38)
 ```
 Now we can read in the newly created file and take a look at a simple plot
