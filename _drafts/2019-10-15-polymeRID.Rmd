@@ -9,12 +9,11 @@ output:
 
 ### What is it about?
 
-Microplastic particles in the environment are an ever growing concern in the public
-and in science. It is suspected not only to pose threats on wildlife but also
-concerns for the human health have been raised. Scientists and especially decision 
-makers depend on the availability of precise and timely information on the 
-where and whens of microplastic in the environment. The process of spectral 
-identification of particles, however, remains a cost intensive process requiring 
+Microplastic particles in the environment are an ever-growing concern in  public
+and science. It is suspected not only to pose threats to wildlife but also
+concerns for human health have been raised. Scientists and especially decision-makers depend on the availability of precise and timely information on the 
+where and when's of microplastic in the environment. However, the process of spectral 
+identification of particles remains a cost-intensive process requiring 
 humans to invest time and effort into the correct identification of spectra. 
 Modern machine learning techniques have the potential to decrease the necessity 
 of human intervention in the classification process and thus significantly speed 
@@ -25,7 +24,7 @@ to the public.
 
 Based on a freely available reference data base published by [Primpke and colleagues](https://link.springer.com/article/10.1007/s00216-018-1156-x)
 I developed a decision fusion algorithm based on two Random Forest models and 
-two Convolutional Neural Networks which together are able to robustly identify
+two Convolutional Neural Networks which together can robustly identify
 polymers based on FTIR-spectral data. The complete workflow is reproducible and 
 adjustable and consists of the following stages: preparation of a reference data base,
 exploration of machine learning models and pre-processing techniques, calibration
@@ -39,7 +38,7 @@ results based on the mentioned OpenSource data base.
 
 Here you can explore the spectral reference data base based on selected polymers 
 and other materials commonly found in environmental samples. Simply choose a class 
-you wish to display and explore its spectral charachteristics. 
+you wish to display and explore its spectral characteristics. 
 
 ```{r preparation-shiny-app, echo=FALSE, warning=FALSE, message=FALSE}
 knitr::include_app("https://goergen95.shinyapps.io/shiny_apps/", height = "500px")
