@@ -1,0 +1,974 @@
+<?xml version="1.0" encoding="utf-8"?><feed xmlns="http://www.w3.org/2005/Atom" ><generator uri="https://jekyllrb.com/" version="3.9.0">Jekyll</generator><link href="https://www.dariusgoergen.com/feed.xml" rel="self" type="application/atom+xml" /><link href="https://www.dariusgoergen.com/" rel="alternate" type="text/html" /><updated>2022-03-29T09:14:01+00:00</updated><id>https://www.dariusgoergen.com/feed.xml</id><title type="html">Darius A. Görgen</title><subtitle>A personal website on my bio and some R solutions to geographic problems</subtitle><entry><title type="html">R API to download FAO’s WaPOR datasets</title><link href="https://www.dariusgoergen.com/2020-10-31-wapoR/" rel="alternate" type="text/html" title="R API to download FAO’s WaPOR datasets" /><published>2020-10-31T11:15:00+00:00</published><updated>2020-10-31T11:15:00+00:00</updated><id>https://www.dariusgoergen.com/2020-10-31-wapoR</id><content type="html" xml:base="https://www.dariusgoergen.com/2020-10-31-wapoR/">&lt;p&gt;&lt;img src=&quot;../assets/images/wapor.png&quot; alt=&quot;Screenshot&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Screenshot of from the
+&lt;a href=&quot;https://wapor.apps.fao.org/home/WAPOR_2/1&quot;&gt;WaPOR&lt;/a&gt; website&lt;/em&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;what-is-it-about&quot;&gt;What is it about?&lt;/h3&gt;
+
+&lt;p&gt;The &lt;a href=&quot;https://wapor.apps.fao.org/home/WAPOR_2/1&quot;&gt;WaPOR&lt;/a&gt; project is a
+project by FAO offering awesome remote sensing products concerned with
+water usage in agriculture on the African continent. A great variety of
+different products among them net and gross biomass water productivity,
+data on evaporation, transpiration, and interception as well as biomass
+production are provided at a spatial resolution ranging between 250
+meters for the whole continent to 30 meters for selected agricultural
+regions.&lt;/p&gt;
+
+&lt;p&gt;There are already some Python packages out there that allow users to
+programmatically access the WaPOR data portal such as
+&lt;a href=&quot;https://github.com/HKV-products-services/hkvwaporpy&quot;&gt;hkvwaporpy&lt;/a&gt; or
+&lt;a href=&quot;https://github.com/wateraccounting/IHEWAwapor&quot;&gt;IHEWAwapor&lt;/a&gt;, however, I
+was not able to find similar functionality for R users. So I just went
+on and wrote an experimental package in R, which can be used to download
+raster data.&lt;/p&gt;
+
+&lt;h3 id=&quot;what-can-it-do&quot;&gt;What can it do?&lt;/h3&gt;
+
+&lt;p&gt;To install and use the package, you should utilize &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;remotes&lt;/code&gt;
+functionality.&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;!&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;wapoR&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%in%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;installed.packages&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()[,&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]){&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;remotes&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;::&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;install_github&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;goergen95/wapoR&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;wapoR&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;From there, it is quite straightforward to query available collections.
+Note that there are other collections present for which, in general, it
+should be possible to download the data in the same way. But this
+package was primarily intended to interact with the WaPOR collections.&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;cols&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;wapor_collections&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cols&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rev&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;seq&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nrow&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;cols&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),)),&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;c&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;##             code
+## 18          WPOP
+## 17         WATER
+## 16       WAPOR_2
+## 15           RVF
+## 14      RICCAR_2
+## 13        RICCAR
+## 12          RDMS
+## 11          NMME
+## 10 NATURAL_EARTH
+## 9           NASA
+## 8            GLW
+## 7      GAEZ_2015
+## 6        FAOSTAT
+## 5           DLMF
+## 4         CHIRPS
+## 3        C2ATLAS
+## 2           ASIS
+## 1       AQUAMAPS
+##                                                               caption
+## 18                                                   WorldPop project
+## 17                                                         Water Data
+## 16                  FAO Water Productivity Open-access portal (WaPOR)
+## 15                                                  Rift Valley Fever
+## 14                     Regional Arab Climate Change Assessment Report
+## 13                     Regional Arab Climate Change Assessment Report
+## 12                                 Regional Drought Monitoring System
+## 11                         North American Multi-Model Ensemble (NMME)
+## 10                                                      Natural Earth
+## 9                National Aeronautics and Space Administration (NASA)
+## 8                                      Gridded Livestock of the World
+## 7                                 Global Agro-Ecological Zones (2015)
+## 6                                  FAO Corporate Statistical Database
+## 5                            Desert Locust Monitoring and Forecasting
+## 4  Climate Hazard group InfraRed Precipitation with Stations (CHIRPS)
+## 3                                                Climate Change ATLAS
+## 2                                     Agriculture Stress Index System
+## 1                    Global spatial database on water and agriculture
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;I reversed the order of the collections vector so that you can see that
+there are two available WaPOR collections representing version 1 and 2,
+respectively. I would advise using the updated version 2 if you do not
+have other reasons to use the first version.&lt;/p&gt;
+
+&lt;p&gt;We can query the available products within a collection by using
+&lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;wapor_products&lt;/code&gt; together with the collection we wish to query.&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;prods&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;wapor_products&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;collection&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;WAPOR_2&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;paste0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;In total there are &quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;prods&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot; available products in the WAPOR_2 collection.&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## [1] &quot;In total there are 198 available products in the WAPOR_2 collection.&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;prods&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## List of 1
+##  $ L1_GBWP_A:List of 2
+##   ..$ product:&apos;data.frame&apos;:  1 obs. of  3 variables:
+##   .. ..$ code       : Factor w/ 1 level &quot;L1_GBWP_A&quot;: 1
+##   .. ..$ caption    : Factor w/ 1 level &quot;Gross Biomass Water Productivity&quot;: 1
+##   .. ..$ description: Factor w/ 1 level &quot;The annual Gross Biomass Water Productivity expresses the quantity of output (total biomass production) in rela&quot;| __truncated__: 1
+##   ..$ meta   :&apos;data.frame&apos;:  1 obs. of  12 variables:
+##   .. ..$ format                : Factor w/ 1 level &quot;Raster Dataset&quot;: 1
+##   .. ..$ unit                  : Factor w/ 1 level &quot;kg/m³ is the ratio of kg of dry matter per cubic meter of water transpired by vegetation in one hectare&quot;: 1
+##   .. ..$ dataType              : Factor w/ 1 level &quot;Int32 (32bit Integer)&quot;: 1
+##   .. ..$ conversionFactor      : Factor w/ 1 level &quot;the pixel value in the downloaded data must be multiplied by 0.001&quot;: 1
+##   .. ..$ noDataValue           : int -9999
+##   .. ..$ spatialResolution     : Factor w/ 1 level &quot;250m (0.00223 degree)&quot;: 1
+##   .. ..$ spatialExtent         : Factor w/ 1 level &quot;Africa and Near East&quot;: 1
+##   .. ..$ spatialReferenceSystem: Factor w/ 1 level &quot;EPSG:4326 - WGS84 - Geographic Coordinate System (lat/long)&quot;: 1
+##   .. ..$ temporalResolution    : Factor w/ 1 level &quot;from January 2009 to present&quot;: 1
+##   .. ..$ temporalExtent        : Factor w/ 1 level &quot;Annual&quot;: 1
+##   .. ..$ nearRealTime          : Factor w/ 1 level &quot;New dekadal data layers are released approximately 5 days after the end of a dekad. A higher quality version of&quot;| __truncated__: 1
+##   .. ..$ methodology           : Factor w/ 1 level &quot;The calculation of gross biomass water productivity (GBWP) is as follows: GBWP = TBP/ETIa Where TBP is annual T&quot;| __truncated__: 1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nf&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;prods&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;m&quot;&gt;10&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;##  [1] &quot;L1_GBWP_A&quot; &quot;L1_NBWP_A&quot; &quot;L1_AETI_A&quot; &quot;L1_AETI_M&quot; &quot;L1_AETI_D&quot; &quot;L1_T_A&quot;   
+##  [7] &quot;L1_E_A&quot;    &quot;L1_I_A&quot;    &quot;L1_T_D&quot;    &quot;L1_E_D&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The total number of products is relatively high. The product names
+consist first of the level a respective product belongs to. Level 1
+means this product belongs to the continental products covering the
+African continent at a spatial resolution of about 250 meters. Level 2
+products show a resolution of 100 meters. However, they are only
+available for selected countries. Finally, level 3 data is available for
+only a few specific agricultural regions, but the spatial resolution is
+about 30 meters.&lt;/p&gt;
+
+&lt;p&gt;The second component in the product name specifies the variable. For
+example, GBWP stands for &lt;strong&gt;G&lt;/strong&gt;ross &lt;strong&gt;B&lt;/strong&gt;iomass &lt;strong&gt;W&lt;/strong&gt;ater
+&lt;strong&gt;P&lt;/strong&gt;roductivity or AETI for &lt;strong&gt;A&lt;/strong&gt;ctual &lt;strong&gt;E&lt;/strong&gt;vapo&lt;strong&gt;t&lt;/strong&gt;ranspiraton and
+&lt;strong&gt;I&lt;/strong&gt;nterception. You can check out the &lt;a href=&quot;https://wapor.apps.fao.org/catalog/WAPOR_2/1&quot;&gt;WaPOR
+catalog&lt;/a&gt; to see all
+available products, or you search through the product list as some
+metadata is also included in the above object.&lt;/p&gt;
+
+&lt;p&gt;The last component of a product name specifies its temporal resolution,
+where A stands for annual, M for monthly, D for decadal, and S for a
+seasonal temporal resolution.&lt;/p&gt;
+
+&lt;p&gt;Let’s assume we decided to download some level 3 data for the Office du
+Niger agricultural region. First, let’s take a look at the available
+products:&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nf&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;prods&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;grep&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;L3_ODN&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;prods&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))]&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;##  [1] &quot;L3_ODN_AETI_A&quot;       &quot;L3_ODN_AETI_M&quot;       &quot;L3_ODN_AETI_D&quot;      
+##  [4] &quot;L3_ODN_T_A&quot;          &quot;L3_ODN_E_A&quot;          &quot;L3_ODN_I_A&quot;         
+##  [7] &quot;L3_ODN_T_D&quot;          &quot;L3_ODN_E_D&quot;          &quot;L3_ODN_I_D&quot;         
+## [10] &quot;L3_ODN_NPP_D&quot;        &quot;L3_ODN_LCC_D&quot;        &quot;L3_ODN_TBP_S&quot;       
+## [13] &quot;L3_ODN_PHE_S&quot;        &quot;L3_ODN_QUAL_NDVI_D&quot;  &quot;L3_ODN_QUAL_LCC_S&quot;  
+## [16] &quot;L3_ODN_QUAL_NDVI_LT&quot;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;For the sake of a quick example, let’s say we are interested in the
+actual evapotranspiration and interception for the year 2018. We can
+query some additional metadata about this product with the following
+command:&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;meta&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;wapor_metadata&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;collection&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;WAPOR_2&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;product&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;L3_ODN_AETI_A&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;meta&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## List of 3
+##  $ info      :&apos;data.frame&apos;:  1 obs. of  5 variables:
+##   ..$ code      : Factor w/ 1 level &quot;WATER_MM&quot;: 1
+##   ..$ caption   : Factor w/ 1 level &quot;Amount of Water&quot;: 1
+##   ..$ unit      : Factor w/ 1 level &quot;mm&quot;: 1
+##   ..$ scale     : int 3
+##   ..$ multiplier: num 0.1
+##  $ dimensions:&apos;data.frame&apos;:  1 obs. of  3 variables:
+##   ..$ code   : Factor w/ 1 level &quot;YEAR&quot;: 1
+##   ..$ caption: Factor w/ 1 level &quot;Year&quot;: 1
+##   ..$ type   : Factor w/ 1 level &quot;TIME&quot;: 1
+##  $ meta      :&apos;data.frame&apos;:  1 obs. of  12 variables:
+##   ..$ format                : Factor w/ 1 level &quot;Raster Dataset&quot;: 1
+##   ..$ unit                  : Factor w/ 1 level &quot;mm&quot;: 1
+##   ..$ dataType              : Factor w/ 1 level &quot;Int32 (32bit Integer)&quot;: 1
+##   ..$ conversionFactor      : Factor w/ 1 level &quot;the pixel value in the downloaded data must be multiplied by 0.1&quot;: 1
+##   ..$ noDataValue           : int -9999
+##   ..$ spatialResolution     : Factor w/ 1 level &quot;30m&quot;: 1
+##   ..$ spatialExtent         : Factor w/ 1 level &quot;Office du Niger, Mali&quot;: 1
+##   ..$ spatialReferenceSystem: Factor w/ 1 level &quot;EPSG:32630 - WGS 84 / UTM zone 30N&quot;: 1
+##   ..$ temporalResolution    : Factor w/ 1 level &quot;from January 2009 to present&quot;: 1
+##   ..$ temporalExtent        : Factor w/ 1 level &quot;Annual&quot;: 1
+##   ..$ nearRealTime          : Factor w/ 1 level &quot;New dekadal data layers are released approximately 5 days after the end of a dekad. A higher quality version of&quot;| __truncated__: 1
+##   ..$ methodology           : Factor w/ 1 level &quot;See ETIa by dekad for further information. The annual total is obtained by taking the ETIa in mm/day, multiplyi&quot;| __truncated__: 1
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;From the above, we already get a lot of useful information. For example,
+we see that the product is available between 2009 and the current year
+and is provided in a projected coordinate reference system. We also can
+see that the unit of the pixel values is in millimeters bit that the
+pixel value shall be multiplied with a scale factor of 0.1. This is
+essential information, and it should be checked for all WaPOR products
+since most of them were rescaled to reduce file size.&lt;/p&gt;
+
+&lt;p&gt;Maybe the most important aspect of the above output for the next step,
+is the dimensions dataframe. Here we can see that the selected product
+only shows one dimension called “YEAR” which type is time. Other
+products might have further dimensions, such as “SEASON” which needs
+different specification in the download call.&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;wapor_queryRaster&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;collection&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;WAPOR_2&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;product&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;L3_ODN_AETI_A&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;begin&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;2018-01-01&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# begin date is inclusive&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;end&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;2019-01-01&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# end date is exclusive&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;outdir&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;assets/files/&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;APIkey&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Sys.getenv&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;wapor-key&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Let’s take a glimpse at the data we just downloaded.&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;raster&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## Loading required package: sp
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;list.files&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;../assets/files/&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;L3_ODN&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;full.names&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;T&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;raster&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;m&quot;&gt;0.1&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plot&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;r&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/blog_images/2020-10-31-wapoR_files/figure-gfm/odn-vis-1.png&quot; alt=&quot;&quot; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+
+&lt;p&gt;We very quickly downloaded some important data for an assessment of
+agricultural practices in ODN. This package’s download functionality can
+be used to download specific regions from Level 2 or 3 datasets by
+providing an sf object of an area of interest. Additionally,
+complete-time series can be downloaded by adapting the start and end
+date. Check out the &lt;a href=&quot;https://github.com/goergen95/wapoR&quot;&gt;README&lt;/a&gt; of the
+package for another example to download some data and leave an issue if
+you face any problems using this package.&lt;/p&gt;</content><author><name>darius</name></author><category term="blog" /><category term="FAO WaPOR" /><category term="R" /><category term="raster" /><summary type="html"></summary></entry><entry><title type="html">Running docker-compose with postgis and R-Studio</title><link href="https://www.dariusgoergen.com/2020-06-21-docker/" rel="alternate" type="text/html" title="Running docker-compose with postgis and R-Studio" /><published>2020-06-21T13:19:00+00:00</published><updated>2020-06-21T13:19:00+00:00</updated><id>https://www.dariusgoergen.com/2020-06-21-docker</id><content type="html" xml:base="https://www.dariusgoergen.com/2020-06-21-docker/">&lt;p&gt;In this tutorial, I am going to show how you can use the docker engine to set up 
+two containers, one hosting the &lt;a href=&quot;https://hub.docker.com/r/rocker/geospatial&quot;&gt;rocker/geospatial&lt;/a&gt; 
+image and the other one the &lt;a href=&quot;https://hub.docker.com/r/postgis/postgis&quot;&gt;postgis/postgis&lt;/a&gt;
+image. We will use docker-compose to start up both containers
+to work with the r-spatial packages and postgis functionality simultaneously
+in a stable environment.
+I assume here that the necessary dependencies such as the &lt;a href=&quot;https://docs.docker.com/get-docker/&quot;&gt;docker&lt;/a&gt; and 
+&lt;a href=&quot;https://docs.docker.com/compose/install/&quot;&gt;docker-compose&lt;/a&gt; engines are already met.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;https://www.osgeo.org/wp-content/uploads/postgis-logo-1.png&quot; alt=&quot;PostGIS Logo&quot; /&gt;
+&lt;img src=&quot;https://secure.gravatar.com/avatar/5809d093183fe6ca0174066078054949.jpg?s=80&amp;amp;r=g&amp;amp;d=mm&quot; alt=&quot;Rocker Logo&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;What we need is a simple .yaml file that defines the parameters of our application.
+In the example I will demonstrate, the application consists of two services,
+namely the postigs server and the R-Studio instance. We start with the postgres 
+service by defining which images we are using. This image is found at &lt;a href=&quot;https://hub.docker.com/&quot;&gt;dockerhub&lt;/a&gt;
+If the images are not found on the local machine, they are pulled from there
+once we run our application. We also make the container’s naming explicit by
+using the &lt;em&gt;container_name&lt;/em&gt; option and set the restart behavior to &lt;em&gt;always&lt;/em&gt; in cases
+the container breaks down. We also ensure that the container will set up
+a new user besides the default &lt;em&gt;postgres&lt;/em&gt; user by specifying a username and a password.
+The last part specifies on the left hand the local path on the host machine where 
+the database files are going to be written two, while the right-hand part
+links to the data directory within the postgis container.&lt;/p&gt;
+
+&lt;div class=&quot;language-yaml highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;na&quot;&gt;services&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;postgres&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;postgis/postgis&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;container_name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;postgres&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;restart&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;always&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;environment&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;POSTGRES_USER&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;postgis&lt;/span&gt;
+    &lt;span class=&quot;na&quot;&gt;POSTGRES_PASSWORD&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;postgis&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;ports&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;8888:5432&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;volumes&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;~/pgdata:/var/lib/postgresql/data&lt;/span&gt;
+
+&lt;span class=&quot;na&quot;&gt;rstudio&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;image&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;rocker/geospatial&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;container_name&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;r-studio&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;restart&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;always&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;environment&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;USER=rstudio&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;PASSWORD=supersecret&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;ROOT=TRUE&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;ports&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;8787:8787&lt;/span&gt;
+  &lt;span class=&quot;na&quot;&gt;links&lt;/span&gt;&lt;span class=&quot;pi&quot;&gt;:&lt;/span&gt; 
+    &lt;span class=&quot;pi&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;postgres&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;For the R-Studio service, we use the geospatial image that comes in very
+handy in cases you want to do geospatial analysis since a large number of important
+packages already come preinstalled. We also make the naming of the container explicit
+and set the restart behavior to &lt;em&gt;always&lt;/em&gt;. The rocker images are quite restrictive
+when it comes to user rights management. Thus, in addition to specifying a user and a 
+password, we also want to enable root access for the case we need to install additional
+software. This way, our user is added to the sudoer list. However, this option
+should be treated carefully. We also map a port on the host machine to the exposed
+port of the container. This way, we can reach the interface by simply accessing &lt;em&gt;http://localhost:8787/&lt;/em&gt; in the browser of our choice. Finally, we declare
+that the &lt;em&gt;posgres&lt;/em&gt; service is linked to the &lt;em&gt;rstudio&lt;/em&gt; service. This means that inside
+the rstudio container, an entry to &lt;em&gt;/etc/hosts&lt;/em&gt; called postgres is added, linking
+to the IP-address this container is found.&lt;/p&gt;
+
+&lt;p&gt;When we write the above configuration to a file called &lt;em&gt;docker-compose.yaml&lt;/em&gt; starting
+the application is as simple as running the following command in a shell in the
+same directory the file is found:&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;docker-compose up
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Once the services are up and running, visit &lt;em&gt;http://localhost:8787/&lt;/em&gt; and enter 
+the username and password for the rstudio service. From here, we can use the &lt;em&gt;RPostgreSQL&lt;/em&gt;
+and &lt;em&gt;RPostgres&lt;/em&gt; library to connect to our data base. In the simple example below,
+we establish a connection and write an sf-Object shipped with the &lt;em&gt;sf&lt;/em&gt; package to the 
+database.&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;RPostgreSQL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;RPostgres&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# specify connection inputs&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&apos;postgis&apos;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;  &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# provide the name of your db&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;host_db&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;postgres&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# provide the name of the service&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;db_port&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&apos;5432&apos;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;  &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# specify the port the service is available at&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;db_user&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;postgis&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;  &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# specify username&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;db_password&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;postgis&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# specify password&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# establish the connection&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;con&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;lt;-&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dbConnect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Postgres&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(),&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+                 &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dbname&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;db&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+                 &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;host&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;host_db&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+                 &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;db_port&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+                 &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;user&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;db_user&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; 
+                 &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;password&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;db_password&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# read sample shapefile&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;st_read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;system.file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;gpkg/nc.gpkg&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;package&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;sf&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# write to database in a new table specified by the layer argument&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;table_name&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&quot;test&quot;&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;st_write&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;obj&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dsn&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;con&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;layer&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;table_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Since we mapped the data directory to a local directory on our host machine,
+the data we write into the database is persistent even when the application 
+is no longer running. To query our database now or even after restarting the 
+application we can use more sf functionality to interact with it.
+Here is a simple example comparing dplyr syntax with the result we obtain from
+querying the database to unify all polygons which have the same entry in the ‘SID74’ 
+variable.&lt;/p&gt;
+
+&lt;div class=&quot;language-r highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;library&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dplyr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;c1&quot;&gt;# dplyr way of &lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape_dplyr&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;group_by&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SID74&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;%&amp;gt;%&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+  &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;summarise&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AREA&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;sum&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AREA&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;na.rm&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;kc&quot;&gt;TRUE&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape_postgis&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;st_read&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;con&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;query&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sprintf&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;paste0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&apos;SELECT &quot;SID74&quot;, SUM(&quot;AREA&quot;) as &quot;AREA&quot;, ST_UNION(geom) as geom \n&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                                    &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&apos;FROM \&quot;%s\&quot; \n&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+                                    &lt;/span&gt;&lt;span class=&quot;s1&quot;&gt;&apos;GROUP BY &quot;SID74&quot;;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)),&lt;/span&gt;&lt;span class=&quot;w&quot;&gt; &lt;/span&gt;&lt;span class=&quot;n&quot;&gt;table_name&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;w&quot;&gt;
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;But how can we manage our postgis server now? There are two ways (well, actually
+three ways I’ll explain in a minute) how we can access the server. The first one is using psql from the host 
+machine. In the configuration file, we specified that the postgis containers port
+is mapped to the host machine’s port 8888. Well, we simply use that information
+to connect to the database using psql.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;psql &lt;span class=&quot;nt&quot;&gt;--host&lt;/span&gt; localhost &lt;span class=&quot;nt&quot;&gt;--port&lt;/span&gt; 8888 &lt;span class=&quot;nt&quot;&gt;--dbname&lt;/span&gt; postgres &lt;span class=&quot;nt&quot;&gt;--user&lt;/span&gt; postgis
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The command line will ask us for the password, and then we are connected. 
+Additionally, we can also choose to use a program with a graphical user interface
+to manage the data base. One which ich highly recommend is &lt;a href=&quot;https://www.pgadmin.org/&quot;&gt;pgAdmin&lt;/a&gt;.
+After installing and running the program, we have to specify a new connection.
+After adding a name for the connection in the &lt;em&gt;General&lt;/em&gt; tab we switch to the
+&lt;em&gt;Connection&lt;/em&gt; tab and fill in all the information as in the screenshot below.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../assets/images/pgAdmin.png&quot; alt=&quot;pgAdmin&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;You already guessed the third option I promised you before? Well of course we can
+use the psql approach explained above from the terminal in our R-Studio container.
+Of course, the hostname will be slightly different, but the basic idea is the same.
+Now, it comes in handy that we have root access in the R-Studio container, because
+we are going to need to install external software first, namely the postgres client.
+Thus we enter the following two lines into the terminal. Enter &lt;em&gt;Yes&lt;/em&gt; in case
+you are asked if you wanted to install the software.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt update
+&lt;span class=&quot;nb&quot;&gt;sudo &lt;/span&gt;apt &lt;span class=&quot;nb&quot;&gt;install &lt;/span&gt;postgresql-client
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now our container has the psql command installed and we can use a slightly different
+version of the above command to connect to the databse.&lt;/p&gt;
+
+&lt;div class=&quot;language-bash highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;psql &lt;span class=&quot;nt&quot;&gt;--host&lt;/span&gt; postgres &lt;span class=&quot;nt&quot;&gt;--port&lt;/span&gt; 5432 &lt;span class=&quot;nt&quot;&gt;--dbname&lt;/span&gt; postgres &lt;span class=&quot;nt&quot;&gt;--user&lt;/span&gt; postgis
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;What are the differences here? Well, first the container is not found at &lt;em&gt;localhost&lt;/em&gt;
+but as explained before we have got an entry in the &lt;em&gt;/etc/hosts&lt;/em&gt; file for our
+container name &lt;em&gt;postgres&lt;/em&gt;. Additionally, we are connecting directly to the container
+and not to the mapped port on our host machine which is why we have to specify 5432
+as the right port. Besides that, everything remains the same.&lt;/p&gt;</content><author><name>darius</name></author><category term="blog" /><category term="docker" /><category term="R" /><category term="postgis" /><summary type="html">In this tutorial, I am going to show how you can use the docker engine to set up two containers, one hosting the rocker/geospatial image and the other one the postgis/postgis image. We will use docker-compose to start up both containers to work with the r-spatial packages and postgis functionality simultaneously in a stable environment. I assume here that the necessary dependencies such as the docker and docker-compose engines are already met.</summary><media:thumbnail xmlns:media="http://search.yahoo.com/mrss/" url="https://secure.gravatar.com/avatar/5809d093183fe6ca0174066078054949.jpg?s=80&amp;r=g&amp;d=mm" /><media:content medium="image" url="https://secure.gravatar.com/avatar/5809d093183fe6ca0174066078054949.jpg?s=80&amp;r=g&amp;d=mm" xmlns:media="http://search.yahoo.com/mrss/" /></entry><entry><title type="html">Translating EUMETSAT’s .nat files to GTiff</title><link href="https://www.dariusgoergen.com/2020-05-10-nat2tif/" rel="alternate" type="text/html" title="Translating EUMETSAT’s .nat files to GTiff" /><published>2020-05-10T10:00:00+00:00</published><updated>2020-05-10T10:00:00+00:00</updated><id>https://www.dariusgoergen.com/2020-05-10-nat2tif</id><content type="html" xml:base="https://www.dariusgoergen.com/2020-05-10-nat2tif/">&lt;p&gt;In this tutorial, I am using Python to translate a Meteosat Second Generation (MSG) Native Archive Format (.nat) file to GTiff. Conveniently, there exists a
+driver support for these files in both, the &lt;a href=&quot;https://gdal.org/drivers/raster/msgn.html&quot;&gt;gdal&lt;/a&gt; 
+and the &lt;a href=&quot;https://satpy.readthedocs.io/en/latest/index.html&quot;&gt;satpy&lt;/a&gt; library.
+Here, we are going to use satpy because we also want to resample the data
+with its “associated” library &lt;a href=&quot;https://pyresample.readthedocs.io/en/latest/&quot;&gt;pyresample&lt;/a&gt;. First, we will load
+all the libraries we are going to need into our Python session.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;numpy&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;gdal&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;osr&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;os&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;pyresample&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pr&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;satpy&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Scene&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;As opposed to BUFR files, reading &lt;em&gt;.nat&lt;/em&gt; files is quite straightforward. All we need to do is 
+handing the right reader to the satpy &lt;em&gt;Scene&lt;/em&gt; function. We can then take a look
+at the available datasets.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;../assets/files/MSG1-SEVI-MSG15-0100-NA-20160531090417.660000000Z-20160531090437-1405098.nat&quot;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# define reader
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reader&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;seviri_l1b_native&quot;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# read the file
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;scn&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Scene&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;filenames&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]})&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# extract data set names
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dataset_names&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;scn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;all_dataset_names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# print available datasets
+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dataset_names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)))&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## HRV
+## IR_016
+## IR_039
+## IR_087
+## IR_097
+## IR_108
+## IR_120
+## IR_134
+## VIS006
+## VIS008
+## WV_062
+## WV_073
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;The MSG data is provided as Full Disk, meaning that roughly the complete North-South
+extent of the globe from the Atlantic to the Indian Ocean is present in 
+each file. For most applications and research questions, it is not necessary
+to process an extent that large. This is why as an example, we are going to resample
+the data to the extent of Spain. For this, we are using functionality 
+from the &lt;em&gt;pyresample&lt;/em&gt; library, which allows users to create customized area definitions.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# create some information on the reference system
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;area_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Spain&quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;description&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Geographical Coordinate System clipped on Spain&quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;proj_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Spain&quot;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# specifing some parameters of the projection
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;proj_dict&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;proj&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;longlat&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;ellps&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;WGS84&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;datum&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;WGS84&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# calculate the width and height of the aoi in pixels
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;llx&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;9.5&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# lower left x coordinate in degrees
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lly&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;35.9&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# lower left y coordinate in degrees
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;urx&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;3.3&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# upper right x coordinate in degrees
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ury&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;43.8&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# upper right y coordinate in degrees
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;resolution&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.005&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# target resolution in degrees
+# calculating the number of pixels
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;width&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;urx&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;llx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resolution&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;height&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ury&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lly&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resolution&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;area_extent&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;llx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lly&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;urx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ury&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# defining the area
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;area_def&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;geometry&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AreaDefinition&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;area_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;proj_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;proj_dict&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;area_extent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;area_def&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## Area ID: Spain
+## Description: Spain
+## Projection ID: Geographical Coordinate System clipped on Spain
+## Projection: {&apos;datum&apos;: &apos;WGS84&apos;, &apos;no_defs&apos;: &apos;None&apos;, &apos;proj&apos;: &apos;longlat&apos;, &apos;type&apos;: &apos;crs&apos;}
+## Number of columns: 2560
+## Number of rows: 1579
+## Area extent: (-9.5, 35.9, 3.3, 43.8)
+## 
+## /home/marus200/miniconda3/envs/bufr2netcdf/lib/python3.7/site-packages/pyproj/crs/crs.py:543: UserWarning: You will likely lose important projection information when converting to a PROJ string from another format. See: https://proj.org/faq.html#what-is-the-best-format-for-describing-coordinate-reference-systems
+##   proj_string = self.to_proj4()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;We will show here how to proceed when we want to extract more
+than one specific data set. We can either apply a for loop
+over the desired datasets we need or write a general function that can extract the data for any specified variable. Here we are going forward with
+the latter approach because a function is more reusable than a 
+simple script.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;nat2tif&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;calibration&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;area_def&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dataset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;reader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;outdir&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;label&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dtype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;radius&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;epsilon&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;nodata&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# open the file
+&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;scn&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;Scene&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;filenames&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;reader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]})&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# let us check that the specified data set is actually available
+&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;scn_names&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;scn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;all_dataset_names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# raise exception if dataset is not present in available names
+&lt;/span&gt;  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dataset&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;scn_names&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;raise&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;Exception&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Specified dataset is not available.&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# we need to load the data, different calibration can be chosen
+&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;scn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;load&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dataset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;],&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;calibration&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;calibration&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# let us extract the longitude and latitude data
+&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;lons&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lats&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;scn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dataset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;area&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_lonlats&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# now we can apply a swath definition for our output raster
+&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;swath_def&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;geometry&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SwathDefinition&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lons&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lons&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lats&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lats&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# and finally we also extract the data
+&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;values&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;scn&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dataset&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;].&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;values&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# we will now change the datatype of the arrays
+&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;# depending on the present data this can be changed
+&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;lons&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lons&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;astype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dtype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;lats&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lats&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;astype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dtype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;values&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;values&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;astype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;dtype&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# now we can already resample our data to the area of interest
+&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;values&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kd_tree&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;resample_nearest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;swath_def&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;values&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                                             &lt;span class=&quot;n&quot;&gt;area_def&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                                             &lt;span class=&quot;n&quot;&gt;radius_of_influence&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;radius&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# in meters
+&lt;/span&gt;                                             &lt;span class=&quot;n&quot;&gt;epsilon&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;epsilon&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+                                             &lt;span class=&quot;n&quot;&gt;fill_value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# we are going to check if the outdir exists and create it if it doesnt
+&lt;/span&gt;  &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;not&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;exists&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;outdir&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+   &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;makedir&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;outdir&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# let us join our filename based on the input file&apos;s basename                                           
+&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;outname&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;outdir&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;basename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)[:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;_&quot;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;label&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;.tif&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# now we define some metadata for our raster file
+&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;cols&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;values&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;rows&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;values&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;pixelWidth&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;area_def&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;area_extent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;area_def&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;area_extent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cols&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;pixelHeight&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;area_def&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;area_extent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;area_def&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;area_extent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rows&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;originX&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;area_def&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;area_extent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;originY&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;area_def&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;area_extent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; 
+  &lt;span class=&quot;c1&quot;&gt;# here we actually create the file
+&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;driver&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gdal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GetDriverByName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;GTiff&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;outRaster&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;driver&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;outname&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cols&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rows&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# writing the metadata
+&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;outRaster&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SetGeoTransform&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;originX&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pixelWidth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;originY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pixelHeight&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+  &lt;span class=&quot;c1&quot;&gt;# creating a new band and writting the data
+&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;outband&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;outRaster&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GetRasterBand&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;outband&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SetNoDataValue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;nodata&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;#specified no data value by user
+&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;outband&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;WriteArray&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;values&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# writting the values
+&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;outRasterSRS&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;osr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SpatialReference&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# create CRS instance
+&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;outRasterSRS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ImportFromEPSG&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4326&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# get info for EPSG 4326
+&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;outRaster&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SetProjection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;outRasterSRS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ExportToWkt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# set CRS as WKT
+&lt;/span&gt;  &lt;span class=&quot;c1&quot;&gt;# clean up
+&lt;/span&gt;  &lt;span class=&quot;n&quot;&gt;outband&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;FlushCache&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;outband&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;outRaster&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;
+  
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now we can apply this function to our input file and extract any available dataset. Note that some of the input variables need further explanation.
+The very first option which might not be self-evident is calibration. With this 
+option we can tell satpy to pre-calibrate the data, for example, to reflectance in
+contrast to radiances. The option &lt;em&gt;label&lt;/em&gt; appends the value of label to the 
+ouput filename. With the &lt;em&gt;dtype&lt;/em&gt; option, we can specifically choose which datatype
+is used for the output file. Accordingly, we should adopt the value for nodata,
+which flags no data values in the output file.
+The options &lt;em&gt;radius&lt;/em&gt; and &lt;em&gt;epsilon&lt;/em&gt; are options of the nearest neighbor resampling
+routine and can be specified to the user needs (see &lt;a href=&quot;https://pyresample.readthedocs.io/en/latest/swath.html#pyresample-kd-tree&quot;&gt;here&lt;/a&gt; for more information).&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;nat2tif&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+        &lt;span class=&quot;n&quot;&gt;calibration&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;radiance&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;  
+        &lt;span class=&quot;n&quot;&gt;area_def&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;area_def&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;  
+        &lt;span class=&quot;n&quot;&gt;dataset&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;HRV&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+        &lt;span class=&quot;n&quot;&gt;reader&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;reader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+        &lt;span class=&quot;n&quot;&gt;outdir&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;../assets/files&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;  
+        &lt;span class=&quot;n&quot;&gt;label&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;HRV&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+        &lt;span class=&quot;n&quot;&gt;dtype&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;float32&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+        &lt;span class=&quot;n&quot;&gt;radius&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;16000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+        &lt;span class=&quot;n&quot;&gt;epsilon&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; 
+        &lt;span class=&quot;n&quot;&gt;nodata&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;3.4E+38&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+&lt;p&gt;Now we can read in the newly created file and take a look at a simple plot
+to visualize our result (Note that in the background, I am using R to generate this plot quickly).&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/blog_images/2020-05-10-nat2tif_files/figure-html/plot-1.png&quot; alt=&quot;&quot; /&gt;&lt;!-- --&gt;&lt;/p&gt;</content><author><name>darius</name></author><category term="blog" /><category term="msg" /><category term="gtiff" /><category term="python" /><summary type="html">In this tutorial, I am using Python to translate a Meteosat Second Generation (MSG) Native Archive Format (.nat) file to GTiff. Conveniently, there exists a driver support for these files in both, the gdal and the satpy library. Here, we are going to use satpy because we also want to resample the data with its “associated” library pyresample. First, we will load all the libraries we are going to need into our Python session.</summary></entry><entry><title type="html">Translating EUMETSAT’s .bfr files to GTiff</title><link href="https://www.dariusgoergen.com/2020-05-10-bufr2tif/" rel="alternate" type="text/html" title="Translating EUMETSAT’s .bfr files to GTiff" /><published>2020-05-01T09:00:00+00:00</published><updated>2020-05-01T09:00:00+00:00</updated><id>https://www.dariusgoergen.com/2020-05-10-bufr2tif</id><content type="html" xml:base="https://www.dariusgoergen.com/2020-05-10-bufr2tif/">&lt;p&gt;I recently came across the &lt;a href=&quot;https://navigator.eumetsat.int/product/EO:EUM:DAT:MSG:RIIE&quot;&gt;EUMETSAT&lt;/a&gt;
+Regional Instability Index dataset, which is shipped in the less known &lt;em&gt;BUFR&lt;/em&gt; format.
+In this tutorial, I am going to show how you can use Python to translate
+&lt;em&gt;.bfr&lt;/em&gt; files to &lt;em&gt;.tiff&lt;/em&gt; files.
+Besides the GDAL library for writing, we will also need the &lt;a href=&quot;https://pyresample.readthedocs.io/en/latest/&quot;&gt;pyresample&lt;/a&gt;
+and the &lt;a href=&quot;https://github.com/jdkloe/pybufr-ecmwf&quot;&gt;pybufr_ecmwf&lt;/a&gt; libraries.
+&lt;em&gt;pyresample&lt;/em&gt; currently does not support the &lt;em&gt;.bfr&lt;/em&gt; format natively. However, it is 
+very likely to be supported in the future.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;numpy&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;gdal&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;osr&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;pyresample&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;as&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pr&lt;/span&gt;
+&lt;span class=&quot;kn&quot;&gt;from&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;pybufr_ecmwf.bufr&lt;/span&gt; &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BUFRReader&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;The &lt;a href=&quot;https://www.wmo.int/pages/prog/www/WDM/Guides/Guide-binary-1A.html&quot;&gt;BUFR format&lt;/a&gt; 
+is a standardized format defined by the World Meteorological Organization (WMO).
+It stands for &lt;strong&gt;B&lt;/strong&gt;inary &lt;strong&gt;U&lt;/strong&gt;niversal &lt;strong&gt;F&lt;/strong&gt;orm for the &lt;strong&gt;R&lt;/strong&gt;epresentation of
+meteorological data. It is a self-describing format, shipping data together with its meta
+to be used by end-users. Within a &lt;em&gt;.bfr&lt;/em&gt; file, we find several &lt;em&gt;messages&lt;/em&gt; with
+each of them having a specific number of &lt;em&gt;entries&lt;/em&gt;. We will use the functionality
+of the &lt;em&gt;pybufr_ecmwf&lt;/em&gt; library to read in the data.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;../assets/files/MSG2-SEVI-MSGRIIE-0101-0101-20160526000000.000000000Z-20160526000602-1403456.bfr&quot;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# read the file
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bufr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BUFRReader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;warn_about_bufr_size&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;expand_flags&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# display number of messages
+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;Number of messages: &quot;&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bufr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;num_msgs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# initiate list with parameter names
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;names_units&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;[]&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;m&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;enumerate&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bufr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
+ &lt;span class=&quot;n&quot;&gt;names_units&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;get_names_and_units&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# show parameter names and units
+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;se&quot;&gt;\n&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&apos;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;join&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;map&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;str&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;names_units&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;][&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])))&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# close file
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bufr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## Number of messages: 90
+## SATELLITE IDENTIFIER
+## IDENTIFICATION OF ORIGINATING/GENERATING CENTRE (SEE NOTE 10)
+## SATELLITE CLASSIFICATION
+## SEGMENT SIZE AT NADIR IN X DIRECTION
+## SEGMENT SIZE AT NADIR IN Y DIRECTION
+## YEAR
+## MONTH
+## DAY
+## HOUR
+## MINUTE
+## SECOND
+## ROW NUMBER
+## COLUMN NUMBER
+## LATITUDE (HIGH ACCURACY)
+## LONGITUDE (HIGH ACCURACY)
+## SATELLITE ZENITH ANGLE
+## K INDEX
+## KO INDEX
+## PARCEL LIFTED INDEX (TO 500 HPA)
+## MAXIMUM BUOYANCY
+## PRECIPITABLE WATER
+## PER CENT CONFIDENCE
+## PRESSURE
+## PRESSURE
+## PRECIPITABLE WATER
+## PRESSURE
+## PRESSURE
+## PRECIPITABLE WATER
+## PRESSURE
+## PRESSURE
+## PRECIPITABLE WATER
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Based on the above output, we can decide which parameters we are interested in and 
+which metadata we will need. Say we are only interested in the parameter
+&lt;em&gt;K Index&lt;/em&gt;. We can see that the index for this dataset is 16. Also, since
+we are interested in writing a &lt;em&gt;.tiff&lt;/em&gt; as output, the datasets of latitude and 
+longitude will be of interest to us (index 13 and 14, respectively).
+Note that we are reopening the file once again to start from the very 
+first message.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# initiate arrays
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lats&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zeros&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;lons&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zeros&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;vals&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;zeros&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# reopening the file
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bufr&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;BUFRReader&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;file&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;warn_about_bufr_size&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;expand_flags&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# loop through the messages and sub-entries
+&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bufr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+ &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;subs&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;msg&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;subs&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;lats&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lats&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[:,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;13&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;lons&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lons&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[:,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;14&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+  &lt;span class=&quot;n&quot;&gt;vals&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;append&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;vals&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[:,&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;16&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# don&apos;t forget to close the file
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;bufr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;close&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;With this loop, we obtained all the necessary data to create a &lt;em&gt;.tiff&lt;/em&gt; file. We have
+got the values we are interested in and the geographic information of 
+each location’s latitude and longitude data. We can now use the
+&lt;em&gt;pyresample&lt;/em&gt; library to resample our data to a location of interest. Let’s say
+we are interested in a study area roughly having the extent of France.
+We can resample to this area by declaring an area definition first.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;c1&quot;&gt;# define some general properties of our projection
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;area_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;France&quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;description&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;Custom Geographical CRS of France&quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;proj_id&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;France WGS84 geographical&quot;&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;proj_dict&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;proj&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;longlat&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;ellps&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;WGS84&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;datum&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;WGS84&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# define the area&apos;s extent in degrees and desired resolution
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;llx&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;4.9&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;lly&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;42.2&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;urx&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;8.2&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;ury&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;51.2&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;res&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mf&quot;&gt;0.015&lt;/span&gt; &lt;span class=&quot;c1&quot;&gt;# in degrees
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;width&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;urx&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;llx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;res&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;height&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;int&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ury&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lly&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;res&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;area_extent&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;llx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lly&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;urx&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ury&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;area_def&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;geometry&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;AreaDefinition&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;area_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;proj_id&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;proj_dict&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;width&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;height&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;area_extent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;k&quot;&gt;print&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;area_def&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;## Area ID: France
+## Description: France WGS84 geographical
+## Projection ID: Custom Geographical CRS of France
+## Projection: {&apos;datum&apos;: &apos;WGS84&apos;, &apos;no_defs&apos;: &apos;None&apos;, &apos;proj&apos;: &apos;longlat&apos;, &apos;type&apos;: &apos;crs&apos;}
+## Number of columns: 873
+## Number of rows: 600
+## Area extent: (-4.9, 42.2, 8.2, 51.2)
+## 
+## /home/marus200/miniconda3/envs/bufr2netcdf/lib/python3.7/site-packages/pyproj/crs/crs.py:543: UserWarning: You will likely lose important projection information when converting to a PROJ string from another format. See: https://proj.org/faq.html#what-is-the-best-format-for-describing-coordinate-reference-systems
+##   proj_string = self.to_proj4()
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;With this area definition, we can resample our data using the nearest neighbor 
+algorithm and use our defined variables about the location to create a &lt;em&gt;.tiff&lt;/em&gt; file 
+as output.&lt;/p&gt;
+
+&lt;div class=&quot;language-python highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;&lt;span class=&quot;n&quot;&gt;swath_def&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;geometry&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SwathDefinition&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;lons&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lons&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lats&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;lats&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;res_data&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;kd_tree&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;resample_nearest&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;swath_def&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;vals&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;area_def&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;radius_of_influence&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;16000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;epsilon&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1000&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;fill_value&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;False&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+
+&lt;span class=&quot;c1&quot;&gt;# create tif output
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;filename&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&quot;../assets/files/bufr2tif.tif&quot;&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# number of rows and cols
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;rows&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;res_data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;cols&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;res_data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;shape&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# pixel size
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pixelWidth&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;area_def&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;area_extent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;2&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;area_def&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;area_extent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cols&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;pixelHeight&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;area_def&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;area_extent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;area_def&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;area_extent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;/&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rows&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# pixel of origin
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;originX&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;area_def&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;area_extent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;originY&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;area_def&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;area_extent&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;3&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# driver
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;driver&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gdal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GetDriverByName&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&quot;GTiff&quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# create file 
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;outRaster&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;driver&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;Create&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;filename&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;cols&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;rows&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;gdal&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GDT_Float64&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# set resoultion and origin
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;outRaster&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SetGeoTransform&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;((&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;originX&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pixelWidth&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;originY&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;pixelHeight&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# create one band
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;outband&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;outRaster&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;GetRasterBand&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;1&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# Float_64 no data value (or customize)
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;outband&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SetNoDataValue&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mf&quot;&gt;1.7e+38&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# write the resampled data to file
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;outband&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;WriteArray&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;np&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;array&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;res_data&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;))&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# create a spatial reference system
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;outRasterSRS&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;osr&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SpatialReference&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;outRasterSRS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ImportFromEPSG&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;4326&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# write SRS to file
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;outRaster&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;SetProjection&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;outRasterSRS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;ExportToWkt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt;
+&lt;span class=&quot;c1&quot;&gt;# clean up
+&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;outband&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;FlushCache&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;outband&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;
+&lt;span class=&quot;n&quot;&gt;outRaster&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;None&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Now we can read in the newly created file and look at a simple plot
+to visualize our result. Note that, in the background, I am using R to generate
+this plot quickly.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;/assets/blog_images/2020-05-10-bufr2tif_files/figure-html/plot-1.png&quot; alt=&quot;&quot; /&gt;&lt;!-- --&gt;&lt;/p&gt;</content><author><name>darius</name></author><category term="blog" /><category term="BUFR" /><category term="TIFF" /><category term="python" /><summary type="html">I recently came across the EUMETSAT Regional Instability Index dataset, which is shipped in the less known BUFR format. In this tutorial, I am going to show how you can use Python to translate .bfr files to .tiff files. Besides the GDAL library for writing, we will also need the pyresample and the pybufr_ecmwf libraries. pyresample currently does not support the .bfr format natively. However, it is very likely to be supported in the future.</summary></entry><entry><title type="html">Tree species classification based on UAV orthoimages</title><link href="https://www.dariusgoergen.com/2020-04-17-pheno/" rel="alternate" type="text/html" title="Tree species classification based on UAV orthoimages" /><published>2020-04-17T11:47:00+00:00</published><updated>2020-04-17T11:47:00+00:00</updated><id>https://www.dariusgoergen.com/2020-04-17-pheno</id><content type="html" xml:base="https://www.dariusgoergen.com/2020-04-17-pheno/">&lt;p&gt;&lt;img src=&quot;../assets/images/drone.jpg&quot; alt=&quot;Image of a flying drone.&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;what-is-it-about&quot;&gt;What is it about?&lt;/h3&gt;
+
+&lt;p&gt;Supervised machine learning algorithms can help to extract useful information 
+from high-dimensional datasets to benefit environmental conversation efforts.
+The correct identification of tree species based on imagery collected by
+low-cost UAVs and conventional cameras is undoubtedly a promising advancement in
+technology which might reduce the cost of local forest monitoring.
+Because the broader use of this technology only occurred very recently, structural
+investigations into the benefits and the limitations of this approach are limited.
+As a student’s team, we set out to investigate the relationship between the
+classification accuracy and different spatial resolutions of the imagery. 
+Additionally, we were interested in the question of whether or not predictor variables
+calculated based on multi-temporal observations throughout the growing season
+enhances the classification.&lt;/p&gt;
+
+&lt;h3 id=&quot;what-can-it-do&quot;&gt;What can it do?&lt;/h3&gt;
+
+&lt;p&gt;We established an empirical experiment to investigate the influence of spatial
+resolution and mono- vs. multi-temporal predictor variables using the Random Forest
+algorithm. We used 5-fold cross-validation combined with the Leave-Location-Out
+approach (LLOCV) to train a total number of 9 models. These included each combination
+of three different spatial resolutions (10, 15, and 25 cm) and three different
+combinations of the predictor variables (mono-temporal, seasonal, and both predictor sets.)&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../assets/images/acc.png&quot; alt=&quot;Accuracies of a 5-fold cross-validation&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;We learned that a medium resolutions seems beneficial and that seasonal parameters 
+are able to increase the classification accuracy at about 1-2 %. There were also
+indications, that object-based classification has the potential to significantly
+increase the overall accuracy.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Interested in the results? Check out our written &lt;a href=&quot;https://github.com/goergen95/forestPhenology/blob/master/doc/report.pdf&quot;&gt;report&lt;/a&gt; 
+or browse through our &lt;a href=&quot;https://github.com/goergen95/forestPhenology/&quot;&gt;R code workflow&lt;/a&gt;.&lt;/p&gt;</content><author><name>darius</name></author><category term="project" /><category term="UAV" /><category term="random forest" /><category term="R" /><summary type="html"></summary></entry><entry><title type="html">Aerosol-Cloud Interactions and Precipitation in the Aral Sea basin</title><link href="https://www.dariusgoergen.com/2020-03-20-aciASB/" rel="alternate" type="text/html" title="Aerosol-Cloud Interactions and Precipitation in the Aral Sea basin" /><published>2020-01-20T15:06:00+00:00</published><updated>2020-01-20T15:06:00+00:00</updated><id>https://www.dariusgoergen.com/2020-03-20-aciASB</id><content type="html" xml:base="https://www.dariusgoergen.com/2020-03-20-aciASB/">&lt;h3 id=&quot;what-is-it-about&quot;&gt;What is it about?&lt;/h3&gt;
+
+&lt;p&gt;Once the largest terminal lake in Central Asia, the Aral Sea is fed by its tributaries, the Syr Darya and the Amu Darya. It has suffered from a significant reduction of water inflow
+during the last two decades. Consequently, the water retreated from large portions of the former
+sea’s surface, forming a dessert called Aralkum. The diffusion of
+dust and sand particles in the area may threaten human health and agricultural 
+productivity. Also, concerns about impacts to the regional hydrological cycle through the
+increase of aerosols in the atmosphere have been raised.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../assets/images/animation.gif&quot; alt=&quot;Shrinking of the Aral Sea (Source: NASA 2020).&quot; /&gt;
+(Source: &lt;a href=&quot;https://earthobservatory.nasa.gov/world-of-change/AralSea&quot;&gt;NASA 2019&lt;/a&gt;)&lt;/p&gt;
+
+&lt;p&gt;The interaction of aerosols with cloud micro-physics is very complex and one
+of the mechanisms in our atmosphere, we barely understand 
+(&lt;a href=&quot;https://www.ipcc.ch/site/assets/uploads/2018/02/WG1AR5_Chapter07_FINAL-1.pdf&quot;&gt;Boucher et al. 2013&lt;/a&gt;).
+Besides, our understanding of the process is subject to inaccuracies due to limited observational capacity. For example, from passive optical 
+instruments aboard satellites, it is only possible to retrieve
+information on aerosols when clear-sky conditions are met. Evidently, the opposite
+is valid for cloud parameters, rendering every analysis to significant differences 
+at the time scale between the measured properties of clouds and aerosols. 
+Additionally, the parameters which are derived are generalized for the vertical
+atmospheric column for every spatial unit, meaning we do not get any information 
+about the vertical distribution of neither aerosols nor clouds.&lt;/p&gt;
+
+&lt;h3 id=&quot;what-it-can-do&quot;&gt;What it can do!&lt;/h3&gt;
+
+&lt;p&gt;The mechanisms which govern the cloud-aerosol interactions mainly depend
+on the type of aerosol, whether it acts hydrophilic or hydrophobic, and its size.
+Some mechanisms are expected to suppress precipitation, while others are suspected
+of leading to more severe and intense precipitation events. To investigate the
+relationship between aerosols and precipitation, I made use of the MODIS &lt;a href=&quot;https://modis.gsfc.nasa.gov/data/dataprod/mod06.php&quot;&gt;cloud&lt;/a&gt;
+and &lt;a href=&quot;https://modis.gsfc.nasa.gov/data/dataprod/mod04.php&quot;&gt;aerosol&lt;/a&gt; products as 
+well as the &lt;a href=&quot;https://www.chc.ucsb.edu/data/chirps&quot;&gt;CHIRPS&lt;/a&gt; data set.&lt;br /&gt;
+The former uses satellite and ground observations to retrieve rainfall rates 
+at a monthly resolution. The cloud and aerosol parameters were aggregated to 
+the same spatial and temporal resolution to allow a correlation analysis.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;img src=&quot;../assets/images/cor_AOD_550_RH.png&quot; alt=&quot;Correlation AOD and P&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;During spring (a) and winter (d), a negative relationship between the 
+Aerosol Optical Depth (AOD) and precipitation rates (P) govern the study area.
+During the other two seasons, we also see pixels with positive correlations. However, these are not significant (pixels with a significant correlation are marked
+by crosses). The analysis was done in R and included data from 2003 to 2018 because since then,
+both MODIS satellites delivered observations for the study area. The source code
+of the complete project can be found in a &lt;a href=&quot;https://github.com/goergen95/aciASB&quot;&gt;GitHub repository&lt;/a&gt;, 
+along with a more comprehensive &lt;a href=&quot;https://github.com/goergen95/aciASB/blob/master/docs/report_II.pdf&quot;&gt;discussion&lt;/a&gt; 
+of the results.&lt;/p&gt;</content><author><name>darius</name></author><category term="project" /><category term="MODIS" /><category term="clouds" /><category term="R" /><category term="precipitation" /><summary type="html">What is it about?</summary></entry><entry><title type="html">Machine Learning to classify microplastic particles</title><link href="https://www.dariusgoergen.com/2019-10-15-polymeRID/" rel="alternate" type="text/html" title="Machine Learning to classify microplastic particles" /><published>2019-10-22T13:43:00+00:00</published><updated>2019-10-22T13:43:00+00:00</updated><id>https://www.dariusgoergen.com/2019-10-15-polymeRID</id><content type="html" xml:base="https://www.dariusgoergen.com/2019-10-15-polymeRID/">&lt;p&gt;&lt;img src=&quot;../assets/images/seperators.jpg&quot; alt=&quot;Probe Seperators&quot; /&gt;&lt;br /&gt;
+&lt;em&gt;Photo of two sediment separators taken by Sarah Brüning&lt;/em&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;what-is-it-about&quot;&gt;What is it about?&lt;/h3&gt;
+
+&lt;p&gt;Microplastic particles in the environment are an ever-growing concern in  public
+and science. It is suspected not only to pose threats to wildlife but also
+concerns for human health have been raised. Scientists and especially decision-makers depend on the availability of precise and timely information on the 
+where and when’s of microplastic in the environment. However, the process of spectral 
+identification of particles remains a cost-intensive process requiring 
+humans to invest time and effort into the correct identification of spectra. 
+Modern machine learning techniques have the potential to decrease the necessity 
+of human intervention in the classification process and thus significantly speed 
+up the complete process from taking environmental samples to communicate the results
+to the public.&lt;/p&gt;
+
+&lt;h3 id=&quot;what-it-can-do&quot;&gt;What it can do!&lt;/h3&gt;
+
+&lt;p&gt;Based on a freely available reference data base published by &lt;a href=&quot;https://link.springer.com/article/10.1007/s00216-018-1156-x&quot;&gt;Primpke and colleagues&lt;/a&gt;
+I developed a decision fusion algorithm based on two Random Forest models and 
+two Convolutional Neural Networks which together can robustly identify
+polymers based on FTIR-spectral data. The complete workflow is reproducible and 
+adjustable and consists of the following stages: preparation of a reference data base,
+exploration of machine learning models and pre-processing techniques, calibration
+of the final decision fusion algorithm, and classification of real-world spectral
+samples. The algorithm was written in R and the code is available on a &lt;a href=&quot;https://github.com/goergen95/polymeRID&quot;&gt;GitHub
+repository&lt;/a&gt;. Additionally, there is
+a &lt;a href=&quot;https://goergen95.github.io/polymeRID/index.html&quot;&gt;workflowr website&lt;/a&gt; communicating the structure of the algorithm and the 
+results based on the mentioned OpenSource data base.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Here you can explore the spectral reference data base based on selected polymers 
+and other materials commonly found in environmental samples. Simply choose a class 
+you wish to display and explore its spectral characteristics.&lt;/p&gt;
+
+&lt;iframe src=&quot;https://goergen95.shinyapps.io/shiny_apps/?showcase=0&quot; width=&quot;100%&quot; height=&quot;500px&quot;&gt;&lt;/iframe&gt;</content><author><name>darius</name></author><category term="project" /><category term="machine learning" /><category term="microplastics" /><category term="cnn" /><category term="FTIR-Spectrometry" /><category term="R" /><summary type="html">Photo of two sediment separators taken by Sarah Brüning</summary></entry><entry><title type="html">Low-cost SensorBoxes for automated environmental monitoring</title><link href="https://www.dariusgoergen.com/2019-07-01-sensorboxes/" rel="alternate" type="text/html" title="Low-cost SensorBoxes for automated environmental monitoring" /><published>2019-07-20T22:10:00+00:00</published><updated>2019-07-20T22:10:00+00:00</updated><id>https://www.dariusgoergen.com/2019-07-01-sensorboxes</id><content type="html" xml:base="https://www.dariusgoergen.com/2019-07-01-sensorboxes/">&lt;p&gt;&lt;img src=&quot;../assets/images/sensorbox.png&quot; alt=&quot;Screenshot&quot; /&gt;
+&lt;em&gt;Screenshot of the project website.&lt;/em&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;what-is-it-about&quot;&gt;What is it about?&lt;/h3&gt;
+
+&lt;p&gt;This project website documents a master’s seminar work at the University of 
+Marburg on a fully automated, low-cost, and self-build environmental sensor unit 
+used in the LOEWE research project &lt;a href=&quot;https://www.uni-marburg.de/de/fb19/natur40&quot;&gt;Natur4.0&lt;/a&gt;. 
+Its core part is a Raspberry Pi 3 (Model B) equipped with sensors to measure 
+incoming radiation, temperature, and humidity, as well as a camera and a microphone 
+to take records of animals in forest environments.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;Core Components&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Raspberry Pi 3 (B)&lt;/li&gt;
+  &lt;li&gt;Raspberry Pi Camera Module v2.1&lt;/li&gt;
+  &lt;li&gt;SF-555 Microphone (Foxnovo)&lt;/li&gt;
+  &lt;li&gt;DHT22-AM2302 Temperature and Humidity Sensor&lt;/li&gt;
+  &lt;li&gt;TSL2591 High Dynamic Range Digital Light Sensor&lt;/li&gt;
+  &lt;li&gt;KY-024 Hall Sensors&lt;/li&gt;
+  &lt;li&gt;DS3231 Real-Time Clock&lt;/li&gt;
+  &lt;li&gt;PowerBank and Wireless Charging Pads&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;hr /&gt;
+
+&lt;h3 id=&quot;what-it-can-do&quot;&gt;What it can do!&lt;/h3&gt;
+
+&lt;p&gt;The SensorBox is a fully automated sensing unit that can be used in conjunction
+with a cable car mounted on specific trees to monitor environmental variables
+on a vertical gradient within forest structures. There is a need to regularly 
+charge the batteries on the ground station and in case of the presence of a WLAN
+infrastructure, the SensorBox can send the collected data to another station.
+It can help to collect data on valuable parameters which can be used together
+with remotely sensed imagery, e.g., by UAVs, to predict the spatial distribution 
+of these parameters below the canopy cover.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://goergen95.github.io/sensorbox-docu&quot;&gt;Check it out&lt;/a&gt; here or follow the 
+link to &lt;a href=&quot;https://github.com/goergen95/sensorbox-docu&quot;&gt;GitHub&lt;/a&gt; to explore the 
+source code of the website. Note that the content shown here comes from a
+student project and only covers the status during our two-week seminar.
+Check out the &lt;a href=&quot;https://nature40.github.io/Nature40DocumentationProject/&quot;&gt;official documentation&lt;/a&gt; 
+for more recent information.&lt;/p&gt;</content><author><name>darius</name></author><category term="project" /><category term="environment" /><category term="monitoring" /><category term="raspberry pi" /><summary type="html">Screenshot of the project website.</summary></entry><entry><title type="html">Forest stand analysis based on remote sensing</title><link href="https://www.dariusgoergen.com/2019-05-31-mof/" rel="alternate" type="text/html" title="Forest stand analysis based on remote sensing" /><published>2019-05-31T14:27:00+00:00</published><updated>2019-05-31T14:27:00+00:00</updated><id>https://www.dariusgoergen.com/2019-05-31-mof</id><content type="html" xml:base="https://www.dariusgoergen.com/2019-05-31-mof/">&lt;p&gt;&lt;img src=&quot;../assets/images/biodiv.png&quot; alt=&quot;Biodiversity Map&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;Tree species biodiversity map.&lt;/em&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;what-is-it-about&quot;&gt;What is it about?&lt;/h3&gt;
+
+&lt;p&gt;Forests represent the most diverse habitat for different species around the globe.
+Their monitoring is one of the most crucial task for biodiversity management.
+Traditional means of monitoring forests are cost and labor intensive which lead
+to a low revisit frequencies and small monitored areas. Additionally, the results
+of data acquisitions by human agents make the results fairly reproducible. To
+overcome these limitations, a LOEWE research project called &lt;a href=&quot;https://www.uni-marburg.de/de/fb19/natur40&quot;&gt;Natur4.0&lt;/a&gt; 
+has been initiated between several German research institutes. A part of this project,
+in which I participated in a student’s seminar, analysis tree species and forest
+structures by means of remote sensing techniques.&lt;/p&gt;
+
+&lt;h3 id=&quot;what-it-can-do&quot;&gt;What it can do!&lt;/h3&gt;
+
+&lt;p&gt;In this project I used RGB orthoimages and a point cloud derived from
+Light Detection and Ranging (LiDAR) data to train a segmentation algorithm to
+distinguish between individual trees based on a Canopy Height Model. This 
+technique is based on a watershed algorithm which “grows” continues segments 
+around a tree’s central position to delineate the total tree crown.&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;../assets/images/seg_area.gif&quot; alt=&quot;Animation of the tree segmentation&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;Once the tree objects were generated an object-based supervised classification
+of the tree species using a number of artificially created indices and filters of 
+the RGB images and the Random Forest algorithm is feasible. Using the point cloud,
+structural forest parameters, such as vegetation density, can be aggregated on
+the level of individual trees and then analyzed. We see this result in the picture
+above where I calculated the &lt;a href=&quot;https://www.rdocumentation.org/packages/vegan/versions/2.4-2/topics/diversity&quot;&gt;&lt;em&gt;Shannon-Index&lt;/em&gt;&lt;/a&gt; 
+based on the number of different tree species found in a circular 10 meters environment. Green colors show areas with a very low number of different species while
+red colors indicate a relative species richness.&lt;/p&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;You can check out the results on a comprehensive &lt;a href=&quot;https://goergen95.github.io/mof_caldern/index.html&quot;&gt;website&lt;/a&gt;! You are also invited 
+to read through the &lt;a href=&quot;https://github.com/goergen95/mof_caldern&quot;&gt;code&lt;/a&gt; for the analysis.&lt;/p&gt;</content><author><name>darius</name></author><category term="project" /><category term="machine learning" /><category term="LIDAR" /><category term="R" /><summary type="html"></summary></entry></feed>
