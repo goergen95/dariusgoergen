@@ -6,7 +6,7 @@ project:
     - 	contents/files/cv-darius-goergen.pdf
     
 execute:
-  freeze: true
+  freeze: auto
 
 site:
   title: "Darius A. Görgen"
