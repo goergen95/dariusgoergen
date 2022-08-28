@@ -1,7 +1,12 @@
 project:
   type: website
+  title: "Darius A. Görgen"
+  output-dir: _site
   resources:
     - 	contents/files/cv-darius-goergen.pdf
+    
+execute:
+  freeze: true
 
 website:
   title: "Darius A. Görgen"
