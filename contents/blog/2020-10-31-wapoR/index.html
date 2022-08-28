@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang=""><head>
+  <meta charset="utf-8">
+  <meta name="generator" content="quarto-0.2.232">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="author" content="Darius A. Görgen">
+  <meta name="description" content="A R API package to query and download FAO’s WaPOR raster datasets.">
+  <title>Darius A. Görgen - R API to download FAO’s WaPOR datasets</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+  <script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+  <script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+  <meta name="quarto:offset" content="../../../">
+  <script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+  <script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+  <script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+  <script src="../../../site_libs/quarto-html/quarto.js"></script>
+  <script src="../../../site_libs/quarto-html/popper.min.js"></script>
+  <script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+  <script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+  <link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+  <link class="quarto-color-scheme" href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+  <link class="quarto-color-scheme quarto-color-alternate" rel="prefetch" href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css">
+  <script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+  <link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+  <link class="quarto-color-scheme" href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <link class="quarto-color-scheme quarto-color-alternate" rel="prefetch" href="../../../site_libs/bootstrap/bootstrap-dark.min.css">
+  <script id="quarto-search-options" type="application/json">{
+    "location": "navbar",
+    "copy-button": false,
+    "collapse-after": 2,
+    "panel-placement": "end",
+    "type": "overlay",
+    "limit": 20
+  }</script>
+</head>
+<body>
+<div id="quarto-search-results"></div>
+<header id="quarto-header" class="headroom fixed-top">
+<nav class="navbar navbar-expand-lg navbar-light ">
+    <div class="container-fluid">
+  <a class="navbar-brand" href="../../../index.html">
+    <span class="navbar-title">Darius A. Görgen</span>
+  </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../index.html">Home</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../contents/blog.html">Blog</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../contents/projects.html">Projects</a>
+  </li>  
+</ul>
+          <div>
+            <a href="" class="quarto-color-scheme-toggle nav-link" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+          </div>
+          <div id="quarto-search" class="mb-0 " title="Search">
+</div>
+      </div> <!-- /navcollapse -->
+  </div> <!-- /container-fluid -->
+</nav>
+</header>
+ <!-- /navbar/sidebar -->
+<div class="container-fluid quarto-container d-flex flex-column page-layout-article" id="quarto-content">
+<div class="row flex-fill">
+  <div class="col mx-auto col-sm-12 col-md-11 col-lg-9 px-lg-4">
+<main>
+<header id="title-block-header">
+<h1 class="title display-7">R API to download FAO’s WaPOR datasets</h1>
+<p class="author">Darius A. Görgen</p>
+<p class="date">2020-10-31 11:15</p>
+</header>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="wapor.png" class="img-fluid figure-img"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">Screenshot</figcaption><p></p>
+</figure>
+</div>
+<p><em>Screenshot of from the <a href="https://wapor.apps.fao.org/home/WAPOR_2/1">WaPOR</a> website</em></p>
+<section id="what-is-it-about" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-it-about">What is it about?</h3>
+<p>The <a href="https://wapor.apps.fao.org/home/WAPOR_2/1">WaPOR</a> project by FAO offers some awesome remote sensing products concerned with water usage in agriculture on the African continent. A great variety of different products, among them net- and gross-biomass-water-productivity, evaporation, transpiration, and interception as well as biomass production, are provided at a spatial resolution ranging between 250 meters up-to 30 meters for selected agricultural regions.</p>
+<p>There are already some Python packages out there that allow users to programmatically access the WaPOR data portal such as <a href="https://github.com/HKV-products-services/hkvwaporpy">hkvwaporpy</a> or <a href="https://github.com/wateraccounting/IHEWAwapor">IHEWAwapor</a>. However, I was not able to find similar functionality for R users. So I just went on and wrote an experimental package in R, which can be used to download raster data.</p>
+</section>
+<section id="what-can-it-do" class="level3">
+<h3 class="anchored" data-anchor-id="what-can-it-do">What can it do?</h3>
+<p>To install and use the package, you should utilize <code>remotes</code> functionality.</p>
+<div class="cell">
+<div class="sourceCode" id="cb1"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span>(<span class="sc">!</span><span class="st">"wapoR"</span> <span class="sc">%in%</span> <span class="fu">installed.packages</span>()[,<span class="dv">1</span>]){</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"goergen95/wapoR"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(wapoR)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>From there, it is quite straightforward to query available collections. Note that there are other collections available for which, in principal, it should be possible to download the data in the same way. But this package was primarily intended to interact with the WaPOR collections.</p>
+<div class="cell">
+<div class="sourceCode" id="cb2"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>cols <span class="ot">=</span> <span class="fu">wapor_collections</span>()</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>cols[<span class="fu">rev</span>(<span class="fu">seq</span>(<span class="dv">1</span>,<span class="fu">nrow</span>(cols),)),<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            code
+28          WPOP
+27         WATER
+26       WAPOR_2
+25           RVF
+24        RSCROP
+23      RICCAR_2
+22        RICCAR
+21          RDMS
+20          NMME
+19 NATURAL_EARTH
+18          NASA
+17          GLW4
+16          GLW3
+15           GLW
+14        GLEAM3
+13   GISMGR_TEST
+12       GAEZ_V4
+11     GAEZ_2015
+10      FROM_GLC
+9        FAOSTAT
+8           DLMF
+7           CRTB
+6      CROPWATCH
+5         CHIRPS
+4            C3S
+3        C2ATLAS
+2           ASIS
+1       AQUAMAPS
+                                                                       caption
+28                                                            WorldPop project
+27                                                                  Water Data
+26                           FAO Water Productivity Open-access portal (WaPOR)
+25                                                           Rift Valley Fever
+24                     Crop Pest and Disease Monitoring and Forecasting System
+23                              Regional Arab Climate Change Assessment Report
+22                              Regional Arab Climate Change Assessment Report
+21                                          Regional Drought Monitoring System
+20                                  North American Multi-Model Ensemble (NMME)
+19                                                               Natural Earth
+18                        National Aeronautics and Space Administration (NASA)
+17                                 Gridded Livestock of the World (GLW4, 2015)
+16                                 Gridded Livestock of the World (GLW3, 2010)
+15                                              Gridded Livestock of the World
+14                    Global Livestock Environmental Assessment Model (GLEAM3)
+13                      FAO GIS MANAGER (GISMGR) - Test and training workspace
+12                                         Global Agro-Ecological Zones (2021)
+11                                         Global Agro-Ecological Zones (2015)
+10 Finer Resolution Observation and Monitoring of Global Land Cover (FROM-GLC)
+9                                           FAO Corporate Statistical Database
+8                                     Desert Locust Monitoring and Forecasting
+7                                                  Climate Risk Toolbox (CRTB)
+6                                                                    CropWatch
+5           Climate Hazard group InfraRed Precipitation with Stations (CHIRPS)
+4                                            Copernicus Climate Change Service
+3                                                         Climate Change ATLAS
+2                                              Agriculture Stress Index System
+1                             Global spatial database on water and agriculture</code></pre>
+</div>
+</div>
+<p>I reversed the order of the collections vector so that you can see that there are two available WaPOR collections representing version 1 and 2, respectively. I would advise using the updated version 2 if you do not have other reasons to use the first version.</p>
+<p>We can query the available products within a collection by using <code>wapor_products</code> together with the collection we wish to query.</p>
+<div class="cell">
+<div class="sourceCode" id="cb4"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>prods <span class="ot">=</span> <span class="fu">wapor_products</span>(<span class="at">collection =</span> <span class="st">"WAPOR_2"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(<span class="fu">paste0</span>(<span class="st">"In total there are "</span>, <span class="fu">length</span>(prods), <span class="st">" available products in the WAPOR_2 collection."</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "In total there are 285 available products in the WAPOR_2 collection."</code></pre>
+</div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(prods[<span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>List of 1
+ $ L1_GBWP_A:List of 2
+  ..$ product:'data.frame': 1 obs. of  3 variables:
+  .. ..$ code       : chr "L1_GBWP_A"
+  .. ..$ caption    : chr "Gross Biomass Water Productivity"
+  .. ..$ description: chr "The annual Gross Biomass Water Productivity expresses the quantity of output (total biomass production) in rela"| __truncated__
+  ..$ meta   :'data.frame': 1 obs. of  12 variables:
+  .. ..$ format                : chr "Raster Dataset"
+  .. ..$ unit                  : chr "kg/m³ is the ratio of kg of dry matter per cubic meter of water transpired by vegetation in one hectare"
+  .. ..$ dataType              : chr "Int32 (32bit Integer)"
+  .. ..$ conversionFactor      : chr "the pixel value in the downloaded data must be multiplied by 0.001"
+  .. ..$ noDataValue           : int -9999
+  .. ..$ spatialResolution     : chr "250m (0.00223 degree)"
+  .. ..$ spatialExtent         : chr "Africa and Near East"
+  .. ..$ spatialReferenceSystem: chr "EPSG:4326 - WGS84 - Geographic Coordinate System (lat/long)"
+  .. ..$ temporalResolution    : chr "from January 2009 to present"
+  .. ..$ temporalExtent        : chr "Annual"
+  .. ..$ nearRealTime          : chr "New dekadal data layers are released approximately 5 days after the end of a dekad. A higher quality version of"| __truncated__
+  .. ..$ methodology           : chr "The calculation of gross biomass water productivity (GBWP) is as follows: GBWP = TBP/ETIa Where TBP is annual T"| __truncated__</code></pre>
+</div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(prods)[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "L1_GBWP_A" "L1_NBWP_A" "L1_AETI_A" "L1_AETI_M" "L1_AETI_D" "L1_T_A"   
+ [7] "L1_E_A"    "L1_I_A"    "L1_T_D"    "L1_E_D"   </code></pre>
+</div>
+</div>
+<p>The total number of products is relatively high. The product names consist first of the level a respective product belongs to. Level 1 means this product belongs to the continental products covering the African continent at a spatial resolution of about 250 meters. Level 2 products show a resolution of 100 meters. However, they are only available for selected countries. Finally, level 3 data is available for only a few specific agricultural regions, but the spatial resolution is about 30 meters.</p>
+<p>The second component in the product name specifies the variable. For example, GBWP stands for <strong>G</strong>ross <strong>B</strong>iomass <strong>W</strong>ater <strong>P</strong>roductivity or AETI for <strong>A</strong>ctual <strong>E</strong>vapo<strong>t</strong>ranspiraton and <strong>I</strong>nterception. You can check out the <a href="https://wapor.apps.fao.org/catalog/WAPOR_2/1">WaPOR catalog</a> to see all available products, or you search through the product list as some metadata is also included in the above object.</p>
+<p>The last component of a product name specifies its temporal resolution, where A stands for annual, M for monthly, D for decadal, and S for a seasonal temporal resolution.</p>
+<p>Let’s assume we decided to download some level 3 data for the Office du Niger agricultural region. First, let’s take a look at the available products:</p>
+<div class="cell">
+<div class="sourceCode" id="cb10"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(prods)[<span class="fu">grep</span>(<span class="st">"L3_ODN"</span>, <span class="fu">names</span>(prods))]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "L3_ODN_GBWP_S"       "L3_ODN_NBWP_S"       "L3_ODN_AETI_A"      
+ [4] "L3_ODN_AETI_M"       "L3_ODN_AETI_D"       "L3_ODN_T_A"         
+ [7] "L3_ODN_E_A"          "L3_ODN_I_A"          "L3_ODN_T_D"         
+[10] "L3_ODN_E_D"          "L3_ODN_I_D"          "L3_ODN_NPP_M"       
+[13] "L3_ODN_NPP_D"        "L3_ODN_TBP_S"        "L3_ODN_LCC_D"       
+[16] "L3_ODN_PHE_S"        "L3_ODN_QUAL_LCC_S"   "L3_ODN_QUAL_NDVI_D" 
+[19] "L3_ODN_QUAL_NDVI_LT"</code></pre>
+</div>
+</div>
+<p>For the sake of a quick example, let’s say we are interested in the actual evapotranspiration and interception for the year 2018. We can query some additional metadata about this product with the following command:</p>
+<div class="cell">
+<div class="sourceCode" id="cb12"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>meta <span class="ot">=</span> <span class="fu">wapor_metadata</span>(<span class="at">collection =</span> <span class="st">"WAPOR_2"</span>, <span class="at">product =</span> <span class="st">"L3_ODN_AETI_A"</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(meta)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>List of 3
+ $ info      :'data.frame': 1 obs. of  5 variables:
+  ..$ code      : chr "WATER_MM"
+  ..$ caption   : chr "Amount of Water"
+  ..$ unit      : chr "mm"
+  ..$ scale     : int 3
+  ..$ multiplier: num 0.1
+ $ dimensions:'data.frame': 1 obs. of  3 variables:
+  ..$ code   : chr "YEAR"
+  ..$ caption: chr "Year"
+  ..$ type   : chr "TIME"
+ $ meta      :'data.frame': 1 obs. of  12 variables:
+  ..$ format                : chr "Raster Dataset"
+  ..$ unit                  : chr "mm"
+  ..$ dataType              : chr "Int32 (32bit Integer)"
+  ..$ conversionFactor      : chr "the pixel value in the downloaded data must be multiplied by 0.1"
+  ..$ noDataValue           : int -9999
+  ..$ spatialResolution     : chr "30m"
+  ..$ spatialExtent         : chr "Office du Niger, Mali"
+  ..$ spatialReferenceSystem: chr "EPSG:32630 - WGS 84 / UTM zone 30N"
+  ..$ temporalResolution    : chr "from January 2009 to present"
+  ..$ temporalExtent        : chr "Annual"
+  ..$ nearRealTime          : chr "New dekadal data layers are released approximately 5 days after the end of a dekad. A higher quality version of"| __truncated__
+  ..$ methodology           : chr "See ETIa by dekad for further information. The annual total is obtained by taking the ETIa in mm/day, multiplyi"| __truncated__</code></pre>
+</div>
+</div>
+<p>From the above, we already get a lot of useful information. For example, we see that the product is available between 2009 and the current year and is provided in a projected coordinate reference system. We also can see that the unit of the pixel values is in millimeters bit that the pixel value shall be multiplied with a scale factor of 0.1. This is essential information, and it should be checked for all WaPOR products since most of them were rescaled to reduce file size.</p>
+<p>Maybe the most important aspect of the above output for the next step, is the dimensions dataframe. Here we can see that the selected product only shows one dimension called “YEAR” which type is time. Other products might have further dimensions, such as “SEASON” which needs different specification in the download call.</p>
+<div class="cell">
+<div class="sourceCode" id="cb14"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">wapor_queryRaster</span>(<span class="at">collection =</span> <span class="st">"WAPOR_2"</span>,</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">product =</span> <span class="st">"L3_ODN_AETI_A"</span>,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">begin =</span> <span class="st">"2018-01-01"</span>, <span class="co"># begin date is inclusive</span></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">end =</span> <span class="st">"2019-01-01"</span>, <span class="co"># end date is exclusive</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>                  <span class="at">outdir =</span> <span class="st">"."</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>                  <span class="at">APIkey =</span> <span class="fu">Sys.getenv</span>(<span class="st">"WAPOR-KEY"</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s take a glimpse at the data we just downloaded.</p>
+<div class="cell">
+<div class="sourceCode" id="cb15"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(raster)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: sp</code></pre>
+</div>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r cell-code code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>file <span class="ot">=</span> <span class="fu">list.files</span>(<span class="st">"."</span>, <span class="st">"L3_ODN"</span>, <span class="at">full.names =</span> T)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>r <span class="ot">=</span> <span class="fu">raster</span>(file) <span class="sc">*</span> <span class="fl">0.1</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(r)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/odn-vis-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We very quickly downloaded some important data for an assessment of agricultural practices in ODN. This package’s download functionality can be used to download specific regions from Level 2 or 3 datasets by providing an sf object of an area of interest. Additionally, complete-time series can be downloaded by adapting the start and end date. Check out the <a href="https://github.com/goergen95/wapoR">README</a> of the package for another example to download some data and leave an issue if you face any problems using this package.</p>
+
+
+</section>
+<script type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('div.sidebar-toc .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+    } else {
+      disableStylesheet(alternateStylesheets);
+    }
+    manageTransitions('.quarto-toc-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      return window.localStorage.getItem("quarto-color-scheme");
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = null;
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.id = "quarto-color-scheme-toggle";
+    a.classList.add('top-right');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } 
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    setTimeout(function() {
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    window.tippy(el, {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    }); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</main>
+<div class="page-navigation ">
+  <div class="nav-page nav-page-previous">
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</div>
+</div> <!-- /main column -->
+</div> <!-- /row -->
+</div> <!-- /container fluid -->
+
+
+</body></html>

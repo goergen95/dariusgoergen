@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang=""><head>
+  <meta charset="utf-8">
+  <meta name="generator" content="quarto-0.2.232">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="author" content="Darius A. Görgen">
+  <meta name="description" content="Python code to translate EUMETSAT’s BUFR datasets to GTiffs.">
+  <title>Darius A. Görgen - Translating EUMETSAT’s .bfr files to GTiff</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+  <script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+  <script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+  <meta name="quarto:offset" content="../../../">
+  <script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+  <script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+  <script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+  <script src="../../../site_libs/quarto-html/quarto.js"></script>
+  <script src="../../../site_libs/quarto-html/popper.min.js"></script>
+  <script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+  <script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+  <link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+  <link class="quarto-color-scheme" href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+  <link class="quarto-color-scheme quarto-color-alternate" rel="prefetch" href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css">
+  <script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+  <link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+  <link class="quarto-color-scheme" href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <link class="quarto-color-scheme quarto-color-alternate" rel="prefetch" href="../../../site_libs/bootstrap/bootstrap-dark.min.css">
+  <script id="quarto-search-options" type="application/json">{
+    "location": "navbar",
+    "copy-button": false,
+    "collapse-after": 2,
+    "panel-placement": "end",
+    "type": "overlay",
+    "limit": 20
+  }</script>
+</head>
+<body>
+<div id="quarto-search-results"></div>
+<header id="quarto-header" class="headroom fixed-top">
+<nav class="navbar navbar-expand-lg navbar-light ">
+    <div class="container-fluid">
+  <a class="navbar-brand" href="../../../index.html">
+    <span class="navbar-title">Darius A. Görgen</span>
+  </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../index.html">Home</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../contents/blog.html">Blog</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../contents/projects.html">Projects</a>
+  </li>  
+</ul>
+          <div>
+            <a href="" class="quarto-color-scheme-toggle nav-link" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+          </div>
+          <div id="quarto-search" class="mb-0 " title="Search">
+</div>
+      </div> <!-- /navcollapse -->
+  </div> <!-- /container-fluid -->
+</nav>
+</header>
+ <!-- /navbar/sidebar -->
+<div class="container-fluid quarto-container d-flex flex-column page-layout-article" id="quarto-content">
+<div class="row flex-fill">
+  <div class="col mx-auto col-sm-12 col-md-11 col-lg-9 px-lg-4">
+<main>
+<header id="title-block-header">
+<h1 class="title display-7">Translating EUMETSAT’s .bfr files to GTiff</h1>
+<p class="author">Darius A. Görgen</p>
+<p class="date">2020-05-01 09:00</p>
+</header>
+<p>I recently came across the <a href="https://navigator.eumetsat.int/product/EO:EUM:DAT:MSG:RIIE">EUMETSAT</a> Regional Instability Index dataset, which is shipped in the less known <em>BUFR</em> format. In this tutorial, I am going to show how you can use Python to translate <em>.bfr</em> files to <em>.tiff</em> files. Besides the GDAL library for writing, we will also need the <a href="https://pyresample.readthedocs.io/en/latest/">pyresample</a> and the <a href="https://github.com/jdkloe/pybufr-ecmwf">pybufr_ecmwf</a> libraries. <em>pyresample</em> currently does not support the <em>.bfr</em> format natively. However, it is very likely to be supported in the future.</p>
+<hr>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode" id="cb1"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> osgeo <span class="im">import</span> gdal</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> osgeo <span class="im">import</span> osr</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyresample <span class="im">as</span> pr</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pybufr_ecmwf.bufr <span class="im">import</span> BUFRReader</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The <a href="https://www.wmo.int/pages/prog/www/WDM/Guides/Guide-binary-1A.html">BUFR format</a> is a standardized format defined by the World Meteorological Organization (WMO). It stands for <strong>B</strong>inary <strong>U</strong>niversal <strong>F</strong>orm for the <strong>R</strong>epresentation of meteorological data. It is a self-describing format, shipping data together with metadata to be used by end-users. Within a <em>.bfr</em> file, we find several <em>messages</em>, each of them having a specific number of <em>entries</em>. We will use the functionality of the <em>pybufr_ecmwf</em> library to read in the data.</p>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode" id="cb2"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">file</span> <span class="op">=</span> <span class="st">"MSG2-SEVI-MSGRIIE-0101-0101-20160526000000.000000000Z-20160526000602-1403456.bfr"</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># read the file</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>bufr <span class="op">=</span> BUFRReader(<span class="bu">file</span>, warn_about_bufr_size <span class="op">=</span> <span class="va">False</span>, expand_flags <span class="op">=</span> <span class="va">False</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># display number of messages</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"Number of messages: "</span><span class="op">+</span> <span class="bu">str</span>(bufr.num_msgs))</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># initiate list with parameter names</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>names_units <span class="op">=</span> []</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> m, msg <span class="kw">in</span> <span class="bu">enumerate</span>(bufr):</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a> names_units.append(msg.get_names_and_units())</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co"># show parameter names and units</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'</span><span class="ch">\n</span><span class="st">'</span>.join(<span class="bu">map</span>(<span class="bu">str</span>, names_units[<span class="dv">0</span>][<span class="dv">0</span>])))</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># close file</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>bufr.close()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of messages: 90</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>SATELLITE IDENTIFIER
+IDENTIFICATION OF ORIGINATING/GENERATING CENTRE (SEE NOTE 10)
+SATELLITE CLASSIFICATION
+SEGMENT SIZE AT NADIR IN X DIRECTION
+SEGMENT SIZE AT NADIR IN Y DIRECTION
+YEAR
+MONTH
+DAY
+HOUR
+MINUTE
+SECOND
+ROW NUMBER
+COLUMN NUMBER
+LATITUDE (HIGH ACCURACY)
+LONGITUDE (HIGH ACCURACY)
+SATELLITE ZENITH ANGLE
+K INDEX
+KO INDEX
+PARCEL LIFTED INDEX (TO 500 HPA)
+MAXIMUM BUOYANCY
+PRECIPITABLE WATER
+PER CENT CONFIDENCE
+PRESSURE
+PRESSURE
+PRECIPITABLE WATER
+PRESSURE
+PRESSURE
+PRECIPITABLE WATER
+PRESSURE
+PRESSURE
+PRECIPITABLE WATER</code></pre>
+</div>
+</div>
+<p>Based on the above output, we can decide which parameters we are interested in and which metadata we will need. Say we are only interested in the parameter <em>K Index</em>. We can see that the index for this dataset is 16. Also, since we are interested in writing a <em>.tiff</em> as output, the datasets of latitude and longitude will be of interest to us (index 13 and 14, respectively). Note that we are reopening the file once again to start from the very first message.</p>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode" id="cb5"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># initiate arrays</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>lats <span class="op">=</span> np.zeros([<span class="dv">0</span>])</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>lons <span class="op">=</span> np.zeros([<span class="dv">0</span>])</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>vals <span class="op">=</span> np.zeros([<span class="dv">0</span>])</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co"># reopening the file</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>bufr <span class="op">=</span> BUFRReader(<span class="bu">file</span>, warn_about_bufr_size <span class="op">=</span> <span class="va">False</span>, expand_flags <span class="op">=</span> <span class="va">False</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># loop through the messages and sub-entries</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> msg <span class="kw">in</span> bufr:</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a> <span class="cf">for</span> subs <span class="kw">in</span> msg:</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  data <span class="op">=</span> subs.data</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  lats <span class="op">=</span> np.append(lats, data[:,<span class="dv">13</span>])</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  lons <span class="op">=</span> np.append(lons, data[:,<span class="dv">14</span>])</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  vals <span class="op">=</span> np.append(vals, data[:,<span class="dv">20</span>])</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="co"># don't forget to close the file</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>bufr.close()</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>vals <span class="op">=</span> np.where(vals <span class="op">==</span> np.<span class="bu">max</span>(vals), <span class="op">-</span><span class="dv">9999</span>, vals)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>With this loop, we obtained all the necessary data to create a <em>.tiff</em> file. We have got the values we are interested in and the geographic information of each location’s latitude and longitude data. We can now use the <em>pyresample</em> library to resample our data to a location of interest. Let’s say we are interested in a study area roughly having the extent of France. We can resample to this area by declaring an area definition first.</p>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode" id="cb6"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># define some general properties of our projection</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>area_id <span class="op">=</span> <span class="st">"France"</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>description <span class="op">=</span> <span class="st">"Custom Geographical CRS of France"</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>proj_id <span class="op">=</span> <span class="st">"France WGS84 geographical"</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>proj_dict <span class="op">=</span> {<span class="st">"proj"</span>: <span class="st">"longlat"</span>, <span class="st">"ellps"</span>:<span class="st">"WGS84"</span>, <span class="st">"datum"</span>: <span class="st">"WGS84"</span>}</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># define the area's extent in degrees and desired resolution</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>llx <span class="op">=</span> <span class="op">-</span><span class="fl">4.9</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>lly <span class="op">=</span> <span class="fl">42.2</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>urx <span class="op">=</span> <span class="fl">8.2</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>ury <span class="op">=</span> <span class="fl">51.2</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> <span class="fl">0.015</span> <span class="co"># in degrees</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>width <span class="op">=</span> <span class="bu">int</span>((urx <span class="op">-</span> llx) <span class="op">/</span> res)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>height <span class="op">=</span> <span class="bu">int</span>((ury <span class="op">-</span> lly) <span class="op">/</span> res)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>area_extent <span class="op">=</span> (llx,lly,urx,ury)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>area_def <span class="op">=</span> pr.geometry.AreaDefinition(area_id, proj_id, description, proj_dict, width, height, area_extent)</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(area_def)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Area ID: France
+Description: France WGS84 geographical
+Projection ID: Custom Geographical CRS of France
+Projection: {'datum': 'WGS84', 'no_defs': 'None', 'proj': 'longlat', 'type': 'crs'}
+Number of columns: 873
+Number of rows: 600
+Area extent: (-4.9, 42.2, 8.2, 51.2)</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/home/darius/Desktop/website/new/py-env/lib/python3.10/site-packages/pyproj/crs/crs.py:1282: UserWarning: You will likely lose important projection information when converting to a PROJ string from another format. See: https://proj.org/faq.html#what-is-the-best-format-for-describing-coordinate-reference-systems
+  proj = self._crs.to_proj4(version=version)</code></pre>
+</div>
+</div>
+<p>With this area definition, we can resample our data using the nearest neighbor algorithm and use our defined variables about the location to create a <em>.tiff</em> file as output.</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode" id="cb9"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>swath_def <span class="op">=</span> pr.geometry.SwathDefinition(lons <span class="op">=</span> lons, lats <span class="op">=</span> lats)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>res_data <span class="op">=</span> pr.kd_tree.resample_nearest(swath_def, vals, area_def,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>radius_of_influence<span class="op">=</span><span class="dv">16000</span>,epsilon<span class="op">=</span><span class="fl">0.5</span>,fill_value<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="co"># create tif output</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>filename <span class="op">=</span> <span class="st">"bufr2tif.tif"</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co"># number of rows and cols</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>rows <span class="op">=</span> res_data.shape[<span class="dv">0</span>]</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>cols <span class="op">=</span> res_data.shape[<span class="dv">1</span>]</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co"># pixel size</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>pixelWidth <span class="op">=</span> (area_def.area_extent[<span class="dv">2</span>] <span class="op">-</span> area_def.area_extent[<span class="dv">0</span>]) <span class="op">/</span> cols</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>pixelHeight <span class="op">=</span> (area_def.area_extent[<span class="dv">1</span>] <span class="op">-</span> area_def.area_extent[<span class="dv">3</span>]) <span class="op">/</span> rows</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co"># pixel of origin</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>originX <span class="op">=</span> area_def.area_extent[<span class="dv">0</span>]</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>originY <span class="op">=</span> area_def.area_extent[<span class="dv">3</span>]</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co"># driver</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>driver <span class="op">=</span> gdal.GetDriverByName(<span class="st">"GTiff"</span>)</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="co"># create file </span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>outRaster <span class="op">=</span> driver.Create(filename, cols, rows, <span class="dv">1</span>, gdal.GDT_Float32)</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="co"># set resoultion and origin</span></span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>outRaster.SetGeoTransform((originX, pixelWidth, <span class="dv">0</span>, originY, <span class="dv">0</span>, pixelHeight))</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a><span class="co"># create one band</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>outband <span class="op">=</span> outRaster.GetRasterBand(<span class="dv">1</span>)</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Float_64 no data value (or customize)</span></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>outband.SetNoDataValue(<span class="op">-</span><span class="dv">9999</span>)</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="co"># write the resampled data to file</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>outband.WriteArray(np.array(res_data))</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a><span class="co"># create a spatial reference system</span></span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>outRasterSRS <span class="op">=</span> osr.SpatialReference()</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>outRasterSRS.ImportFromEPSG(<span class="dv">4326</span>)</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a><span class="co"># write SRS to file</span></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>outRaster.SetProjection(outRasterSRS.ExportToWkt())</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a><span class="co"># clean up</span></span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>outband.FlushCache()</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a>outband <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>outRaster <span class="op">=</span> <span class="va">None</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<hr>
+<p>Now we can read in the newly created file and look at a simple plot to visualize our result. Note that, in the background, I am using R to generate this plot quickly.</p>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode" id="cb10"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="bu">file</span> <span class="op">=</span> <span class="st">"bufr2tif.tif"</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>ds <span class="op">=</span> gdal.Open(<span class="bu">file</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>band <span class="op">=</span> ds.GetRasterBand(<span class="dv">1</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> band.ReadAsArray()</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> np.where(data <span class="op">==</span> <span class="op">-</span><span class="fl">9999.</span>, np.NaN, data)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>plt.imshow(data)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<pre><code>&lt;matplotlib.image.AxesImage at 0x7f4afc87fb80&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="index_files/figure-html/cell-7-output-2.png" width="575" height="404"></p>
+</div>
+</div>
+
+
+<script type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('div.sidebar-toc .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+    } else {
+      disableStylesheet(alternateStylesheets);
+    }
+    manageTransitions('.quarto-toc-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      return window.localStorage.getItem("quarto-color-scheme");
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = null;
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.id = "quarto-color-scheme-toggle";
+    a.classList.add('top-right');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } 
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    setTimeout(function() {
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    window.tippy(el, {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    }); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</main>
+<div class="page-navigation ">
+  <div class="nav-page nav-page-previous">
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</div>
+</div> <!-- /main column -->
+</div> <!-- /row -->
+</div> <!-- /container fluid -->
+
+
+</body></html>

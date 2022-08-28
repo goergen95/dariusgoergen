@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang=""><head>
+  <meta charset="utf-8">
+  <meta name="generator" content="quarto-0.2.232">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+  <meta name="author" content="Darius A. Görgen">
+  <meta name="description" content="Using docker-compose to set up a R-Studio container and postgis.">
+  <title>Darius A. Görgen - Running docker-compose with postgis and R-Studio</title>
+  <style>
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    span.underline{text-decoration: underline;}
+    div.column{display: inline-block; vertical-align: top; width: 50%;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+
+  <!--[if lt IE 9]>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
+  <![endif]-->
+  <script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+  <script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+  <script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+  <meta name="quarto:offset" content="../../../">
+  <script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+  <script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+  <script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+  <script src="../../../site_libs/quarto-html/quarto.js"></script>
+  <script src="../../../site_libs/quarto-html/popper.min.js"></script>
+  <script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+  <script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+  <link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+  <link class="quarto-color-scheme" href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
+  <link class="quarto-color-scheme quarto-color-alternate" rel="prefetch" href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css">
+  <script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+  <link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+  <link class="quarto-color-scheme" href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
+  <link class="quarto-color-scheme quarto-color-alternate" rel="prefetch" href="../../../site_libs/bootstrap/bootstrap-dark.min.css">
+  <script id="quarto-search-options" type="application/json">{
+    "location": "navbar",
+    "copy-button": false,
+    "collapse-after": 2,
+    "panel-placement": "end",
+    "type": "overlay",
+    "limit": 20
+  }</script>
+</head>
+<body>
+<div id="quarto-search-results"></div>
+<header id="quarto-header" class="headroom fixed-top">
+<nav class="navbar navbar-expand-lg navbar-light ">
+    <div class="container-fluid">
+  <a class="navbar-brand" href="../../../index.html">
+    <span class="navbar-title">Darius A. Görgen</span>
+  </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+      <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../../index.html">Home</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../contents/blog.html">Blog</a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../../contents/projects.html">Projects</a>
+  </li>  
+</ul>
+          <div>
+            <a href="" class="quarto-color-scheme-toggle nav-link" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+          </div>
+          <div id="quarto-search" class="mb-0 " title="Search">
+</div>
+      </div> <!-- /navcollapse -->
+  </div> <!-- /container-fluid -->
+</nav>
+</header>
+ <!-- /navbar/sidebar -->
+<div class="container-fluid quarto-container d-flex flex-column page-layout-article" id="quarto-content">
+<div class="row flex-fill">
+  <div class="col mx-auto col-sm-12 col-md-11 col-lg-9 px-lg-4">
+<main>
+<header id="title-block-header">
+<h1 class="title display-7">Running docker-compose with postgis and R-Studio</h1>
+<p class="author">Darius A. Görgen</p>
+<p class="date">2020-06-21 13:19</p>
+</header>
+<p>In this tutorial, I am going to show how you can use the docker engine to set up two containers, one hosting the <a href="https://hub.docker.com/r/rocker/geospatial">rocker/geospatial</a> image and the other one the <a href="https://hub.docker.com/r/postgis/postgis">postgis/postgis</a> image. We will use docker-compose to start up both containers to work with the r-spatial packages and postgis functionality simultaneously in a stable environment. I assume here that the necessary dependencies such as the <a href="https://docs.docker.com/get-docker/">docker</a> and <a href="https://docs.docker.com/compose/install/">docker-compose</a> engines are already met.</p>
+<p><img src="https://www.osgeo.org/wp-content/uploads/postgis-logo-1.png" class="img-fluid" alt="PostGIS Logo"> <img src="https://secure.gravatar.com/avatar/5809d093183fe6ca0174066078054949.jpg?s=80&amp;r=g&amp;d=mm" class="img-fluid" alt="Rocker Logo"></p>
+<p>What we need is a simple <code>.yaml</code> file that defines the parameters of our application. In the example I will demonstrate, the application consists of two services, namely the postigs server and the R-Studio instance. We start with the postgres service by defining which images we are using. This image is found at <a href="https://hub.docker.com/">dockerhub</a> If the images are not found on the local machine, they are pulled from there once we run our application. We also make the container’s naming explicit by using the <em>container_name</em> option and set the restart behavior to <em>always</em> in cases the container breaks down. We also ensure that the container will set up a new user besides the default <em>postgres</em> user by specifying a username and a password. The last part specifies on the left hand the local path on the host machine where the database files are going to be written two, while the right-hand part links to the data directory within the postgis container.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">services</span><span class="kw">:</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">postgres</span><span class="kw">:</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">image</span><span class="kw">:</span><span class="at"> postgis/postgis</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> postgres</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">restart</span><span class="kw">:</span><span class="at"> always</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">POSTGRES_USER</span><span class="kw">:</span><span class="at"> postgis</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="fu">POSTGRES_PASSWORD</span><span class="kw">:</span><span class="at"> postgis</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> 8888:5432</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">volumes</span><span class="kw">:</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> ~/pgdata:/var/lib/postgresql/data</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">rstudio</span><span class="kw">:</span></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">image</span><span class="kw">:</span><span class="at"> rocker/geospatial</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">container_name</span><span class="kw">:</span><span class="at"> r-studio</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">restart</span><span class="kw">:</span><span class="at"> always</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">environment</span><span class="kw">:</span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> USER=rstudio</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> PASSWORD=supersecret</span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> ROOT=TRUE</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">ports</span><span class="kw">:</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> 8787:8787</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="at">  </span><span class="fu">links</span><span class="kw">:</span><span class="at"> </span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="at">    </span><span class="kw">-</span><span class="at"> postgres</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>For the R-Studio service, we use the geospatial image that comes in very handy in cases you want to do geospatial analysis since a large number of important packages already come preinstalled. We also make the naming of the container explicit and set the restart behavior to <em>always</em>. The rocker images are quite restrictive when it comes to user rights management. Thus, in addition to specifying a user and a password, we also want to enable root access for the case we need to install additional software. This way, our user is added to the sudoer list. However, this option should be treated carefully. We also map a port on the host machine to the exposed port of the container. This way, we can reach the interface by simply accessing <em>http://localhost:8787/</em> in the browser of our choice. Finally, we declare that the <em>posgres</em> service is linked to the <em>rstudio</em> service. This means that inside the rstudio container, an entry to <em>/etc/hosts</em> called postgres is added, linking to the IP-address this container is found.</p>
+<p>When we write the above configuration to a file called <em>docker-compose.yaml</em> starting the application is as simple as running the following command in a shell in the same directory the file is found:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker-compose</span> up</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Once the services are up and running, visit <em>http://localhost:8787/</em> and enter the username and password for the rstudio service. From here, we can use the <em>RPostgreSQL</em> and <em>RPostgres</em> library to connect to our data base. In the simple example below, we establish a connection and write an sf-Object shipped with the <em>sf</em> package to the database.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RPostgreSQL)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(RPostgres)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co"># specify connection inputs</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>db <span class="ot">&lt;-</span> <span class="st">'postgis'</span>  <span class="co"># provide the name of your db</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>host_db <span class="ot">=</span> <span class="st">"postgres"</span> <span class="co"># provide the name of the service</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>db_port <span class="ot">=</span> <span class="st">'5432'</span>  <span class="co"># specify the port the service is available at</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>db_user <span class="ot">=</span> <span class="st">"postgis"</span>  <span class="co"># specify username</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>db_password <span class="ot">=</span> <span class="st">"postgis"</span> <span class="co"># specify password</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co"># establish the connection</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>con <span class="ot">&lt;-</span> <span class="fu">dbConnect</span>(<span class="fu">Postgres</span>(), </span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>                 <span class="at">dbname=</span>db, </span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>                 <span class="at">host=</span>host_db, </span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>                 <span class="at">port=</span>db_port, </span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>                 <span class="at">user=</span>db_user, </span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>                 <span class="at">password=</span>db_password)</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co"># read sample shapefile</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>shape <span class="ot">=</span> <span class="fu">st_read</span>(<span class="fu">system.file</span>(<span class="st">"gpkg/nc.gpkg"</span>, <span class="at">package =</span> <span class="st">"sf"</span>))</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co"># write to database in a new table specified by the layer argument</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>table_name <span class="ot">=</span> <span class="st">"test"</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="fu">st_write</span>(<span class="at">obj =</span> shape, <span class="at">dsn =</span> con, <span class="at">layer =</span> table_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Since we mapped the data directory to a local directory on our host machine, the data we write into the database is persistent even when the application is no longer running. To query our database now or even after restarting the application we can use more sf functionality to interact with it. Here is a simple example comparing dplyr syntax with the result we obtain from querying the database to unify all polygons which have the same entry in the ‘SID74’ variable.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># dplyr way of </span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>shape_dplyr <span class="ot">=</span> shape <span class="sc">%&gt;%</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(SID74) <span class="sc">%&gt;%</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">AREA =</span> <span class="fu">sum</span>(AREA, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>shape_postgis <span class="ot">=</span> <span class="fu">st_read</span>(con, <span class="at">query =</span> <span class="fu">sprintf</span>(<span class="fu">paste0</span>(<span class="st">'SELECT "SID74", SUM("AREA") as "AREA", ST_UNION(geom) as geom </span><span class="sc">\n</span><span class="st">'</span>,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">'FROM </span><span class="sc">\"</span><span class="st">%s</span><span class="sc">\"</span><span class="st"> </span><span class="sc">\n</span><span class="st">'</span>,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">'GROUP BY "SID74";'</span>)), table_name)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>But how can we manage our postgis server now? There are two ways (well, actually three ways I’ll explain in a minute) how we can access the server. The first one is using psql from the host machine. In the configuration file, we specified that the postgis containers port is mapped to the host machine’s port 8888. Well, we simply use that information to connect to the database using psql.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">psql</span> <span class="at">--host</span> localhost <span class="at">--port</span> 8888 <span class="at">--dbname</span> postgres <span class="at">--user</span> postgis</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The command line will ask us for the password, and then we are connected. Additionally, we can also choose to use a program with a graphical user interface to manage the data base. One which ich highly recommend is <a href="https://www.pgadmin.org/">pgAdmin</a>. After installing and running the program, we have to specify a new connection. After adding a name for the connection in the <em>General</em> tab we switch to the <em>Connection</em> tab and fill in all the information as in the screenshot below.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="pgAdmin.png" class="img-fluid figure-img"></p>
+<p></p><figcaption aria-hidden="true" class="figure-caption">pgAdmin settings tab</figcaption><p></p>
+</figure>
+</div>
+<p>You already guessed the third option I promised you before? Well of course we can use the psql approach explained above from the terminal in our R-Studio container. Of course, the hostname will be slightly different, but the basic idea is the same. Now, it comes in handy that we have root access in the R-Studio container, because we are going to need to install external software first, namely the postgres client. Thus we enter the following two lines into the terminal. Enter <em>Yes</em> in case you are asked if you wanted to install the software.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt update</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sudo</span> apt install postgresql-client</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now our container has the psql command installed and we can use a slightly different version of the above command to connect to the databse.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">psql</span> <span class="at">--host</span> postgres <span class="at">--port</span> 5432 <span class="at">--dbname</span> postgres <span class="at">--user</span> postgis</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>What are the differences here? Well, first the container is not found at <em>localhost</em> but as explained before we have got an entry in the <em>/etc/hosts</em> file for our container name <em>postgres</em>. Additionally, we are connecting directly to the container and not to the mapped port on our host machine which is why we have to specify 5432 as the right port. Besides that, everything remains the same.</p>
+
+
+<script type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('div.sidebar-toc .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+    } else {
+      disableStylesheet(alternateStylesheets);
+    }
+    manageTransitions('.quarto-toc-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      return window.localStorage.getItem("quarto-color-scheme");
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = null;
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.id = "quarto-color-scheme-toggle";
+    a.classList.add('top-right');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } 
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    setTimeout(function() {
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    window.tippy(el, {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    }); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</main>
+<div class="page-navigation ">
+  <div class="nav-page nav-page-previous">
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</div>
+</div> <!-- /main column -->
+</div> <!-- /row -->
+</div> <!-- /container fluid -->
+
+
+</body></html>
