@@ -29,8 +29,8 @@ jobs:
         run: |
           pip install -r requirements.txt
       # Grab a copy of quarto and render the document in all formats
-      - uses: quarto-dev/quarto-actions/install-quarto@v2
-      - run: |
+      - uses: quarto-dev/quarto-actions/setup@v2
+        run: |
           quarto render
       # Deploy the rendered _book directory onto Pages
       - name: Deploy to gh-pages
