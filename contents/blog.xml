@@ -6,22 +6,22 @@
       version="2.0">
 <channel>
 <title>Darius A. Görgen</title>
-<link>https://dariusgoergen.com/contents/blog.html</link>
-<atom:link href="https://dariusgoergen.com/contents/blog.xml" rel="self" type="application/rss+xml"/>
+<link>www.dariusgoergen.com/contents/blog.html</link>
+<atom:link href="www.dariusgoergen.com/contents/blog.xml" rel="self" type="application/rss+xml"/>
 <description>Geoinformation and Environmental Sciences</description>
-<generator>quarto-1.1.149</generator>
-<lastBuildDate>Sat, 31 Oct 2020 11:15:00 GMT</lastBuildDate>
+<generator>quarto-1.0.37</generator>
+<lastBuildDate>Sat, 31 Oct 2020 10:15:00 GMT</lastBuildDate>
 <item>
   <title>R API to download FAO’s WaPOR datasets</title>
   <dc:creator>Darius A. Görgen</dc:creator>
-  <link>https://dariusgoergen.com/contents/blog/2020-10-31-wapoR/index.html</link>
+  <link>www.dariusgoergen.com/contents/blog/2020-10-31-wapoR/index.html</link>
   <description><![CDATA[ 
 
 
 
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://dariusgoergen.com/contents/blog/2020-10-31-wapoR/wapor.png" class="img-fluid figure-img"></p>
+<p><img src="www.dariusgoergen.com/contents/blog/2020-10-31-wapoR/wapor.png" class="img-fluid figure-img"></p>
 <p></p><figcaption class="figure-caption">Screenshot</figcaption><p></p>
 </figure>
 </div>
@@ -209,7 +209,7 @@
 <span id="cb17-2">r <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">raster</span>(file) <span class="sc" style="color: #5E5E5E;">*</span> <span class="fl" style="color: #AD0000;">0.1</span></span>
 <span id="cb17-3"><span class="fu" style="color: #4758AB;">plot</span>(r)</span></code></pre></div>
 <div class="cell-output-display">
-<p><img src="https://dariusgoergen.com/contents/blog/2020-10-31-wapoR/index_files/figure-html/odn-vis-1.png" class="img-fluid" width="672"></p>
+<p><img src="www.dariusgoergen.com/contents/blog/2020-10-31-wapoR/index_files/figure-html/odn-vis-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 <p>We very quickly downloaded some important data for an assessment of agricultural practices in ODN. This package’s download functionality can be used to download specific regions from Level 2 or 3 datasets by providing an sf object of an area of interest. Additionally, complete-time series can be downloaded by adapting the start and end date. Check out the <a href="https://github.com/goergen95/wapoR">README</a> of the package for another example to download some data and leave an issue if you face any problems using this package.</p>
@@ -222,20 +222,20 @@
   <category>raster</category>
   <category>FAO WAPOR</category>
   <category>API</category>
-  <guid>https://dariusgoergen.com/contents/blog/2020-10-31-wapoR/index.html</guid>
-  <pubDate>Sat, 31 Oct 2020 11:15:00 GMT</pubDate>
-  <media:content url="https://dariusgoergen.com/contents/blog/2020-10-31-wapoR/wapor.png" medium="image" type="image/png" height="75" width="144"/>
+  <guid>www.dariusgoergen.com/contents/blog/2020-10-31-wapoR/index.html</guid>
+  <pubDate>Sat, 31 Oct 2020 10:15:00 GMT</pubDate>
+  <media:content url="www.dariusgoergen.com/contents/blog/2020-10-31-wapoR/wapor.png" medium="image" type="image/png" height="75" width="144"/>
 </item>
 <item>
   <title>Running docker-compose with postgis and R-Studio</title>
   <dc:creator>Darius A. Görgen</dc:creator>
-  <link>https://dariusgoergen.com/contents/blog/2020-06-21-docker.md/index.html</link>
+  <link>www.dariusgoergen.com/contents/blog/2020-06-21-docker.md/index.html</link>
   <description><![CDATA[ 
 
 
 
 <p>In this tutorial, I am going to show how you can use the docker engine to set up two containers, one hosting the <a href="https://hub.docker.com/r/rocker/geospatial">rocker/geospatial</a> image and the other one the <a href="https://hub.docker.com/r/postgis/postgis">postgis/postgis</a> image. We will use docker-compose to start up both containers to work with the r-spatial packages and postgis functionality simultaneously in a stable environment. I assume here that the necessary dependencies such as the <a href="https://docs.docker.com/get-docker/">docker</a> and <a href="https://docs.docker.com/compose/install/">docker-compose</a> engines are already met.</p>
-<p><img src="https://dariusgoergen.com/contents/blog/2020-06-21-docker.md/https:/www.osgeo.org/wp-content/uploads/postgis-logo-1.png" class="img-fluid" alt="PostGIS Logo"> <img src="https://dariusgoergen.com/contents/blog/2020-06-21-docker.md/https:/secure.gravatar.com/avatar/5809d093183fe6ca0174066078054949.jpg?s=80&amp;r=g&amp;d=mm" class="img-fluid" alt="Rocker Logo"></p>
+<p><img src="www.dariusgoergen.com/contents/blog/2020-06-21-docker.md/https:/www.osgeo.org/wp-content/uploads/postgis-logo-1.png" class="img-fluid" alt="PostGIS Logo"> <img src="www.dariusgoergen.com/contents/blog/2020-06-21-docker.md/https:/secure.gravatar.com/avatar/5809d093183fe6ca0174066078054949.jpg?s=80&amp;r=g&amp;d=mm" class="img-fluid" alt="Rocker Logo"></p>
 <p>What we need is a simple <code>.yaml</code> file that defines the parameters of our application. In the example I will demonstrate, the application consists of two services, namely the postigs server and the R-Studio instance. We start with the postgres service by defining which images we are using. This image is found at <a href="https://hub.docker.com/">dockerhub</a> If the images are not found on the local machine, they are pulled from there once we run our application. We also make the container’s naming explicit by using the <em>container_name</em> option and set the restart behavior to <em>always</em> in cases the container breaks down. We also ensure that the container will set up a new user besides the default <em>postgres</em> user by specifying a username and a password. The last part specifies on the left hand the local path on the host machine where the database files are going to be written two, while the right-hand part links to the data directory within the postgis container.</p>
 <div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><span class="fu" style="color: #4758AB;">services</span><span class="kw" style="color: #003B4F;">:</span></span>
 <span id="cb1-2"><span class="at" style="color: #657422;">  </span><span class="fu" style="color: #4758AB;">postgres</span><span class="kw" style="color: #003B4F;">:</span></span>
@@ -305,7 +305,7 @@
 <p>The command line will ask us for the password, and then we are connected. Additionally, we can also choose to use a program with a graphical user interface to manage the data base. One which ich highly recommend is <a href="https://www.pgadmin.org/">pgAdmin</a>. After installing and running the program, we have to specify a new connection. After adding a name for the connection in the <em>General</em> tab we switch to the <em>Connection</em> tab and fill in all the information as in the screenshot below.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://dariusgoergen.com/contents/blog/2020-06-21-docker.md/pgAdmin.png" class="img-fluid figure-img"></p>
+<p><img src="www.dariusgoergen.com/contents/blog/2020-06-21-docker.md/pgAdmin.png" class="img-fluid figure-img"></p>
 <p></p><figcaption class="figure-caption">pgAdmin settings tab</figcaption><p></p>
 </figure>
 </div>
@@ -322,14 +322,14 @@
   <category>R</category>
   <category>docker</category>
   <category>PostgreSQL</category>
-  <guid>https://dariusgoergen.com/contents/blog/2020-06-21-docker.md/index.html</guid>
-  <pubDate>Sun, 21 Jun 2020 13:19:00 GMT</pubDate>
+  <guid>www.dariusgoergen.com/contents/blog/2020-06-21-docker.md/index.html</guid>
+  <pubDate>Sun, 21 Jun 2020 11:19:00 GMT</pubDate>
   <media:content url="https://i0.wp.com/o2r.info/public/images/rocker-logo.png?w=200&amp;ssl=1" medium="image"/>
 </item>
 <item>
   <title>Translating EUMETSAT’s .nat files to GTiff</title>
   <dc:creator>Darius A. Görgen</dc:creator>
-  <link>https://dariusgoergen.com/contents/blog/2020-06-14-nat2tif/index.html</link>
+  <link>www.dariusgoergen.com/contents/blog/2020-06-14-nat2tif/index.html</link>
   <description><![CDATA[ 
 
 
@@ -488,7 +488,7 @@ Area extent: (-9.5, 35.9, 3.3, 43.8)</code></pre>
 <pre><code>&lt;matplotlib.image.AxesImage at 0x7f54fa1e1c90&gt;</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="https://dariusgoergen.com/contents/blog/2020-06-14-nat2tif/index_files/figure-html/cell-7-output-2.png" width="588" height="368"></p>
+<p><img src="www.dariusgoergen.com/contents/blog/2020-06-14-nat2tif/index_files/figure-html/cell-7-output-2.png" width="588" height="368"></p>
 </div>
 </div>
 
@@ -498,14 +498,14 @@ Area extent: (-9.5, 35.9, 3.3, 43.8)</code></pre>
   <category>MSG</category>
   <category>GTIFF</category>
   <category>Python</category>
-  <guid>https://dariusgoergen.com/contents/blog/2020-06-14-nat2tif/index.html</guid>
-  <pubDate>Sun, 10 May 2020 10:00:00 GMT</pubDate>
-  <media:content url="https://dariusgoergen.com/contents/blog/2020-06-14-nat2tif/eumetsat-logo.jpg" medium="image" type="image/jpeg"/>
+  <guid>www.dariusgoergen.com/contents/blog/2020-06-14-nat2tif/index.html</guid>
+  <pubDate>Sun, 10 May 2020 08:00:00 GMT</pubDate>
+  <media:content url="www.dariusgoergen.com/contents/blog/2020-06-14-nat2tif/eumetsat-logo.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
   <title>Translating EUMETSAT’s .bfr files to GTiff</title>
   <dc:creator>Darius A. Görgen</dc:creator>
-  <link>https://dariusgoergen.com/contents/blog/2020-05-10-bufr2tif/index.html</link>
+  <link>www.dariusgoergen.com/contents/blog/2020-05-10-bufr2tif/index.html</link>
   <description><![CDATA[ 
 
 
@@ -678,7 +678,7 @@ Area extent: (-4.9, 42.2, 8.2, 51.2)</code></pre>
 <pre><code>&lt;matplotlib.image.AxesImage at 0x7f4afc87fb80&gt;</code></pre>
 </div>
 <div class="cell-output cell-output-display">
-<p><img src="https://dariusgoergen.com/contents/blog/2020-05-10-bufr2tif/index_files/figure-html/cell-7-output-2.png" width="575" height="404"></p>
+<p><img src="www.dariusgoergen.com/contents/blog/2020-05-10-bufr2tif/index_files/figure-html/cell-7-output-2.png" width="575" height="404"></p>
 </div>
 </div>
 
@@ -688,9 +688,9 @@ Area extent: (-4.9, 42.2, 8.2, 51.2)</code></pre>
   <category>BUFR</category>
   <category>TIFF</category>
   <category>Python</category>
-  <guid>https://dariusgoergen.com/contents/blog/2020-05-10-bufr2tif/index.html</guid>
-  <pubDate>Fri, 01 May 2020 09:00:00 GMT</pubDate>
-  <media:content url="https://dariusgoergen.com/contents/blog/2020-05-10-bufr2tif/eumetsat-logo.jpg" medium="image" type="image/jpeg"/>
+  <guid>www.dariusgoergen.com/contents/blog/2020-05-10-bufr2tif/index.html</guid>
+  <pubDate>Fri, 01 May 2020 07:00:00 GMT</pubDate>
+  <media:content url="www.dariusgoergen.com/contents/blog/2020-05-10-bufr2tif/eumetsat-logo.jpg" medium="image" type="image/jpeg"/>
 </item>
 </channel>
 </rss>

@@ -6,22 +6,22 @@
       version="2.0">
 <channel>
 <title>Darius A. Görgen</title>
-<link>https://dariusgoergen.com/contents/projects.html</link>
-<atom:link href="https://dariusgoergen.com/contents/projects.xml" rel="self" type="application/rss+xml"/>
+<link>www.dariusgoergen.com/contents/projects.html</link>
+<atom:link href="www.dariusgoergen.com/contents/projects.xml" rel="self" type="application/rss+xml"/>
 <description>Geoinformation and Environmental Sciences</description>
-<generator>quarto-1.1.149</generator>
-<lastBuildDate>Fri, 17 Apr 2020 11:47:00 GMT</lastBuildDate>
+<generator>quarto-1.0.37</generator>
+<lastBuildDate>Fri, 17 Apr 2020 09:47:00 GMT</lastBuildDate>
 <item>
   <title>Tree species classification based on UAV orthoimages</title>
   <dc:creator>Darius A. Görgen</dc:creator>
-  <link>https://dariusgoergen.com/contents/projects/2020-04-17-pheno/index.html</link>
+  <link>www.dariusgoergen.com/contents/projects/2020-04-17-pheno/index.html</link>
   <description><![CDATA[ 
 
 
 
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://dariusgoergen.com/contents/projects/2020-04-17-pheno/drone.jpg" class="img-fluid figure-img"></p>
+<p><img src="www.dariusgoergen.com/contents/projects/2020-04-17-pheno/drone.jpg" class="img-fluid figure-img"></p>
 <p></p><figcaption class="figure-caption">Image of a flying drone.</figcaption><p></p>
 </figure>
 </div>
@@ -34,7 +34,7 @@
 <p>We established an empirical experiment to investigate the influence of spatial resolution and mono- vs.&nbsp;multi-temporal predictor variables using the Random Forest algorithm. We used 5-fold cross-validation combined with the Leave-Location-Out approach (LLOCV) to train a total number of 9 models. These included each combination of three different spatial resolutions (10, 15, and 25 cm) and three different combinations of the predictor variables (mono-temporal, seasonal, and both predictor sets.)</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://dariusgoergen.com/contents/projects/2020-04-17-pheno/acc.png" class="img-fluid figure-img"></p>
+<p><img src="www.dariusgoergen.com/contents/projects/2020-04-17-pheno/acc.png" class="img-fluid figure-img"></p>
 <p></p><figcaption class="figure-caption">Accuracies of a 5-fold cross-validation</figcaption><p></p>
 </figure>
 </div>
@@ -49,14 +49,14 @@
   <category>UAV</category>
   <category>RandomForest</category>
   <category>R</category>
-  <guid>https://dariusgoergen.com/contents/projects/2020-04-17-pheno/index.html</guid>
-  <pubDate>Fri, 17 Apr 2020 11:47:00 GMT</pubDate>
-  <media:content url="https://dariusgoergen.com/contents/projects/2020-04-17-pheno/drone.jpg" medium="image" type="image/jpeg"/>
+  <guid>www.dariusgoergen.com/contents/projects/2020-04-17-pheno/index.html</guid>
+  <pubDate>Fri, 17 Apr 2020 09:47:00 GMT</pubDate>
+  <media:content url="www.dariusgoergen.com/contents/projects/2020-04-17-pheno/drone.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
   <title>Aerosol-Cloud Interactions and Precipitation in the Aral Sea basin</title>
   <dc:creator>Darius A. Görgen</dc:creator>
-  <link>https://dariusgoergen.com/contents/projects/2020-03-20-aciASB/index.html</link>
+  <link>www.dariusgoergen.com/contents/projects/2020-03-20-aciASB/index.html</link>
   <description><![CDATA[ 
 
 
@@ -68,7 +68,7 @@
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://dariusgoergen.com/contents/projects/2020-03-20-aciASB/animation.gif" class="img-fluid figure-img"></p>
+<p><img src="www.dariusgoergen.com/contents/projects/2020-03-20-aciASB/animation.gif" class="img-fluid figure-img"></p>
 <p></p><figcaption class="figure-caption">Shrinking of the Aral Sea (Source: NASA 2020).</figcaption><p></p>
 </figure>
 </div>
@@ -84,7 +84,7 @@ The former uses satellite and ground observations to retrieve rainfall rates at 
 <hr>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://dariusgoergen.com/contents/projects/2020-03-20-aciASB/cor_AOD_550_RH.png" class="img-fluid figure-img"></p>
+<p><img src="www.dariusgoergen.com/contents/projects/2020-03-20-aciASB/cor_AOD_550_RH.png" class="img-fluid figure-img"></p>
 <p></p><figcaption class="figure-caption">Correlation AOD and P</figcaption><p></p>
 </figure>
 </div>
@@ -98,19 +98,19 @@ The former uses satellite and ground observations to retrieve rainfall rates at 
   <category>Clouds</category>
   <category>Precipitaion</category>
   <category>R</category>
-  <guid>https://dariusgoergen.com/contents/projects/2020-03-20-aciASB/index.html</guid>
-  <pubDate>Mon, 20 Jan 2020 15:06:00 GMT</pubDate>
-  <media:content url="https://dariusgoergen.com/contents/projects/2020-03-20-aciASB/cor_AOD_550_RH.png" medium="image" type="image/png" height="104" width="144"/>
+  <guid>www.dariusgoergen.com/contents/projects/2020-03-20-aciASB/index.html</guid>
+  <pubDate>Mon, 20 Jan 2020 14:06:00 GMT</pubDate>
+  <media:content url="www.dariusgoergen.com/contents/projects/2020-03-20-aciASB/cor_AOD_550_RH.png" medium="image" type="image/png" height="104" width="144"/>
 </item>
 <item>
   <title>Machine Learning to classify microplastic particles</title>
   <dc:creator>Darius A. Görgen</dc:creator>
-  <link>https://dariusgoergen.com/contents/projects/2019-10-15-polymeRID/index.html</link>
+  <link>www.dariusgoergen.com/contents/projects/2019-10-15-polymeRID/index.html</link>
   <description><![CDATA[ 
 
 
 
-<p><img src="https://dariusgoergen.com/contents/projects/2019-10-15-polymeRID/seperators.jpg" class="img-fluid" alt="Probe Seperators"><br> <em>Photo of two sediment separators taken by Sarah Brüning</em></p>
+<p><img src="www.dariusgoergen.com/contents/projects/2019-10-15-polymeRID/seperators.jpg" class="img-fluid" alt="Probe Seperators"><br> <em>Photo of two sediment separators taken by Sarah Brüning</em></p>
 <section id="what-is-it-about" class="level3">
 <h3 class="anchored" data-anchor-id="what-is-it-about">What is it about?</h3>
 <p>Microplastic particles in the environment are an ever-growing concern in public and science. It is suspected not only to pose threats to wildlife but also concerns for human health have been raised. Scientists and especially decision-makers depend on the availability of precise and timely information on the where and when’s of microplastic in the environment. However, the process of spectral identification of particles remains a cost-intensive process requiring humans to invest time and effort into the correct identification of spectra. Modern machine learning techniques have the potential to decrease the necessity of human intervention in the classification process and thus significantly speed up the complete process from taking environmental samples to communicate the results to the public.</p>
@@ -134,19 +134,19 @@ The former uses satellite and ground observations to retrieve rainfall rates at 
   <category>CNN</category>
   <category>FTIR-Spectrometry</category>
   <category>R</category>
-  <guid>https://dariusgoergen.com/contents/projects/2019-10-15-polymeRID/index.html</guid>
-  <pubDate>Tue, 22 Oct 2019 13:43:00 GMT</pubDate>
-  <media:content url="https://dariusgoergen.com/contents/projects/2019-10-15-polymeRID/seperators.jpg" medium="image" type="image/jpeg"/>
+  <guid>www.dariusgoergen.com/contents/projects/2019-10-15-polymeRID/index.html</guid>
+  <pubDate>Tue, 22 Oct 2019 11:43:00 GMT</pubDate>
+  <media:content url="www.dariusgoergen.com/contents/projects/2019-10-15-polymeRID/seperators.jpg" medium="image" type="image/jpeg"/>
 </item>
 <item>
   <title>Low-cost SensorBoxes for automated environmental monitoring</title>
   <dc:creator>Darius A. Görgen</dc:creator>
-  <link>https://dariusgoergen.com/contents/projects/2019-07-01-sensorboxes/index.html</link>
+  <link>www.dariusgoergen.com/contents/projects/2019-07-01-sensorboxes/index.html</link>
   <description><![CDATA[ 
 
 
 
-<p><img src="https://dariusgoergen.com/contents/projects/2019-07-01-sensorboxes/sensorbox.png" class="img-fluid" alt="Screenshot"> <em>Screenshot of the project website.</em></p>
+<p><img src="www.dariusgoergen.com/contents/projects/2019-07-01-sensorboxes/sensorbox.png" class="img-fluid" alt="Screenshot"> <em>Screenshot of the project website.</em></p>
 <section id="what-is-it-about" class="level3">
 <h3 class="anchored" data-anchor-id="what-is-it-about">What is it about?</h3>
 <p>This project website documents a master’s seminar work at the University of Marburg on a fully automated, low-cost, and self-build environmental sensor unit used in the LOEWE research project <a href="https://www.uni-marburg.de/de/fb19/natur40">Natur4.0</a>. Its core part is a Raspberry Pi 3 (Model B) equipped with sensors to measure incoming radiation, temperature, and humidity, as well as a camera and a microphone to take records of animals in forest environments.</p>
@@ -177,21 +177,21 @@ The former uses satellite and ground observations to retrieve rainfall rates at 
   <category>Environment</category>
   <category>Monitoring</category>
   <category>Raspberry Pi</category>
-  <guid>https://dariusgoergen.com/contents/projects/2019-07-01-sensorboxes/index.html</guid>
-  <pubDate>Sat, 20 Jul 2019 22:10:00 GMT</pubDate>
-  <media:content url="https://dariusgoergen.com/contents/projects/2019-07-01-sensorboxes/sensorbox.png" medium="image" type="image/png" height="83" width="144"/>
+  <guid>www.dariusgoergen.com/contents/projects/2019-07-01-sensorboxes/index.html</guid>
+  <pubDate>Sat, 20 Jul 2019 20:10:00 GMT</pubDate>
+  <media:content url="www.dariusgoergen.com/contents/projects/2019-07-01-sensorboxes/sensorbox.png" medium="image" type="image/png" height="83" width="144"/>
 </item>
 <item>
   <title>Forest stand analysis based on remote sensing</title>
   <dc:creator>Darius A. Görgen</dc:creator>
-  <link>https://dariusgoergen.com/contents/projects/2019-05-31-mof/index.html</link>
+  <link>www.dariusgoergen.com/contents/projects/2019-05-31-mof/index.html</link>
   <description><![CDATA[ 
 
 
 
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://dariusgoergen.com/contents/projects/2019-05-31-mof/biodiv.png" class="img-fluid figure-img"></p>
+<p><img src="www.dariusgoergen.com/contents/projects/2019-05-31-mof/biodiv.png" class="img-fluid figure-img"></p>
 <p></p><figcaption class="figure-caption">Biodiversity Map</figcaption><p></p>
 </figure>
 </div>
@@ -205,7 +205,7 @@ The former uses satellite and ground observations to retrieve rainfall rates at 
 <p>In this project, I used RGB orthoimages and a point cloud derived from Light Detection and Ranging (LiDAR) data to train a segmentation algorithm to distinguish between individual trees based on a Canopy Height Model. This technique is based on a watershed algorithm that “grows” continues segments around a tree’s central position to delineate the total tree crown.</p>
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="https://dariusgoergen.com/contents/projects/2019-05-31-mof/seg_area.gif" class="img-fluid figure-img"></p>
+<p><img src="www.dariusgoergen.com/contents/projects/2019-05-31-mof/seg_area.gif" class="img-fluid figure-img"></p>
 <p></p><figcaption class="figure-caption">Animation of the tree segmentation</figcaption><p></p>
 </figure>
 </div>
@@ -220,9 +220,9 @@ The former uses satellite and ground observations to retrieve rainfall rates at 
   <category>Machine Learning</category>
   <category>LIDAR</category>
   <category>R</category>
-  <guid>https://dariusgoergen.com/contents/projects/2019-05-31-mof/index.html</guid>
-  <pubDate>Fri, 31 May 2019 14:27:00 GMT</pubDate>
-  <media:content url="https://dariusgoergen.com/contents/projects/2019-05-31-mof/biodiv.png" medium="image" type="image/png" height="167" width="144"/>
+  <guid>www.dariusgoergen.com/contents/projects/2019-05-31-mof/index.html</guid>
+  <pubDate>Fri, 31 May 2019 12:27:00 GMT</pubDate>
+  <media:content url="www.dariusgoergen.com/contents/projects/2019-05-31-mof/biodiv.png" medium="image" type="image/png" height="167" width="144"/>
 </item>
 </channel>
 </rss>
