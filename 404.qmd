@@ -1,0 +1,7 @@
+---
+title: "404 Error"
+comments: false
+---
+
+
+![Error 404: Resource not found!](contents/img/404.gif){ width=150% }

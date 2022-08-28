@@ -1,0 +1,65 @@
+---
+title: "Aerosol-Cloud Interactions and Precipitation in the Aral Sea basin"
+description: "Analysis of cloud-aersol interactions in the Aral Sea basin."
+date: 2020-01-20 15:06
+author: "Darius A. Görgen"
+categories: ["MODIS", "Clouds", "Precipitaion", "R"]
+---
+
+### What is it about?
+
+Once the largest terminal lake in Central Asia, the Aral Sea is fed by its tributaries, the Syr Darya and the Amu Darya. It has suffered from a significant reduction of water inflow
+during the last two decades. Consequently, the water retreated from large portions of the former
+sea's surface, forming a dessert called Aralkum. The diffusion of
+dust and sand particles in the area may threaten human health and agricultural 
+productivity. Also, concerns about impacts to the regional hydrological cycle through the
+increase of aerosols in the atmosphere have been raised.
+
+
+```{r, fig.cap="Shrinking of the Aral Sea (Source: NASA 2020).", echo=F}
+knitr::include_graphics("animation.gif")
+```
+(Source: [NASA 2019](https://earthobservatory.nasa.gov/world-of-change/AralSea))
+
+The interaction of aerosols with cloud micro-physics is very complex and one
+of the mechanisms in our atmosphere, we barely understand 
+([Boucher et al. 2013](https://www.ipcc.ch/site/assets/uploads/2018/02/WG1AR5_Chapter07_FINAL-1.pdf)).
+Besides, our understanding of the process is subject to inaccuracies due to limited observational capacity. For example, from passive optical 
+instruments aboard satellites, it is only possible to retrieve
+information on aerosols when clear-sky conditions are met. Evidently, the opposite
+is valid for cloud parameters, rendering every analysis to significant differences 
+at the time scale between the measured properties of clouds and aerosols. 
+Additionally, the parameters which are derived are generalized for the vertical
+atmospheric column for every spatial unit, meaning we do not get any information 
+about the vertical distribution of neither aerosols nor clouds. 
+
+
+### What it can do!
+
+The mechanisms which govern the cloud-aerosol interactions mainly depend
+on the type of aerosol, whether it acts hydrophilic or hydrophobic, and its size.
+Some mechanisms are expected to suppress precipitation, while others are suspected
+of leading to more severe and intense precipitation events. To investigate the
+relationship between aerosols and precipitation, I made use of the MODIS [cloud](https://modis.gsfc.nasa.gov/data/dataprod/mod06.php)
+and [aerosol](https://modis.gsfc.nasa.gov/data/dataprod/mod04.php) products as 
+well as the [CHIRPS](https://www.chc.ucsb.edu/data/chirps) data set.  
+The former uses satellite and ground observations to retrieve rainfall rates 
+at a monthly resolution. The cloud and aerosol parameters were aggregated to 
+the same spatial and temporal resolution to allow a correlation analysis. 
+
+---
+
+![Correlation AOD and P](cor_AOD_550_RH.png)
+
+During spring (a) and winter (d), a negative relationship between the 
+Aerosol Optical Depth (AOD) and precipitation rates (P) govern the study area.
+During the other two seasons, we also see pixels with positive correlations. However, these are not significant (pixels with a significant correlation are marked
+by crosses). The analysis was done in R and included data from 2003 to 2018 because since then,
+both MODIS satellites delivered observations for the study area. The source code
+of the complete project can be found in a [GitHub repository](https://github.com/goergen95/aciASB), 
+along with a more comprehensive [discussion](https://github.com/goergen95/aciASB/blob/master/docs/report_II.pdf) 
+of the results. 
+
+
+
+

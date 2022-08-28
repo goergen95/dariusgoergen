@@ -1,0 +1,35 @@
+project:
+  type: site
+  title: "Darius A. Görgen"
+  output-dir: _site
+  resources:
+    - 	contents/files/cv-darius-goergen.pdf
+    
+execute:
+  freeze: true
+
+site:
+  title: "Darius A. Görgen"
+  site-url: https://dariusgoergen.com
+  description: Geoinformation and Environmental Sciences
+  comments:
+    utterances:
+      repo: goergen95/dariusgoergen
+  navbar:
+    right:
+      - href: index.html
+        text: Home
+      - href: contents/blog.html
+        text: "Blog"
+      - href: contents/projects.html
+        text: "Projects"
+  page-footer:
+    left: "© Copyright 2022 Darius A. Görgen."
+
+format:
+  html:
+    theme:
+      light: [cosmo, theme-light.scss]
+      dark:  [cosmo, theme-dark.scss]
+
+

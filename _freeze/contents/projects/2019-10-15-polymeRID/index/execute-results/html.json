@@ -1,0 +1,14 @@
+{
+  "hash": "85c8a72b4d7ae457f652fb564b224368",
+  "result": {
+    "markdown": "---\ntitle: \"Machine Learning to classify microplastic particles\"\ndescription: \"Classification of Fourier-Transform Spectra to classify microplastics.\"\ndate: 2019-10-22 13:43\nauthor: \"Darius A. Görgen\"\ncategories: [\"Machine Learning\", \"Microplastics\", \"CNN\", \"FTIR-Spectrometry\", \"R\"]\n---\n\n\n![Probe Seperators](seperators.jpg)<br>\n*Photo of two sediment separators taken by Sarah Brüning*\n\n### What is it about?\n\nMicroplastic particles in the environment are an ever-growing concern in  public\nand science. It is suspected not only to pose threats to wildlife but also\nconcerns for human health have been raised. Scientists and especially decision-makers depend on the availability of precise and timely information on the \nwhere and when's of microplastic in the environment. However, the process of spectral \nidentification of particles remains a cost-intensive process requiring \nhumans to invest time and effort into the correct identification of spectra. \nModern machine learning techniques have the potential to decrease the necessity \nof human intervention in the classification process and thus significantly speed \nup the complete process from taking environmental samples to communicate the results\nto the public. \n\n### What it can do!\n\nBased on a freely available reference data base published by [Primpke and colleagues](https://link.springer.com/article/10.1007/s00216-018-1156-x)\nI developed a decision fusion algorithm based on two Random Forest models and \ntwo Convolutional Neural Networks which together can robustly identify\npolymers based on FTIR-spectral data. The complete workflow is reproducible and \nadjustable and consists of the following stages: preparation of a reference data base,\nexploration of machine learning models and pre-processing techniques, calibration\nof the final decision fusion algorithm, and classification of real-world spectral\nsamples. The algorithm was written in R and the code is available on a [GitHub\nrepository](https://github.com/goergen95/polymeRID). Additionally, there is\na [workflowr website](https://goergen95.github.io/polymeRID/index.html) communicating the structure of the algorithm and the \nresults based on the mentioned OpenSource data base.\n\n---\n\nHere you can explore the spectral reference data base based on selected polymers \nand other materials commonly found in environmental samples. Simply choose a class \nyou wish to display and explore its spectral characteristics. \n\n\n::: {.cell}\n<iframe src=\"https://goergen95.shinyapps.io/shiny_apps/?showcase=0\" width=\"672\" height=\"500px\" data-external=\"1\"></iframe>\n:::\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

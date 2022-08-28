@@ -1,0 +1,47 @@
+---
+title: "Tree species classification based on UAV orthoimages"
+description: "Exploration of tree species classification accuracy."
+date: 2020-04-17 11:47
+author: "Darius A. Görgen"
+categories: ["UAV", "RandomForest", "R"]
+image: drone.jpg
+---
+
+![Image of a flying drone.](drone.jpg)
+
+### What is it about?
+
+Supervised machine learning algorithms can help to extract useful information 
+from high-dimensional datasets to benefit environmental conversation efforts.
+The correct identification of tree species based on imagery collected by
+low-cost UAVs and conventional cameras is undoubtedly a promising advancement in
+technology which might reduce the cost of local forest monitoring.
+Because the broader use of this technology only occurred very recently, structural
+investigations into the benefits and the limitations of this approach are limited.
+As a student's team, we set out to investigate the relationship between the
+classification accuracy and different spatial resolutions of the imagery. 
+Additionally, we were interested in the question of whether or not predictor variables
+calculated based on multi-temporal observations throughout the growing season
+enhances the classification.
+
+### What can it do?
+
+We established an empirical experiment to investigate the influence of spatial
+resolution and mono- vs. multi-temporal predictor variables using the Random Forest
+algorithm. We used 5-fold cross-validation combined with the Leave-Location-Out
+approach (LLOCV) to train a total number of 9 models. These included each combination
+of three different spatial resolutions (10, 15, and 25 cm) and three different
+combinations of the predictor variables (mono-temporal, seasonal, and both predictor sets.)
+
+![Accuracies of a 5-fold cross-validation](acc.png)
+
+We learned that a medium resolutions seems beneficial and that seasonal parameters 
+are able to increase the classification accuracy at about 1-2 %. There were also
+indications, that object-based classification has the potential to significantly
+increase the overall accuracy.
+
+---
+
+Interested in the results? Check out our written [report](https://github.com/goergen95/forestPhenology/blob/master/doc/report.pdf) 
+or browse through our [R code workflow](https://github.com/goergen95/forestPhenology/).
+
