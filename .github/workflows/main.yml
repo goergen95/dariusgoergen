@@ -34,7 +34,7 @@ jobs:
       - run: |
           quarto render
       # Deploy the rendered _book directory onto Pages
-      - name: Deploy to GitHub pages 🚀
+      - name: Deploy to gh-pages
         if: github.event_name != 'pull_request'
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
