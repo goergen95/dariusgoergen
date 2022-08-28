@@ -21,7 +21,7 @@ jobs:
       # Setup system libraries
       - name: "System libraries"
         run: |
-          apt install libcurl4-openssl-dev libgdal-dev
+          sudo apt install libcurl4-openssl-dev libgdal-dev libgit2-dev
       # Handle installing R packages from renv.lock file
       - uses: r-lib/actions/setup-renv@v2
         with:
