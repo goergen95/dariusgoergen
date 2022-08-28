@@ -6,38 +6,35 @@ on:
 
 name: quarto-render
 jobs:
-  quarto-linux:
-    runs-on: ubuntu-latest
-    env:
-      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      # Download a copy of the repo
-      - uses: actions/checkout@v2
-      # Setup pandoc (might be included with Quarto action?) 
-      - uses: r-lib/actions/setup-pandoc@v2
-      # Setup R
-      - uses: r-lib/actions/setup-r@v2
-        with:
-          use-public-rspm: true
-      # Handle installing R packages from renv.lock file
-      - uses: r-lib/actions/setup-renv@v2
-        with:
-          cache-version: 2 
-      # Download latest version of Python
-      - uses: actions/setup-python@v2    
-      # Install python dependencies from requirements via pip
-      - name: "Install Python dependencies via Pip"
-        run: |
-          pip install -r requirements.txt
-      # Grab a copy of quarto and render the document in all formats
-      - uses: quarto-dev/quarto-actions/install-quarto@v2
-      - run: |
-          quarto render
-      # Deploy the rendered _book directory onto Pages
-      - name: Deploy to gh-pages
-        if: github.event_name != 'pull_request'
-        uses: JamesIves/github-pages-deploy-action@4.1.4
-        with:
-          branch: gh-pages
-          folder: _site
+  runs-on: ubuntu-latest
+  env:
+    GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+  steps:
+    # Download a copy of the repo
+    - uses: actions/checkout@v2
+    # Setup R
+    - uses: r-lib/actions/setup-r@v2
+      with:
+        use-public-rspm: true
+    # Handle installing R packages from renv.lock file
+    - uses: r-lib/actions/setup-renv@v2
+      with:
+        cache-version: 2 
+    # Download latest version of Python
+    - uses: actions/setup-python@v2    
+    # Install python dependencies from requirements via pip
+    - name: "Install Python dependencies via Pip"
+      run: |
+        pip install -r requirements.txt
+    # Grab a copy of quarto and render the document in all formats
+    - uses: quarto-dev/quarto-actions/install-quarto@v2
+    - run: |
+        quarto render
+    # Deploy the rendered _book directory onto Pages
+    - name: Deploy to gh-pages
+      if: github.event_name != 'pull_request'
+      uses: JamesIves/github-pages-deploy-action@4.1.4
+      with:
+        branch: gh-pages
+        folder: _site
 
