@@ -2,7 +2,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main, master]
-  pull-request:
+  pull_request:
     branches: [main, master]
     
 name: Quarto Publish
