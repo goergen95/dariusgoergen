@@ -1,0 +1,22 @@
+/*-- scss:defaults --*/
+$theme-darkblue: #032733;
+$theme-blue: #1d7990;
+$theme-orange: #f18e26;
+$theme-red: #c9310c;
+$theme-bordeaux: #641217;
+$theme-black: #210400;
+$theme-white:#F7F8F9;
+
+
+$body-bg: $theme-darkblue;
+$body-color: $theme-white;
+$link-color: $theme-orange;
+$navbar-bg: $theme-blue;
+$navbar-fg: $theme-white;
+$code-color: $theme-orange;
+$code-block-border-left: true;
+$code-block-bg: $theme-blue;
+$text-muted: $theme-orange;
+
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@300&family=Merriweather:wght@300&display=swap');
+$font-family-sans-serif: 'IBM Plex Serif', serif;
