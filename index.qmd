@@ -26,12 +26,17 @@ comments: false
 
 # About me
 
-I am working on a range of topics concerned with environmental change and the associated coping strategies of our societies. I have been studying Geography and Political Sciences of the MENA region at the University of Marburg, focusing on Remote Sensing, Climatology, and Hydrogeography. Currently, I am working part-time as a freelance consultant tasked with developing reproducible GIS solutions to strategic environmental issues in the development cooperation sector.
+I am anworking on a range of topics concerned with environmental change and the 
+associated coping strategies of our societies. I have been studying Geography 
+and Political Sciences of the MENA region at the University of Marburg, focusing 
+on Remote Sensing, Climatology, and Hydrogeography. In my projects I apply my
+Data Science skills to help teams to generate information for better decision making.
+Currently, I am working as a research associate at the Federal Institute for Geosciences
+and Resources. I also offer freelance consulting services using R and Python for
+reproducible analysis of spatial data. 
 
-I am passionate about using new technologies and tools to create information from data so people can understand environmental processes and act upon the insights. Mostly, I am using R as the scripting language of my choice to create geographic workflows, but I am also using Python or specific GIS command-line tools, such as SAGA, depending on the problem at hand.
 
-
-## Skills
+## Toolkit
 
 - R
 - R Markdown 
@@ -47,13 +52,15 @@ I am passionate about using new technologies and tools to create information fro
 
 
 
-## Projects
+## Selected projects
 
-**Contributer to the MAPME Initiative: Maps for Planning, Monitoring, and Evaluation in the Development Cooperation Sector** [www.mapme-initiative.org](www.mapme-initiative.org)
+Contributor to the **MAPME Initiative**: Maps for Planning, Monitoring, and Evaluation in the Development Cooperation Sector, 
+funded by KfW, [www.mapme-initiative.org](www.mapme-initiative.org)
 
 **[mapme.biodiversity](https://cran.r-project.org/web/packages/mapme.biodiversity/index.html)**: Maintainer
 of an R package for the collection of variables for global biodiversity portfolios.
 
-
+M.Sc. thesis on **Predicting violent conflict in Africa - Leveraging open geodata and 
+deep learning for spatiotemporal event detection** [https://goergen95.github.io/thesis-predicting-conflict](https://goergen95.github.io/thesis-predicting-conflict)
 
 :::
