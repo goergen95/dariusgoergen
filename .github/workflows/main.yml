@@ -28,10 +28,11 @@ jobs:
       - name: "Install Python dependencies via Pip"
         run: |
           pip install -r requirements.txt
-      # Grab a copy of quarto and render the document in all formats
+      # Setup quarto
       - uses: quarto-dev/quarto-actions/setup@v2
+      # Render the website
       - uses: quarto-dev/quarto-actions/render@v2
-      # Deploy the rendered _book directory onto Pages
+      # Deploy the rendered _site directory onto GH-pages when on main/master
       - name: Deploy to gh-pages
         if: github.event_name != 'pull_request'
         uses: JamesIves/github-pages-deploy-action@4.1.4
