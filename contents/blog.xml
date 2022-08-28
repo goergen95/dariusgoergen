@@ -1,0 +1,696 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss  xmlns:atom="http://www.w3.org/2005/Atom" 
+      xmlns:media="http://search.yahoo.com/mrss/" 
+      xmlns:content="http://purl.org/rss/1.0/modules/content/" 
+      xmlns:dc="http://purl.org/dc/elements/1.1/" 
+      version="2.0">
+<channel>
+<title>Darius A. Görgen</title>
+<link>https://dariusgoergen.com/contents/blog.html</link>
+<atom:link href="https://dariusgoergen.com/contents/blog.xml" rel="self" type="application/rss+xml"/>
+<description>Geoinformation and Environmental Sciences</description>
+<generator>quarto-1.1.149</generator>
+<lastBuildDate>Sat, 31 Oct 2020 11:15:00 GMT</lastBuildDate>
+<item>
+  <title>R API to download FAO’s WaPOR datasets</title>
+  <dc:creator>Darius A. Görgen</dc:creator>
+  <link>https://dariusgoergen.com/contents/blog/2020-10-31-wapoR/index.html</link>
+  <description><![CDATA[ 
+
+
+
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dariusgoergen.com/contents/blog/2020-10-31-wapoR/wapor.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Screenshot</figcaption><p></p>
+</figure>
+</div>
+<p><em>Screenshot of from the <a href="https://wapor.apps.fao.org/home/WAPOR_2/1">WaPOR</a> website</em></p>
+<section id="what-is-it-about" class="level3">
+<h3 class="anchored" data-anchor-id="what-is-it-about">What is it about?</h3>
+<p>The <a href="https://wapor.apps.fao.org/home/WAPOR_2/1">WaPOR</a> project by FAO offers some awesome remote sensing products concerned with water usage in agriculture on the African continent. A great variety of different products, among them net- and gross-biomass-water-productivity, evaporation, transpiration, and interception as well as biomass production, are provided at a spatial resolution ranging between 250 meters up-to 30 meters for selected agricultural regions.</p>
+<p>There are already some Python packages out there that allow users to programmatically access the WaPOR data portal such as <a href="https://github.com/HKV-products-services/hkvwaporpy">hkvwaporpy</a> or <a href="https://github.com/wateraccounting/IHEWAwapor">IHEWAwapor</a>. However, I was not able to find similar functionality for R users. So I just went on and wrote an experimental package in R, which can be used to download raster data.</p>
+</section>
+<section id="what-can-it-do" class="level3">
+<h3 class="anchored" data-anchor-id="what-can-it-do">What can it do?</h3>
+<p>To install and use the package, you should utilize <code>remotes</code> functionality.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="cf" style="color: #003B4F;">if</span>(<span class="sc" style="color: #5E5E5E;">!</span><span class="st" style="color: #20794D;">"wapoR"</span> <span class="sc" style="color: #5E5E5E;">%in%</span> <span class="fu" style="color: #4758AB;">installed.packages</span>()[,<span class="dv" style="color: #AD0000;">1</span>]){</span>
+<span id="cb1-2">  remotes<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">install_github</span>(<span class="st" style="color: #20794D;">"goergen95/wapoR"</span>)</span>
+<span id="cb1-3">}</span>
+<span id="cb1-4"><span class="fu" style="color: #4758AB;">library</span>(wapoR)</span></code></pre></div>
+</div>
+<p>From there, it is quite straightforward to query available collections. Note that there are other collections available for which, in principal, it should be possible to download the data in the same way. But this package was primarily intended to interact with the WaPOR collections.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1">cols <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">wapor_collections</span>()</span>
+<span id="cb2-2">cols[<span class="fu" style="color: #4758AB;">rev</span>(<span class="fu" style="color: #4758AB;">seq</span>(<span class="dv" style="color: #AD0000;">1</span>,<span class="fu" style="color: #4758AB;">nrow</span>(cols),)),<span class="fu" style="color: #4758AB;">c</span>(<span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">2</span>)]</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            code
+28          WPOP
+27         WATER
+26       WAPOR_2
+25           RVF
+24        RSCROP
+23      RICCAR_2
+22        RICCAR
+21          RDMS
+20          NMME
+19 NATURAL_EARTH
+18          NASA
+17          GLW4
+16          GLW3
+15           GLW
+14        GLEAM3
+13   GISMGR_TEST
+12       GAEZ_V4
+11     GAEZ_2015
+10      FROM_GLC
+9        FAOSTAT
+8           DLMF
+7           CRTB
+6      CROPWATCH
+5         CHIRPS
+4            C3S
+3        C2ATLAS
+2           ASIS
+1       AQUAMAPS
+                                                                       caption
+28                                                            WorldPop project
+27                                                                  Water Data
+26                           FAO Water Productivity Open-access portal (WaPOR)
+25                                                           Rift Valley Fever
+24                     Crop Pest and Disease Monitoring and Forecasting System
+23                              Regional Arab Climate Change Assessment Report
+22                              Regional Arab Climate Change Assessment Report
+21                                          Regional Drought Monitoring System
+20                                  North American Multi-Model Ensemble (NMME)
+19                                                               Natural Earth
+18                        National Aeronautics and Space Administration (NASA)
+17                                 Gridded Livestock of the World (GLW4, 2015)
+16                                 Gridded Livestock of the World (GLW3, 2010)
+15                                              Gridded Livestock of the World
+14                    Global Livestock Environmental Assessment Model (GLEAM3)
+13                      FAO GIS MANAGER (GISMGR) - Test and training workspace
+12                                         Global Agro-Ecological Zones (2021)
+11                                         Global Agro-Ecological Zones (2015)
+10 Finer Resolution Observation and Monitoring of Global Land Cover (FROM-GLC)
+9                                           FAO Corporate Statistical Database
+8                                     Desert Locust Monitoring and Forecasting
+7                                                  Climate Risk Toolbox (CRTB)
+6                                                                    CropWatch
+5           Climate Hazard group InfraRed Precipitation with Stations (CHIRPS)
+4                                            Copernicus Climate Change Service
+3                                                         Climate Change ATLAS
+2                                              Agriculture Stress Index System
+1                             Global spatial database on water and agriculture</code></pre>
+</div>
+</div>
+<p>I reversed the order of the collections vector so that you can see that there are two available WaPOR collections representing version 1 and 2, respectively. I would advise using the updated version 2 if you do not have other reasons to use the first version.</p>
+<p>We can query the available products within a collection by using <code>wapor_products</code> together with the collection we wish to query.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">prods <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">wapor_products</span>(<span class="at" style="color: #657422;">collection =</span> <span class="st" style="color: #20794D;">"WAPOR_2"</span>)</span>
+<span id="cb4-2"></span>
+<span id="cb4-3"><span class="fu" style="color: #4758AB;">print</span>(<span class="fu" style="color: #4758AB;">paste0</span>(<span class="st" style="color: #20794D;">"In total there are "</span>, <span class="fu" style="color: #4758AB;">length</span>(prods), <span class="st" style="color: #20794D;">" available products in the WAPOR_2 collection."</span>))</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "In total there are 285 available products in the WAPOR_2 collection."</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><span class="fu" style="color: #4758AB;">str</span>(prods[<span class="dv" style="color: #AD0000;">1</span>])</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>List of 1
+ $ L1_GBWP_A:List of 2
+  ..$ product:'data.frame': 1 obs. of  3 variables:
+  .. ..$ code       : chr "L1_GBWP_A"
+  .. ..$ caption    : chr "Gross Biomass Water Productivity"
+  .. ..$ description: chr "The annual Gross Biomass Water Productivity expresses the quantity of output (total biomass production) in rela"| __truncated__
+  ..$ meta   :'data.frame': 1 obs. of  12 variables:
+  .. ..$ format                : chr "Raster Dataset"
+  .. ..$ unit                  : chr "kg/m³ is the ratio of kg of dry matter per cubic meter of water transpired by vegetation in one hectare"
+  .. ..$ dataType              : chr "Int32 (32bit Integer)"
+  .. ..$ conversionFactor      : chr "the pixel value in the downloaded data must be multiplied by 0.001"
+  .. ..$ noDataValue           : int -9999
+  .. ..$ spatialResolution     : chr "250m (0.00223 degree)"
+  .. ..$ spatialExtent         : chr "Africa and Near East"
+  .. ..$ spatialReferenceSystem: chr "EPSG:4326 - WGS84 - Geographic Coordinate System (lat/long)"
+  .. ..$ temporalResolution    : chr "from January 2009 to present"
+  .. ..$ temporalExtent        : chr "Annual"
+  .. ..$ nearRealTime          : chr "New dekadal data layers are released approximately 5 days after the end of a dekad. A higher quality version of"| __truncated__
+  .. ..$ methodology           : chr "The calculation of gross biomass water productivity (GBWP) is as follows: GBWP = TBP/ETIa Where TBP is annual T"| __truncated__</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><span class="fu" style="color: #4758AB;">names</span>(prods)[<span class="dv" style="color: #AD0000;">1</span><span class="sc" style="color: #5E5E5E;">:</span><span class="dv" style="color: #AD0000;">10</span>]</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "L1_GBWP_A" "L1_NBWP_A" "L1_AETI_A" "L1_AETI_M" "L1_AETI_D" "L1_T_A"   
+ [7] "L1_E_A"    "L1_I_A"    "L1_T_D"    "L1_E_D"   </code></pre>
+</div>
+</div>
+<p>The total number of products is relatively high. The product names consist first of the level a respective product belongs to. Level 1 means this product belongs to the continental products covering the African continent at a spatial resolution of about 250 meters. Level 2 products show a resolution of 100 meters. However, they are only available for selected countries. Finally, level 3 data is available for only a few specific agricultural regions, but the spatial resolution is about 30 meters.</p>
+<p>The second component in the product name specifies the variable. For example, GBWP stands for <strong>G</strong>ross <strong>B</strong>iomass <strong>W</strong>ater <strong>P</strong>roductivity or AETI for <strong>A</strong>ctual <strong>E</strong>vapo<strong>t</strong>ranspiraton and <strong>I</strong>nterception. You can check out the <a href="https://wapor.apps.fao.org/catalog/WAPOR_2/1">WaPOR catalog</a> to see all available products, or you search through the product list as some metadata is also included in the above object.</p>
+<p>The last component of a product name specifies its temporal resolution, where A stands for annual, M for monthly, D for decadal, and S for a seasonal temporal resolution.</p>
+<p>Let’s assume we decided to download some level 3 data for the Office du Niger agricultural region. First, let’s take a look at the available products:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><span class="fu" style="color: #4758AB;">names</span>(prods)[<span class="fu" style="color: #4758AB;">grep</span>(<span class="st" style="color: #20794D;">"L3_ODN"</span>, <span class="fu" style="color: #4758AB;">names</span>(prods))]</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "L3_ODN_GBWP_S"       "L3_ODN_NBWP_S"       "L3_ODN_AETI_A"      
+ [4] "L3_ODN_AETI_M"       "L3_ODN_AETI_D"       "L3_ODN_T_A"         
+ [7] "L3_ODN_E_A"          "L3_ODN_I_A"          "L3_ODN_T_D"         
+[10] "L3_ODN_E_D"          "L3_ODN_I_D"          "L3_ODN_NPP_M"       
+[13] "L3_ODN_NPP_D"        "L3_ODN_TBP_S"        "L3_ODN_LCC_D"       
+[16] "L3_ODN_PHE_S"        "L3_ODN_QUAL_LCC_S"   "L3_ODN_QUAL_NDVI_D" 
+[19] "L3_ODN_QUAL_NDVI_LT"</code></pre>
+</div>
+</div>
+<p>For the sake of a quick example, let’s say we are interested in the actual evapotranspiration and interception for the year 2018. We can query some additional metadata about this product with the following command:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1">meta <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">wapor_metadata</span>(<span class="at" style="color: #657422;">collection =</span> <span class="st" style="color: #20794D;">"WAPOR_2"</span>, <span class="at" style="color: #657422;">product =</span> <span class="st" style="color: #20794D;">"L3_ODN_AETI_A"</span>)</span>
+<span id="cb12-2"><span class="fu" style="color: #4758AB;">str</span>(meta)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>List of 3
+ $ info      :'data.frame': 1 obs. of  5 variables:
+  ..$ code      : chr "WATER_MM"
+  ..$ caption   : chr "Amount of Water"
+  ..$ unit      : chr "mm"
+  ..$ scale     : int 3
+  ..$ multiplier: num 0.1
+ $ dimensions:'data.frame': 1 obs. of  3 variables:
+  ..$ code   : chr "YEAR"
+  ..$ caption: chr "Year"
+  ..$ type   : chr "TIME"
+ $ meta      :'data.frame': 1 obs. of  12 variables:
+  ..$ format                : chr "Raster Dataset"
+  ..$ unit                  : chr "mm"
+  ..$ dataType              : chr "Int32 (32bit Integer)"
+  ..$ conversionFactor      : chr "the pixel value in the downloaded data must be multiplied by 0.1"
+  ..$ noDataValue           : int -9999
+  ..$ spatialResolution     : chr "30m"
+  ..$ spatialExtent         : chr "Office du Niger, Mali"
+  ..$ spatialReferenceSystem: chr "EPSG:32630 - WGS 84 / UTM zone 30N"
+  ..$ temporalResolution    : chr "from January 2009 to present"
+  ..$ temporalExtent        : chr "Annual"
+  ..$ nearRealTime          : chr "New dekadal data layers are released approximately 5 days after the end of a dekad. A higher quality version of"| __truncated__
+  ..$ methodology           : chr "See ETIa by dekad for further information. The annual total is obtained by taking the ETIa in mm/day, multiplyi"| __truncated__</code></pre>
+</div>
+</div>
+<p>From the above, we already get a lot of useful information. For example, we see that the product is available between 2009 and the current year and is provided in a projected coordinate reference system. We also can see that the unit of the pixel values is in millimeters bit that the pixel value shall be multiplied with a scale factor of 0.1. This is essential information, and it should be checked for all WaPOR products since most of them were rescaled to reduce file size.</p>
+<p>Maybe the most important aspect of the above output for the next step, is the dimensions dataframe. Here we can see that the selected product only shows one dimension called “YEAR” which type is time. Other products might have further dimensions, such as “SEASON” which needs different specification in the download call.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><span class="fu" style="color: #4758AB;">wapor_queryRaster</span>(<span class="at" style="color: #657422;">collection =</span> <span class="st" style="color: #20794D;">"WAPOR_2"</span>,</span>
+<span id="cb14-2">                  <span class="at" style="color: #657422;">product =</span> <span class="st" style="color: #20794D;">"L3_ODN_AETI_A"</span>,</span>
+<span id="cb14-3">                  <span class="at" style="color: #657422;">begin =</span> <span class="st" style="color: #20794D;">"2018-01-01"</span>, <span class="co" style="color: #5E5E5E;"># begin date is inclusive</span></span>
+<span id="cb14-4">                  <span class="at" style="color: #657422;">end =</span> <span class="st" style="color: #20794D;">"2019-01-01"</span>, <span class="co" style="color: #5E5E5E;"># end date is exclusive</span></span>
+<span id="cb14-5">                  <span class="at" style="color: #657422;">outdir =</span> <span class="st" style="color: #20794D;">"."</span>,</span>
+<span id="cb14-6">                  <span class="at" style="color: #657422;">APIkey =</span> <span class="fu" style="color: #4758AB;">Sys.getenv</span>(<span class="st" style="color: #20794D;">"WAPOR-KEY"</span>)) </span></code></pre></div>
+</div>
+<p>Let’s take a glimpse at the data we just downloaded.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><span class="fu" style="color: #4758AB;">library</span>(raster)</span></code></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: sp</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1">file <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">list.files</span>(<span class="st" style="color: #20794D;">"."</span>, <span class="st" style="color: #20794D;">"L3_ODN"</span>, <span class="at" style="color: #657422;">full.names =</span> T)</span>
+<span id="cb17-2">r <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">raster</span>(file) <span class="sc" style="color: #5E5E5E;">*</span> <span class="fl" style="color: #AD0000;">0.1</span></span>
+<span id="cb17-3"><span class="fu" style="color: #4758AB;">plot</span>(r)</span></code></pre></div>
+<div class="cell-output-display">
+<p><img src="https://dariusgoergen.com/contents/blog/2020-10-31-wapoR/index_files/figure-html/odn-vis-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We very quickly downloaded some important data for an assessment of agricultural practices in ODN. This package’s download functionality can be used to download specific regions from Level 2 or 3 datasets by providing an sf object of an area of interest. Additionally, complete-time series can be downloaded by adapting the start and end date. Check out the <a href="https://github.com/goergen95/wapoR">README</a> of the package for another example to download some data and leave an issue if you face any problems using this package.</p>
+
+
+</section>
+
+ ]]></description>
+  <category>R</category>
+  <category>raster</category>
+  <category>FAO WAPOR</category>
+  <category>API</category>
+  <guid>https://dariusgoergen.com/contents/blog/2020-10-31-wapoR/index.html</guid>
+  <pubDate>Sat, 31 Oct 2020 11:15:00 GMT</pubDate>
+  <media:content url="https://dariusgoergen.com/contents/blog/2020-10-31-wapoR/wapor.png" medium="image" type="image/png" height="75" width="144"/>
+</item>
+<item>
+  <title>Running docker-compose with postgis and R-Studio</title>
+  <dc:creator>Darius A. Görgen</dc:creator>
+  <link>https://dariusgoergen.com/contents/blog/2020-06-21-docker.md/index.html</link>
+  <description><![CDATA[ 
+
+
+
+<p>In this tutorial, I am going to show how you can use the docker engine to set up two containers, one hosting the <a href="https://hub.docker.com/r/rocker/geospatial">rocker/geospatial</a> image and the other one the <a href="https://hub.docker.com/r/postgis/postgis">postgis/postgis</a> image. We will use docker-compose to start up both containers to work with the r-spatial packages and postgis functionality simultaneously in a stable environment. I assume here that the necessary dependencies such as the <a href="https://docs.docker.com/get-docker/">docker</a> and <a href="https://docs.docker.com/compose/install/">docker-compose</a> engines are already met.</p>
+<p><img src="https://dariusgoergen.com/contents/blog/2020-06-21-docker.md/https:/www.osgeo.org/wp-content/uploads/postgis-logo-1.png" class="img-fluid" alt="PostGIS Logo"> <img src="https://dariusgoergen.com/contents/blog/2020-06-21-docker.md/https:/secure.gravatar.com/avatar/5809d093183fe6ca0174066078054949.jpg?s=80&amp;r=g&amp;d=mm" class="img-fluid" alt="Rocker Logo"></p>
+<p>What we need is a simple <code>.yaml</code> file that defines the parameters of our application. In the example I will demonstrate, the application consists of two services, namely the postigs server and the R-Studio instance. We start with the postgres service by defining which images we are using. This image is found at <a href="https://hub.docker.com/">dockerhub</a> If the images are not found on the local machine, they are pulled from there once we run our application. We also make the container’s naming explicit by using the <em>container_name</em> option and set the restart behavior to <em>always</em> in cases the container breaks down. We also ensure that the container will set up a new user besides the default <em>postgres</em> user by specifying a username and a password. The last part specifies on the left hand the local path on the host machine where the database files are going to be written two, while the right-hand part links to the data directory within the postgis container.</p>
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><span class="fu" style="color: #4758AB;">services</span><span class="kw" style="color: #003B4F;">:</span></span>
+<span id="cb1-2"><span class="at" style="color: #657422;">  </span><span class="fu" style="color: #4758AB;">postgres</span><span class="kw" style="color: #003B4F;">:</span></span>
+<span id="cb1-3"><span class="at" style="color: #657422;">  </span><span class="fu" style="color: #4758AB;">image</span><span class="kw" style="color: #003B4F;">:</span><span class="at" style="color: #657422;"> postgis/postgis</span></span>
+<span id="cb1-4"><span class="at" style="color: #657422;">  </span><span class="fu" style="color: #4758AB;">container_name</span><span class="kw" style="color: #003B4F;">:</span><span class="at" style="color: #657422;"> postgres</span></span>
+<span id="cb1-5"><span class="at" style="color: #657422;">  </span><span class="fu" style="color: #4758AB;">restart</span><span class="kw" style="color: #003B4F;">:</span><span class="at" style="color: #657422;"> always</span></span>
+<span id="cb1-6"><span class="at" style="color: #657422;">  </span><span class="fu" style="color: #4758AB;">environment</span><span class="kw" style="color: #003B4F;">:</span></span>
+<span id="cb1-7"><span class="at" style="color: #657422;">    </span><span class="fu" style="color: #4758AB;">POSTGRES_USER</span><span class="kw" style="color: #003B4F;">:</span><span class="at" style="color: #657422;"> postgis</span></span>
+<span id="cb1-8"><span class="at" style="color: #657422;">    </span><span class="fu" style="color: #4758AB;">POSTGRES_PASSWORD</span><span class="kw" style="color: #003B4F;">:</span><span class="at" style="color: #657422;"> postgis</span></span>
+<span id="cb1-9"><span class="at" style="color: #657422;">  </span><span class="fu" style="color: #4758AB;">ports</span><span class="kw" style="color: #003B4F;">:</span></span>
+<span id="cb1-10"><span class="at" style="color: #657422;">    </span><span class="kw" style="color: #003B4F;">-</span><span class="at" style="color: #657422;"> 8888:5432</span></span>
+<span id="cb1-11"><span class="at" style="color: #657422;">  </span><span class="fu" style="color: #4758AB;">volumes</span><span class="kw" style="color: #003B4F;">:</span></span>
+<span id="cb1-12"><span class="at" style="color: #657422;">    </span><span class="kw" style="color: #003B4F;">-</span><span class="at" style="color: #657422;"> ~/pgdata:/var/lib/postgresql/data</span></span>
+<span id="cb1-13"></span>
+<span id="cb1-14"><span class="fu" style="color: #4758AB;">rstudio</span><span class="kw" style="color: #003B4F;">:</span></span>
+<span id="cb1-15"><span class="at" style="color: #657422;">  </span><span class="fu" style="color: #4758AB;">image</span><span class="kw" style="color: #003B4F;">:</span><span class="at" style="color: #657422;"> rocker/geospatial</span></span>
+<span id="cb1-16"><span class="at" style="color: #657422;">  </span><span class="fu" style="color: #4758AB;">container_name</span><span class="kw" style="color: #003B4F;">:</span><span class="at" style="color: #657422;"> r-studio</span></span>
+<span id="cb1-17"><span class="at" style="color: #657422;">  </span><span class="fu" style="color: #4758AB;">restart</span><span class="kw" style="color: #003B4F;">:</span><span class="at" style="color: #657422;"> always</span></span>
+<span id="cb1-18"><span class="at" style="color: #657422;">  </span><span class="fu" style="color: #4758AB;">environment</span><span class="kw" style="color: #003B4F;">:</span></span>
+<span id="cb1-19"><span class="at" style="color: #657422;">    </span><span class="kw" style="color: #003B4F;">-</span><span class="at" style="color: #657422;"> USER=rstudio</span></span>
+<span id="cb1-20"><span class="at" style="color: #657422;">    </span><span class="kw" style="color: #003B4F;">-</span><span class="at" style="color: #657422;"> PASSWORD=supersecret</span></span>
+<span id="cb1-21"><span class="at" style="color: #657422;">    </span><span class="kw" style="color: #003B4F;">-</span><span class="at" style="color: #657422;"> ROOT=TRUE</span></span>
+<span id="cb1-22"><span class="at" style="color: #657422;">  </span><span class="fu" style="color: #4758AB;">ports</span><span class="kw" style="color: #003B4F;">:</span></span>
+<span id="cb1-23"><span class="at" style="color: #657422;">    </span><span class="kw" style="color: #003B4F;">-</span><span class="at" style="color: #657422;"> 8787:8787</span></span>
+<span id="cb1-24"><span class="at" style="color: #657422;">  </span><span class="fu" style="color: #4758AB;">links</span><span class="kw" style="color: #003B4F;">:</span><span class="at" style="color: #657422;"> </span></span>
+<span id="cb1-25"><span class="at" style="color: #657422;">    </span><span class="kw" style="color: #003B4F;">-</span><span class="at" style="color: #657422;"> postgres</span></span></code></pre></div>
+<p>For the R-Studio service, we use the geospatial image that comes in very handy in cases you want to do geospatial analysis since a large number of important packages already come preinstalled. We also make the naming of the container explicit and set the restart behavior to <em>always</em>. The rocker images are quite restrictive when it comes to user rights management. Thus, in addition to specifying a user and a password, we also want to enable root access for the case we need to install additional software. This way, our user is added to the sudoer list. However, this option should be treated carefully. We also map a port on the host machine to the exposed port of the container. This way, we can reach the interface by simply accessing <em>http://localhost:8787/</em> in the browser of our choice. Finally, we declare that the <em>posgres</em> service is linked to the <em>rstudio</em> service. This means that inside the rstudio container, an entry to <em>/etc/hosts</em> called postgres is added, linking to the IP-address this container is found.</p>
+<p>When we write the above configuration to a file called <em>docker-compose.yaml</em> starting the application is as simple as running the following command in a shell in the same directory the file is found:</p>
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><span class="ex" style="color: null;">docker-compose</span> up</span></code></pre></div>
+<p>Once the services are up and running, visit <em>http://localhost:8787/</em> and enter the username and password for the rstudio service. From here, we can use the <em>RPostgreSQL</em> and <em>RPostgres</em> library to connect to our data base. In the simple example below, we establish a connection and write an sf-Object shipped with the <em>sf</em> package to the database.</p>
+<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><span class="fu" style="color: #4758AB;">library</span>(RPostgreSQL)</span>
+<span id="cb3-2"><span class="fu" style="color: #4758AB;">library</span>(RPostgres)</span>
+<span id="cb3-3"><span class="fu" style="color: #4758AB;">library</span>(sf)</span>
+<span id="cb3-4"></span>
+<span id="cb3-5"><span class="co" style="color: #5E5E5E;"># specify connection inputs</span></span>
+<span id="cb3-6">db <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="st" style="color: #20794D;">'postgis'</span>  <span class="co" style="color: #5E5E5E;"># provide the name of your db</span></span>
+<span id="cb3-7">host_db <span class="ot" style="color: #003B4F;">=</span> <span class="st" style="color: #20794D;">"postgres"</span> <span class="co" style="color: #5E5E5E;"># provide the name of the service</span></span>
+<span id="cb3-8">db_port <span class="ot" style="color: #003B4F;">=</span> <span class="st" style="color: #20794D;">'5432'</span>  <span class="co" style="color: #5E5E5E;"># specify the port the service is available at</span></span>
+<span id="cb3-9">db_user <span class="ot" style="color: #003B4F;">=</span> <span class="st" style="color: #20794D;">"postgis"</span>  <span class="co" style="color: #5E5E5E;"># specify username</span></span>
+<span id="cb3-10">db_password <span class="ot" style="color: #003B4F;">=</span> <span class="st" style="color: #20794D;">"postgis"</span> <span class="co" style="color: #5E5E5E;"># specify password</span></span>
+<span id="cb3-11"><span class="co" style="color: #5E5E5E;"># establish the connection</span></span>
+<span id="cb3-12">con <span class="ot" style="color: #003B4F;">&lt;-</span> <span class="fu" style="color: #4758AB;">dbConnect</span>(<span class="fu" style="color: #4758AB;">Postgres</span>(), </span>
+<span id="cb3-13">                 <span class="at" style="color: #657422;">dbname=</span>db, </span>
+<span id="cb3-14">                 <span class="at" style="color: #657422;">host=</span>host_db, </span>
+<span id="cb3-15">                 <span class="at" style="color: #657422;">port=</span>db_port, </span>
+<span id="cb3-16">                 <span class="at" style="color: #657422;">user=</span>db_user, </span>
+<span id="cb3-17">                 <span class="at" style="color: #657422;">password=</span>db_password)</span>
+<span id="cb3-18"></span>
+<span id="cb3-19"><span class="co" style="color: #5E5E5E;"># read sample shapefile</span></span>
+<span id="cb3-20">shape <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">st_read</span>(<span class="fu" style="color: #4758AB;">system.file</span>(<span class="st" style="color: #20794D;">"gpkg/nc.gpkg"</span>, <span class="at" style="color: #657422;">package =</span> <span class="st" style="color: #20794D;">"sf"</span>))</span>
+<span id="cb3-21"><span class="co" style="color: #5E5E5E;"># write to database in a new table specified by the layer argument</span></span>
+<span id="cb3-22">table_name <span class="ot" style="color: #003B4F;">=</span> <span class="st" style="color: #20794D;">"test"</span></span>
+<span id="cb3-23"><span class="fu" style="color: #4758AB;">st_write</span>(<span class="at" style="color: #657422;">obj =</span> shape, <span class="at" style="color: #657422;">dsn =</span> con, <span class="at" style="color: #657422;">layer =</span> table_name)</span></code></pre></div>
+<p>Since we mapped the data directory to a local directory on our host machine, the data we write into the database is persistent even when the application is no longer running. To query our database now or even after restarting the application we can use more sf functionality to interact with it. Here is a simple example comparing dplyr syntax with the result we obtain from querying the database to unify all polygons which have the same entry in the ‘SID74’ variable.</p>
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;">library</span>(dplyr)</span>
+<span id="cb4-2"></span>
+<span id="cb4-3"><span class="co" style="color: #5E5E5E;"># dplyr way of </span></span>
+<span id="cb4-4">shape_dplyr <span class="ot" style="color: #003B4F;">=</span> shape <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb4-5">  <span class="fu" style="color: #4758AB;">group_by</span>(SID74) <span class="sc" style="color: #5E5E5E;">%&gt;%</span></span>
+<span id="cb4-6">  <span class="fu" style="color: #4758AB;">summarise</span>(<span class="at" style="color: #657422;">AREA =</span> <span class="fu" style="color: #4758AB;">sum</span>(AREA, <span class="at" style="color: #657422;">na.rm =</span> <span class="cn" style="color: #8f5902;">TRUE</span>))</span>
+<span id="cb4-7"></span>
+<span id="cb4-8">shape_postgis <span class="ot" style="color: #003B4F;">=</span> <span class="fu" style="color: #4758AB;">st_read</span>(con, <span class="at" style="color: #657422;">query =</span> <span class="fu" style="color: #4758AB;">sprintf</span>(<span class="fu" style="color: #4758AB;">paste0</span>(<span class="st" style="color: #20794D;">'SELECT "SID74", SUM("AREA") as "AREA", ST_UNION(geom) as geom </span><span class="sc" style="color: #5E5E5E;">\n</span><span class="st" style="color: #20794D;">'</span>,</span>
+<span id="cb4-9">                                    <span class="st" style="color: #20794D;">'FROM </span><span class="sc" style="color: #5E5E5E;">\"</span><span class="st" style="color: #20794D;">%s</span><span class="sc" style="color: #5E5E5E;">\"</span><span class="st" style="color: #20794D;"> </span><span class="sc" style="color: #5E5E5E;">\n</span><span class="st" style="color: #20794D;">'</span>,</span>
+<span id="cb4-10">                                    <span class="st" style="color: #20794D;">'GROUP BY "SID74";'</span>)), table_name)</span></code></pre></div>
+<p>But how can we manage our postgis server now? There are two ways (well, actually three ways I’ll explain in a minute) how we can access the server. The first one is using psql from the host machine. In the configuration file, we specified that the postgis containers port is mapped to the host machine’s port 8888. Well, we simply use that information to connect to the database using psql.</p>
+<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><span class="ex" style="color: null;">psql</span> <span class="at" style="color: #657422;">--host</span> localhost <span class="at" style="color: #657422;">--port</span> 8888 <span class="at" style="color: #657422;">--dbname</span> postgres <span class="at" style="color: #657422;">--user</span> postgis</span></code></pre></div>
+<p>The command line will ask us for the password, and then we are connected. Additionally, we can also choose to use a program with a graphical user interface to manage the data base. One which ich highly recommend is <a href="https://www.pgadmin.org/">pgAdmin</a>. After installing and running the program, we have to specify a new connection. After adding a name for the connection in the <em>General</em> tab we switch to the <em>Connection</em> tab and fill in all the information as in the screenshot below.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="https://dariusgoergen.com/contents/blog/2020-06-21-docker.md/pgAdmin.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">pgAdmin settings tab</figcaption><p></p>
+</figure>
+</div>
+<p>You already guessed the third option I promised you before? Well of course we can use the psql approach explained above from the terminal in our R-Studio container. Of course, the hostname will be slightly different, but the basic idea is the same. Now, it comes in handy that we have root access in the R-Studio container, because we are going to need to install external software first, namely the postgres client. Thus we enter the following two lines into the terminal. Enter <em>Yes</em> in case you are asked if you wanted to install the software.</p>
+<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb6-1"><span class="fu" style="color: #4758AB;">sudo</span> apt update</span>
+<span id="cb6-2"><span class="fu" style="color: #4758AB;">sudo</span> apt install postgresql-client</span></code></pre></div>
+<p>Now our container has the psql command installed and we can use a slightly different version of the above command to connect to the databse.</p>
+<div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb7-1"><span class="ex" style="color: null;">psql</span> <span class="at" style="color: #657422;">--host</span> postgres <span class="at" style="color: #657422;">--port</span> 5432 <span class="at" style="color: #657422;">--dbname</span> postgres <span class="at" style="color: #657422;">--user</span> postgis</span></code></pre></div>
+<p>What are the differences here? Well, first the container is not found at <em>localhost</em> but as explained before we have got an entry in the <em>/etc/hosts</em> file for our container name <em>postgres</em>. Additionally, we are connecting directly to the container and not to the mapped port on our host machine which is why we have to specify 5432 as the right port. Besides that, everything remains the same.</p>
+
+
+
+ ]]></description>
+  <category>R</category>
+  <category>docker</category>
+  <category>PostgreSQL</category>
+  <guid>https://dariusgoergen.com/contents/blog/2020-06-21-docker.md/index.html</guid>
+  <pubDate>Sun, 21 Jun 2020 13:19:00 GMT</pubDate>
+  <media:content url="https://i0.wp.com/o2r.info/public/images/rocker-logo.png?w=200&amp;ssl=1" medium="image"/>
+</item>
+<item>
+  <title>Translating EUMETSAT’s .nat files to GTiff</title>
+  <dc:creator>Darius A. Görgen</dc:creator>
+  <link>https://dariusgoergen.com/contents/blog/2020-06-14-nat2tif/index.html</link>
+  <description><![CDATA[ 
+
+
+
+<p>In this tutorial, I am using Python to translate a Meteosat Second Generation (MSG) Native Archive Format (.nat) file to GTiff. Conveniently, there exists a driver support for these files in both, the <a href="https://gdal.org/drivers/raster/msgn.html">gdal</a> and the <a href="https://satpy.readthedocs.io/en/latest/index.html">satpy</a> library. Here, we are going to use satpy because we also want to resample the data with its “associated” library <a href="https://pyresample.readthedocs.io/en/latest/">pyresample</a>. First, we will load all the libraries we are going to need into our Python session.</p>
+<div id="libs" class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;">import</span> numpy <span class="im" style="color: #00769E;">as</span> np</span>
+<span id="cb1-2"><span class="im" style="color: #00769E;">from</span> osgeo <span class="im" style="color: #00769E;">import</span> gdal</span>
+<span id="cb1-3"><span class="im" style="color: #00769E;">from</span> osgeo <span class="im" style="color: #00769E;">import</span> osr</span>
+<span id="cb1-4"><span class="im" style="color: #00769E;">import</span> os</span>
+<span id="cb1-5"><span class="im" style="color: #00769E;">import</span> pyresample <span class="im" style="color: #00769E;">as</span> pr</span>
+<span id="cb1-6"><span class="im" style="color: #00769E;">from</span> satpy <span class="im" style="color: #00769E;">import</span> Scene</span>
+<span id="cb1-7"><span class="im" style="color: #00769E;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;">as</span> plt</span></code></pre></div>
+</div>
+<p>As opposed to BUFR files, reading <em>.nat</em> files is quite straightforward. All we need to do is handing the right reader to the satpy <em>Scene</em> function. We can then take a look at the available datasets.</p>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="bu" style="color: null;">file</span> <span class="op" style="color: #5E5E5E;">=</span> <span class="st" style="color: #20794D;">"MSG1-SEVI-MSG15-0100-NA-20160531090417.660000000Z-20160531090437-1405098.nat"</span></span>
+<span id="cb2-2"><span class="co" style="color: #5E5E5E;"># define reader</span></span>
+<span id="cb2-3">reader <span class="op" style="color: #5E5E5E;">=</span> <span class="st" style="color: #20794D;">"seviri_l1b_native"</span></span>
+<span id="cb2-4"><span class="co" style="color: #5E5E5E;"># read the file</span></span>
+<span id="cb2-5">scn <span class="op" style="color: #5E5E5E;">=</span> Scene(filenames <span class="op" style="color: #5E5E5E;">=</span> {reader:[<span class="bu" style="color: null;">file</span>]})</span>
+<span id="cb2-6"><span class="co" style="color: #5E5E5E;"># extract data set names</span></span>
+<span id="cb2-7">dataset_names <span class="op" style="color: #5E5E5E;">=</span> scn.all_dataset_names()</span>
+<span id="cb2-8"><span class="co" style="color: #5E5E5E;"># print available datasets</span></span>
+<span id="cb2-9"><span class="bu" style="color: null;">print</span>(<span class="st" style="color: #20794D;">'</span><span class="ch" style="color: #20794D;">\n</span><span class="st" style="color: #20794D;">'</span>.join(<span class="bu" style="color: null;">map</span>(<span class="bu" style="color: null;">str</span>, dataset_names)))</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>HRV
+IR_016
+IR_039
+IR_087
+IR_097
+IR_108
+IR_120
+IR_134
+VIS006
+VIS008
+WV_062
+WV_073</code></pre>
+</div>
+</div>
+<p>The MSG data is provided as Full Disk, meaning that roughly the complete North-South extent of the globe from the Atlantic to the Indian Ocean is present in each file. For most applications and research questions, it is not necessary to process an extent that large. This is why as an example, we are going to resample the data to the extent of Spain. For this, we are using functionality from the <em>pyresample</em> library, which allows users to create customized area definitions.</p>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><span class="co" style="color: #5E5E5E;"># create some information on the reference system</span></span>
+<span id="cb4-2">area_id <span class="op" style="color: #5E5E5E;">=</span> <span class="st" style="color: #20794D;">"Spain"</span></span>
+<span id="cb4-3">description <span class="op" style="color: #5E5E5E;">=</span> <span class="st" style="color: #20794D;">"Geographical Coordinate System clipped on Spain"</span></span>
+<span id="cb4-4">proj_id <span class="op" style="color: #5E5E5E;">=</span> <span class="st" style="color: #20794D;">"Spain"</span></span>
+<span id="cb4-5"><span class="co" style="color: #5E5E5E;"># specifing some parameters of the projection</span></span>
+<span id="cb4-6">proj_dict <span class="op" style="color: #5E5E5E;">=</span> {<span class="st" style="color: #20794D;">"proj"</span>: <span class="st" style="color: #20794D;">"longlat"</span>, <span class="st" style="color: #20794D;">"ellps"</span>: <span class="st" style="color: #20794D;">"WGS84"</span>, <span class="st" style="color: #20794D;">"datum"</span>: <span class="st" style="color: #20794D;">"WGS84"</span>}</span>
+<span id="cb4-7"><span class="co" style="color: #5E5E5E;"># calculate the width and height of the aoi in pixels</span></span>
+<span id="cb4-8">llx <span class="op" style="color: #5E5E5E;">=</span> <span class="op" style="color: #5E5E5E;">-</span><span class="fl" style="color: #AD0000;">9.5</span> <span class="co" style="color: #5E5E5E;"># lower left x coordinate in degrees</span></span>
+<span id="cb4-9">lly <span class="op" style="color: #5E5E5E;">=</span> <span class="fl" style="color: #AD0000;">35.9</span> <span class="co" style="color: #5E5E5E;"># lower left y coordinate in degrees</span></span>
+<span id="cb4-10">urx <span class="op" style="color: #5E5E5E;">=</span> <span class="fl" style="color: #AD0000;">3.3</span> <span class="co" style="color: #5E5E5E;"># upper right x coordinate in degrees</span></span>
+<span id="cb4-11">ury <span class="op" style="color: #5E5E5E;">=</span> <span class="fl" style="color: #AD0000;">43.8</span> <span class="co" style="color: #5E5E5E;"># upper right y coordinate in degrees</span></span>
+<span id="cb4-12">resolution <span class="op" style="color: #5E5E5E;">=</span> <span class="fl" style="color: #AD0000;">0.005</span> <span class="co" style="color: #5E5E5E;"># target resolution in degrees</span></span>
+<span id="cb4-13"><span class="co" style="color: #5E5E5E;"># calculating the number of pixels</span></span>
+<span id="cb4-14">width <span class="op" style="color: #5E5E5E;">=</span> <span class="bu" style="color: null;">int</span>((urx <span class="op" style="color: #5E5E5E;">-</span> llx) <span class="op" style="color: #5E5E5E;">/</span> resolution)</span>
+<span id="cb4-15">height <span class="op" style="color: #5E5E5E;">=</span> <span class="bu" style="color: null;">int</span>((ury <span class="op" style="color: #5E5E5E;">-</span> lly) <span class="op" style="color: #5E5E5E;">/</span> resolution)</span>
+<span id="cb4-16">area_extent <span class="op" style="color: #5E5E5E;">=</span> (llx,lly,urx,ury)</span>
+<span id="cb4-17"><span class="co" style="color: #5E5E5E;"># defining the area</span></span>
+<span id="cb4-18">area_def <span class="op" style="color: #5E5E5E;">=</span> pr.geometry.AreaDefinition(area_id, proj_id, description, proj_dict, width, height, area_extent)</span>
+<span id="cb4-19"><span class="bu" style="color: null;">print</span>(area_def)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Area ID: Spain
+Description: Spain
+Projection ID: Geographical Coordinate System clipped on Spain
+Projection: {'datum': 'WGS84', 'no_defs': 'None', 'proj': 'longlat', 'type': 'crs'}
+Number of columns: 2560
+Number of rows: 1579
+Area extent: (-9.5, 35.9, 3.3, 43.8)</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/home/darius/Desktop/website/new/py-env/lib/python3.10/site-packages/pyproj/crs/crs.py:1282: UserWarning: You will likely lose important projection information when converting to a PROJ string from another format. See: https://proj.org/faq.html#what-is-the-best-format-for-describing-coordinate-reference-systems
+  proj = self._crs.to_proj4(version=version)</code></pre>
+</div>
+</div>
+<p>We will show here how to proceed when we want to extract more than one specific data set. We can either apply a for loop over the desired datasets we need or write a general function that can extract the data for any specified variable. Here we are going forward with the latter approach because a function is more reusable than a simple script.</p>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><span class="kw" style="color: #003B4F;">def</span> nat2tif(<span class="bu" style="color: null;">file</span>, calibration, area_def, dataset, reader, outdir, label, dtype, radius, epsilon, nodata):</span>
+<span id="cb7-2">  <span class="co" style="color: #5E5E5E;"># open the file</span></span>
+<span id="cb7-3">  scn <span class="op" style="color: #5E5E5E;">=</span> Scene(filenames <span class="op" style="color: #5E5E5E;">=</span> {reader: [<span class="bu" style="color: null;">file</span>]})</span>
+<span id="cb7-4">  <span class="co" style="color: #5E5E5E;"># let us check that the specified data set is actually available</span></span>
+<span id="cb7-5">  scn_names <span class="op" style="color: #5E5E5E;">=</span> scn.all_dataset_names()</span>
+<span id="cb7-6">  <span class="co" style="color: #5E5E5E;"># raise exception if dataset is not present in available names</span></span>
+<span id="cb7-7">  <span class="cf" style="color: #003B4F;">if</span> dataset <span class="kw" style="color: #003B4F;">not</span> <span class="kw" style="color: #003B4F;">in</span> scn_names:</span>
+<span id="cb7-8">    <span class="cf" style="color: #003B4F;">raise</span> <span class="pp" style="color: #AD0000;">Exception</span>(<span class="st" style="color: #20794D;">"Specified dataset is not available."</span>)</span>
+<span id="cb7-9">  <span class="co" style="color: #5E5E5E;"># we need to load the data, different calibration can be chosen</span></span>
+<span id="cb7-10">  scn.load([dataset], calibration<span class="op" style="color: #5E5E5E;">=</span>calibration)</span>
+<span id="cb7-11">  <span class="co" style="color: #5E5E5E;"># let us extract the longitude and latitude data</span></span>
+<span id="cb7-12">  lons, lats <span class="op" style="color: #5E5E5E;">=</span> scn[dataset].area.get_lonlats()</span>
+<span id="cb7-13">  <span class="co" style="color: #5E5E5E;"># now we can apply a swath definition for our output raster</span></span>
+<span id="cb7-14">  swath_def <span class="op" style="color: #5E5E5E;">=</span> pr.geometry.SwathDefinition(lons<span class="op" style="color: #5E5E5E;">=</span>lons, lats<span class="op" style="color: #5E5E5E;">=</span>lats)</span>
+<span id="cb7-15">  <span class="co" style="color: #5E5E5E;"># and finally we also extract the data</span></span>
+<span id="cb7-16">  values <span class="op" style="color: #5E5E5E;">=</span> scn[dataset].values</span>
+<span id="cb7-17">  <span class="co" style="color: #5E5E5E;"># we will now change the datatype of the arrays</span></span>
+<span id="cb7-18">  <span class="co" style="color: #5E5E5E;"># depending on the present data this can be changed</span></span>
+<span id="cb7-19">  lons <span class="op" style="color: #5E5E5E;">=</span> lons.astype(dtype)</span>
+<span id="cb7-20">  lats <span class="op" style="color: #5E5E5E;">=</span> lats.astype(dtype)</span>
+<span id="cb7-21">  values <span class="op" style="color: #5E5E5E;">=</span> values.astype(dtype)</span>
+<span id="cb7-22">  <span class="co" style="color: #5E5E5E;"># now we can already resample our data to the area of interest</span></span>
+<span id="cb7-23">  values <span class="op" style="color: #5E5E5E;">=</span> pr.kd_tree.resample_nearest(swath_def, values,</span>
+<span id="cb7-24">                                             area_def,</span>
+<span id="cb7-25">                                             radius_of_influence<span class="op" style="color: #5E5E5E;">=</span>radius, <span class="co" style="color: #5E5E5E;"># in meters</span></span>
+<span id="cb7-26">                                             epsilon<span class="op" style="color: #5E5E5E;">=</span>epsilon,</span>
+<span id="cb7-27">                                             fill_value<span class="op" style="color: #5E5E5E;">=</span><span class="va" style="color: #111111;">False</span>)</span>
+<span id="cb7-28">  <span class="co" style="color: #5E5E5E;"># we are going to check if the outdir exists and create it if it doesnt</span></span>
+<span id="cb7-29">  <span class="cf" style="color: #003B4F;">if</span> <span class="kw" style="color: #003B4F;">not</span> os.path.exists(outdir):</span>
+<span id="cb7-30">   os.makedirs(outdir)</span>
+<span id="cb7-31">  <span class="co" style="color: #5E5E5E;"># let us join our filename based on the input file's basename                                           </span></span>
+<span id="cb7-32">  outname <span class="op" style="color: #5E5E5E;">=</span> os.path.join(outdir, os.path.basename(<span class="bu" style="color: null;">file</span>)[:<span class="op" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">4</span>] <span class="op" style="color: #5E5E5E;">+</span> <span class="st" style="color: #20794D;">"_"</span> <span class="op" style="color: #5E5E5E;">+</span> <span class="bu" style="color: null;">str</span>(label) <span class="op" style="color: #5E5E5E;">+</span> <span class="st" style="color: #20794D;">".tif"</span>)</span>
+<span id="cb7-33">  <span class="co" style="color: #5E5E5E;"># now we define some metadata for our raster file</span></span>
+<span id="cb7-34">  cols <span class="op" style="color: #5E5E5E;">=</span> values.shape[<span class="dv" style="color: #AD0000;">1</span>]</span>
+<span id="cb7-35">  rows <span class="op" style="color: #5E5E5E;">=</span> values.shape[<span class="dv" style="color: #AD0000;">0</span>]</span>
+<span id="cb7-36">  pixelWidth <span class="op" style="color: #5E5E5E;">=</span> (area_def.area_extent[<span class="dv" style="color: #AD0000;">2</span>] <span class="op" style="color: #5E5E5E;">-</span> area_def.area_extent[<span class="dv" style="color: #AD0000;">0</span>]) <span class="op" style="color: #5E5E5E;">/</span> cols</span>
+<span id="cb7-37">  pixelHeight <span class="op" style="color: #5E5E5E;">=</span> (area_def.area_extent[<span class="dv" style="color: #AD0000;">1</span>] <span class="op" style="color: #5E5E5E;">-</span> area_def.area_extent[<span class="dv" style="color: #AD0000;">3</span>]) <span class="op" style="color: #5E5E5E;">/</span> rows</span>
+<span id="cb7-38">  originX <span class="op" style="color: #5E5E5E;">=</span> area_def.area_extent[<span class="dv" style="color: #AD0000;">0</span>]</span>
+<span id="cb7-39">  originY <span class="op" style="color: #5E5E5E;">=</span> area_def.area_extent[<span class="dv" style="color: #AD0000;">3</span>] </span>
+<span id="cb7-40">  <span class="co" style="color: #5E5E5E;"># here we actually create the file</span></span>
+<span id="cb7-41">  driver <span class="op" style="color: #5E5E5E;">=</span> gdal.GetDriverByName(<span class="st" style="color: #20794D;">"GTiff"</span>)</span>
+<span id="cb7-42">  outRaster <span class="op" style="color: #5E5E5E;">=</span> driver.Create(outname, cols, rows, <span class="dv" style="color: #AD0000;">1</span>)</span>
+<span id="cb7-43">  <span class="co" style="color: #5E5E5E;"># writing the metadata</span></span>
+<span id="cb7-44">  outRaster.SetGeoTransform((originX, pixelWidth, <span class="dv" style="color: #AD0000;">0</span>, originY, <span class="dv" style="color: #AD0000;">0</span>, pixelHeight))</span>
+<span id="cb7-45">  <span class="co" style="color: #5E5E5E;"># creating a new band and writting the data</span></span>
+<span id="cb7-46">  outband <span class="op" style="color: #5E5E5E;">=</span> outRaster.GetRasterBand(<span class="dv" style="color: #AD0000;">1</span>)</span>
+<span id="cb7-47">  outband.SetNoDataValue(nodata) <span class="co" style="color: #5E5E5E;">#specified no data value by user</span></span>
+<span id="cb7-48">  outband.WriteArray(np.array(values)) <span class="co" style="color: #5E5E5E;"># writting the values</span></span>
+<span id="cb7-49">  outRasterSRS <span class="op" style="color: #5E5E5E;">=</span> osr.SpatialReference() <span class="co" style="color: #5E5E5E;"># create CRS instance</span></span>
+<span id="cb7-50">  outRasterSRS.ImportFromEPSG(<span class="dv" style="color: #AD0000;">4326</span>) <span class="co" style="color: #5E5E5E;"># get info for EPSG 4326</span></span>
+<span id="cb7-51">  outRaster.SetProjection(outRasterSRS.ExportToWkt()) <span class="co" style="color: #5E5E5E;"># set CRS as WKT</span></span>
+<span id="cb7-52">  <span class="co" style="color: #5E5E5E;"># clean up</span></span>
+<span id="cb7-53">  outband.FlushCache()</span>
+<span id="cb7-54">  outband <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">None</span></span>
+<span id="cb7-55">  outRaster <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">None</span></span></code></pre></div>
+</div>
+<p>Now we can apply this function to our input file and extract any available dataset. Note that some of the input variables need further explanation. The very first option which might not be self-evident is calibration. With this option we can tell satpy to pre-calibrate the data, for example, to reflectance in contrast to radiances. The option <em>label</em> appends the value of label to the ouput filename. With the <em>dtype</em> option, we can specifically choose which datatype is used for the output file. Accordingly, we should adopt the value for nodata, which flags no data values in the output file. The options <em>radius</em> and <em>epsilon</em> are options of the nearest neighbor resampling routine and can be specified to the user needs (see <a href="https://pyresample.readthedocs.io/en/latest/swath.html#pyresample-kd-tree">here</a> for more information).</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1">nat2tif(<span class="bu" style="color: null;">file</span> <span class="op" style="color: #5E5E5E;">=</span> <span class="bu" style="color: null;">file</span>, </span>
+<span id="cb8-2">        calibration <span class="op" style="color: #5E5E5E;">=</span> <span class="st" style="color: #20794D;">"radiance"</span>,  </span>
+<span id="cb8-3">        area_def <span class="op" style="color: #5E5E5E;">=</span> area_def,  </span>
+<span id="cb8-4">        dataset <span class="op" style="color: #5E5E5E;">=</span> <span class="st" style="color: #20794D;">"HRV"</span>, </span>
+<span id="cb8-5">        reader <span class="op" style="color: #5E5E5E;">=</span> reader, </span>
+<span id="cb8-6">        outdir <span class="op" style="color: #5E5E5E;">=</span> <span class="st" style="color: #20794D;">"./output"</span>,  </span>
+<span id="cb8-7">        label <span class="op" style="color: #5E5E5E;">=</span> <span class="st" style="color: #20794D;">"HRV"</span>, </span>
+<span id="cb8-8">        dtype <span class="op" style="color: #5E5E5E;">=</span> <span class="st" style="color: #20794D;">"float32"</span>, </span>
+<span id="cb8-9">        radius <span class="op" style="color: #5E5E5E;">=</span> <span class="dv" style="color: #AD0000;">16000</span>, </span>
+<span id="cb8-10">        epsilon <span class="op" style="color: #5E5E5E;">=</span> <span class="fl" style="color: #AD0000;">.5</span>, </span>
+<span id="cb8-11">        nodata <span class="op" style="color: #5E5E5E;">=</span> <span class="op" style="color: #5E5E5E;">-</span><span class="fl" style="color: #AD0000;">3.4E+38</span>)</span></code></pre></div>
+</div>
+<p>Now we can read in the newly created file and take a look at a simple plot to visualize our result (Note that in the background, I am using R to generate this plot quickly).</p>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><span class="bu" style="color: null;">file</span> <span class="op" style="color: #5E5E5E;">=</span> <span class="st" style="color: #20794D;">"output/MSG1-SEVI-MSG15-0100-NA-20160531090417.660000000Z-20160531090437-1405098_HRV.tif"</span></span>
+<span id="cb9-2">ds <span class="op" style="color: #5E5E5E;">=</span> gdal.Open(<span class="bu" style="color: null;">file</span>)</span>
+<span id="cb9-3">band <span class="op" style="color: #5E5E5E;">=</span> ds.GetRasterBand(<span class="dv" style="color: #AD0000;">1</span>)</span>
+<span id="cb9-4">data <span class="op" style="color: #5E5E5E;">=</span> band.ReadAsArray()</span>
+<span id="cb9-5">plt.imshow(data)</span></code></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<pre><code>&lt;matplotlib.image.AxesImage at 0x7f54fa1e1c90&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="https://dariusgoergen.com/contents/blog/2020-06-14-nat2tif/index_files/figure-html/cell-7-output-2.png" width="588" height="368"></p>
+</div>
+</div>
+
+
+
+ ]]></description>
+  <category>MSG</category>
+  <category>GTIFF</category>
+  <category>Python</category>
+  <guid>https://dariusgoergen.com/contents/blog/2020-06-14-nat2tif/index.html</guid>
+  <pubDate>Sun, 10 May 2020 10:00:00 GMT</pubDate>
+  <media:content url="https://dariusgoergen.com/contents/blog/2020-06-14-nat2tif/eumetsat-logo.jpg" medium="image" type="image/jpeg"/>
+</item>
+<item>
+  <title>Translating EUMETSAT’s .bfr files to GTiff</title>
+  <dc:creator>Darius A. Görgen</dc:creator>
+  <link>https://dariusgoergen.com/contents/blog/2020-05-10-bufr2tif/index.html</link>
+  <description><![CDATA[ 
+
+
+
+<p>I recently came across the <a href="https://navigator.eumetsat.int/product/EO:EUM:DAT:MSG:RIIE">EUMETSAT</a> Regional Instability Index dataset, which is shipped in the less known <em>BUFR</em> format. In this tutorial, I am going to show how you can use Python to translate <em>.bfr</em> files to <em>.tiff</em> files. Besides the GDAL library for writing, we will also need the <a href="https://pyresample.readthedocs.io/en/latest/">pyresample</a> and the <a href="https://github.com/jdkloe/pybufr-ecmwf">pybufr_ecmwf</a> libraries. <em>pyresample</em> currently does not support the <em>.bfr</em> format natively. However, it is very likely to be supported in the future.</p>
+<hr>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><span class="im" style="color: #00769E;">import</span> numpy <span class="im" style="color: #00769E;">as</span> np</span>
+<span id="cb1-2"><span class="im" style="color: #00769E;">from</span> osgeo <span class="im" style="color: #00769E;">import</span> gdal</span>
+<span id="cb1-3"><span class="im" style="color: #00769E;">from</span> osgeo <span class="im" style="color: #00769E;">import</span> osr</span>
+<span id="cb1-4"><span class="im" style="color: #00769E;">import</span> pyresample <span class="im" style="color: #00769E;">as</span> pr</span>
+<span id="cb1-5"><span class="im" style="color: #00769E;">from</span> pybufr_ecmwf.bufr <span class="im" style="color: #00769E;">import</span> BUFRReader</span>
+<span id="cb1-6"><span class="im" style="color: #00769E;">import</span> matplotlib.pyplot <span class="im" style="color: #00769E;">as</span> plt</span></code></pre></div>
+</div>
+<p>The <a href="https://www.wmo.int/pages/prog/www/WDM/Guides/Guide-binary-1A.html">BUFR format</a> is a standardized format defined by the World Meteorological Organization (WMO). It stands for <strong>B</strong>inary <strong>U</strong>niversal <strong>F</strong>orm for the <strong>R</strong>epresentation of meteorological data. It is a self-describing format, shipping data together with metadata to be used by end-users. Within a <em>.bfr</em> file, we find several <em>messages</em>, each of them having a specific number of <em>entries</em>. We will use the functionality of the <em>pybufr_ecmwf</em> library to read in the data.</p>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><span class="bu" style="color: null;">file</span> <span class="op" style="color: #5E5E5E;">=</span> <span class="st" style="color: #20794D;">"MSG2-SEVI-MSGRIIE-0101-0101-20160526000000.000000000Z-20160526000602-1403456.bfr"</span></span>
+<span id="cb2-2"><span class="co" style="color: #5E5E5E;"># read the file</span></span>
+<span id="cb2-3">bufr <span class="op" style="color: #5E5E5E;">=</span> BUFRReader(<span class="bu" style="color: null;">file</span>, warn_about_bufr_size <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">False</span>, expand_flags <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">False</span>)</span>
+<span id="cb2-4"><span class="co" style="color: #5E5E5E;"># display number of messages</span></span>
+<span id="cb2-5"><span class="bu" style="color: null;">print</span>(<span class="st" style="color: #20794D;">"Number of messages: "</span><span class="op" style="color: #5E5E5E;">+</span> <span class="bu" style="color: null;">str</span>(bufr.num_msgs))</span>
+<span id="cb2-6"></span>
+<span id="cb2-7"><span class="co" style="color: #5E5E5E;"># initiate list with parameter names</span></span>
+<span id="cb2-8">names_units <span class="op" style="color: #5E5E5E;">=</span> []</span>
+<span id="cb2-9"><span class="cf" style="color: #003B4F;">for</span> m, msg <span class="kw" style="color: #003B4F;">in</span> <span class="bu" style="color: null;">enumerate</span>(bufr):</span>
+<span id="cb2-10"> names_units.append(msg.get_names_and_units())</span>
+<span id="cb2-11"></span>
+<span id="cb2-12"><span class="co" style="color: #5E5E5E;"># show parameter names and units</span></span>
+<span id="cb2-13"><span class="bu" style="color: null;">print</span>(<span class="st" style="color: #20794D;">'</span><span class="ch" style="color: #20794D;">\n</span><span class="st" style="color: #20794D;">'</span>.join(<span class="bu" style="color: null;">map</span>(<span class="bu" style="color: null;">str</span>, names_units[<span class="dv" style="color: #AD0000;">0</span>][<span class="dv" style="color: #AD0000;">0</span>])))</span>
+<span id="cb2-14"><span class="co" style="color: #5E5E5E;"># close file</span></span>
+<span id="cb2-15">bufr.close()</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Number of messages: 90</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>SATELLITE IDENTIFIER
+IDENTIFICATION OF ORIGINATING/GENERATING CENTRE (SEE NOTE 10)
+SATELLITE CLASSIFICATION
+SEGMENT SIZE AT NADIR IN X DIRECTION
+SEGMENT SIZE AT NADIR IN Y DIRECTION
+YEAR
+MONTH
+DAY
+HOUR
+MINUTE
+SECOND
+ROW NUMBER
+COLUMN NUMBER
+LATITUDE (HIGH ACCURACY)
+LONGITUDE (HIGH ACCURACY)
+SATELLITE ZENITH ANGLE
+K INDEX
+KO INDEX
+PARCEL LIFTED INDEX (TO 500 HPA)
+MAXIMUM BUOYANCY
+PRECIPITABLE WATER
+PER CENT CONFIDENCE
+PRESSURE
+PRESSURE
+PRECIPITABLE WATER
+PRESSURE
+PRESSURE
+PRECIPITABLE WATER
+PRESSURE
+PRESSURE
+PRECIPITABLE WATER</code></pre>
+</div>
+</div>
+<p>Based on the above output, we can decide which parameters we are interested in and which metadata we will need. Say we are only interested in the parameter <em>K Index</em>. We can see that the index for this dataset is 16. Also, since we are interested in writing a <em>.tiff</em> as output, the datasets of latitude and longitude will be of interest to us (index 13 and 14, respectively). Note that we are reopening the file once again to start from the very first message.</p>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><span class="co" style="color: #5E5E5E;"># initiate arrays</span></span>
+<span id="cb5-2">lats <span class="op" style="color: #5E5E5E;">=</span> np.zeros([<span class="dv" style="color: #AD0000;">0</span>])</span>
+<span id="cb5-3">lons <span class="op" style="color: #5E5E5E;">=</span> np.zeros([<span class="dv" style="color: #AD0000;">0</span>])</span>
+<span id="cb5-4">vals <span class="op" style="color: #5E5E5E;">=</span> np.zeros([<span class="dv" style="color: #AD0000;">0</span>])</span>
+<span id="cb5-5"><span class="co" style="color: #5E5E5E;"># reopening the file</span></span>
+<span id="cb5-6">bufr <span class="op" style="color: #5E5E5E;">=</span> BUFRReader(<span class="bu" style="color: null;">file</span>, warn_about_bufr_size <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">False</span>, expand_flags <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">False</span>)</span>
+<span id="cb5-7"></span>
+<span id="cb5-8"><span class="co" style="color: #5E5E5E;"># loop through the messages and sub-entries</span></span>
+<span id="cb5-9"><span class="cf" style="color: #003B4F;">for</span> msg <span class="kw" style="color: #003B4F;">in</span> bufr:</span>
+<span id="cb5-10"> <span class="cf" style="color: #003B4F;">for</span> subs <span class="kw" style="color: #003B4F;">in</span> msg:</span>
+<span id="cb5-11">  data <span class="op" style="color: #5E5E5E;">=</span> subs.data</span>
+<span id="cb5-12">  lats <span class="op" style="color: #5E5E5E;">=</span> np.append(lats, data[:,<span class="dv" style="color: #AD0000;">13</span>])</span>
+<span id="cb5-13">  lons <span class="op" style="color: #5E5E5E;">=</span> np.append(lons, data[:,<span class="dv" style="color: #AD0000;">14</span>])</span>
+<span id="cb5-14">  vals <span class="op" style="color: #5E5E5E;">=</span> np.append(vals, data[:,<span class="dv" style="color: #AD0000;">20</span>])</span>
+<span id="cb5-15"><span class="co" style="color: #5E5E5E;"># don't forget to close the file</span></span>
+<span id="cb5-16">bufr.close()</span>
+<span id="cb5-17">vals <span class="op" style="color: #5E5E5E;">=</span> np.where(vals <span class="op" style="color: #5E5E5E;">==</span> np.<span class="bu" style="color: null;">max</span>(vals), <span class="op" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">9999</span>, vals)</span></code></pre></div>
+</div>
+<p>With this loop, we obtained all the necessary data to create a <em>.tiff</em> file. We have got the values we are interested in and the geographic information of each location’s latitude and longitude data. We can now use the <em>pyresample</em> library to resample our data to a location of interest. Let’s say we are interested in a study area roughly having the extent of France. We can resample to this area by declaring an area definition first.</p>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><span class="co" style="color: #5E5E5E;"># define some general properties of our projection</span></span>
+<span id="cb6-2">area_id <span class="op" style="color: #5E5E5E;">=</span> <span class="st" style="color: #20794D;">"France"</span></span>
+<span id="cb6-3">description <span class="op" style="color: #5E5E5E;">=</span> <span class="st" style="color: #20794D;">"Custom Geographical CRS of France"</span></span>
+<span id="cb6-4">proj_id <span class="op" style="color: #5E5E5E;">=</span> <span class="st" style="color: #20794D;">"France WGS84 geographical"</span></span>
+<span id="cb6-5">proj_dict <span class="op" style="color: #5E5E5E;">=</span> {<span class="st" style="color: #20794D;">"proj"</span>: <span class="st" style="color: #20794D;">"longlat"</span>, <span class="st" style="color: #20794D;">"ellps"</span>:<span class="st" style="color: #20794D;">"WGS84"</span>, <span class="st" style="color: #20794D;">"datum"</span>: <span class="st" style="color: #20794D;">"WGS84"</span>}</span>
+<span id="cb6-6"><span class="co" style="color: #5E5E5E;"># define the area's extent in degrees and desired resolution</span></span>
+<span id="cb6-7">llx <span class="op" style="color: #5E5E5E;">=</span> <span class="op" style="color: #5E5E5E;">-</span><span class="fl" style="color: #AD0000;">4.9</span></span>
+<span id="cb6-8">lly <span class="op" style="color: #5E5E5E;">=</span> <span class="fl" style="color: #AD0000;">42.2</span></span>
+<span id="cb6-9">urx <span class="op" style="color: #5E5E5E;">=</span> <span class="fl" style="color: #AD0000;">8.2</span></span>
+<span id="cb6-10">ury <span class="op" style="color: #5E5E5E;">=</span> <span class="fl" style="color: #AD0000;">51.2</span></span>
+<span id="cb6-11">res <span class="op" style="color: #5E5E5E;">=</span> <span class="fl" style="color: #AD0000;">0.015</span> <span class="co" style="color: #5E5E5E;"># in degrees</span></span>
+<span id="cb6-12">width <span class="op" style="color: #5E5E5E;">=</span> <span class="bu" style="color: null;">int</span>((urx <span class="op" style="color: #5E5E5E;">-</span> llx) <span class="op" style="color: #5E5E5E;">/</span> res)</span>
+<span id="cb6-13">height <span class="op" style="color: #5E5E5E;">=</span> <span class="bu" style="color: null;">int</span>((ury <span class="op" style="color: #5E5E5E;">-</span> lly) <span class="op" style="color: #5E5E5E;">/</span> res)</span>
+<span id="cb6-14">area_extent <span class="op" style="color: #5E5E5E;">=</span> (llx,lly,urx,ury)</span>
+<span id="cb6-15">area_def <span class="op" style="color: #5E5E5E;">=</span> pr.geometry.AreaDefinition(area_id, proj_id, description, proj_dict, width, height, area_extent)</span>
+<span id="cb6-16"><span class="bu" style="color: null;">print</span>(area_def)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Area ID: France
+Description: France WGS84 geographical
+Projection ID: Custom Geographical CRS of France
+Projection: {'datum': 'WGS84', 'no_defs': 'None', 'proj': 'longlat', 'type': 'crs'}
+Number of columns: 873
+Number of rows: 600
+Area extent: (-4.9, 42.2, 8.2, 51.2)</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>/home/darius/Desktop/website/new/py-env/lib/python3.10/site-packages/pyproj/crs/crs.py:1282: UserWarning: You will likely lose important projection information when converting to a PROJ string from another format. See: https://proj.org/faq.html#what-is-the-best-format-for-describing-coordinate-reference-systems
+  proj = self._crs.to_proj4(version=version)</code></pre>
+</div>
+</div>
+<p>With this area definition, we can resample our data using the nearest neighbor algorithm and use our defined variables about the location to create a <em>.tiff</em> file as output.</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1">swath_def <span class="op" style="color: #5E5E5E;">=</span> pr.geometry.SwathDefinition(lons <span class="op" style="color: #5E5E5E;">=</span> lons, lats <span class="op" style="color: #5E5E5E;">=</span> lats)</span>
+<span id="cb9-2">res_data <span class="op" style="color: #5E5E5E;">=</span> pr.kd_tree.resample_nearest(swath_def, vals, area_def,</span>
+<span id="cb9-3">radius_of_influence<span class="op" style="color: #5E5E5E;">=</span><span class="dv" style="color: #AD0000;">16000</span>,epsilon<span class="op" style="color: #5E5E5E;">=</span><span class="fl" style="color: #AD0000;">0.5</span>,fill_value<span class="op" style="color: #5E5E5E;">=</span><span class="va" style="color: #111111;">False</span>)</span>
+<span id="cb9-4"></span>
+<span id="cb9-5"><span class="co" style="color: #5E5E5E;"># create tif output</span></span>
+<span id="cb9-6">filename <span class="op" style="color: #5E5E5E;">=</span> <span class="st" style="color: #20794D;">"bufr2tif.tif"</span></span>
+<span id="cb9-7"><span class="co" style="color: #5E5E5E;"># number of rows and cols</span></span>
+<span id="cb9-8">rows <span class="op" style="color: #5E5E5E;">=</span> res_data.shape[<span class="dv" style="color: #AD0000;">0</span>]</span>
+<span id="cb9-9">cols <span class="op" style="color: #5E5E5E;">=</span> res_data.shape[<span class="dv" style="color: #AD0000;">1</span>]</span>
+<span id="cb9-10"><span class="co" style="color: #5E5E5E;"># pixel size</span></span>
+<span id="cb9-11">pixelWidth <span class="op" style="color: #5E5E5E;">=</span> (area_def.area_extent[<span class="dv" style="color: #AD0000;">2</span>] <span class="op" style="color: #5E5E5E;">-</span> area_def.area_extent[<span class="dv" style="color: #AD0000;">0</span>]) <span class="op" style="color: #5E5E5E;">/</span> cols</span>
+<span id="cb9-12">pixelHeight <span class="op" style="color: #5E5E5E;">=</span> (area_def.area_extent[<span class="dv" style="color: #AD0000;">1</span>] <span class="op" style="color: #5E5E5E;">-</span> area_def.area_extent[<span class="dv" style="color: #AD0000;">3</span>]) <span class="op" style="color: #5E5E5E;">/</span> rows</span>
+<span id="cb9-13"><span class="co" style="color: #5E5E5E;"># pixel of origin</span></span>
+<span id="cb9-14">originX <span class="op" style="color: #5E5E5E;">=</span> area_def.area_extent[<span class="dv" style="color: #AD0000;">0</span>]</span>
+<span id="cb9-15">originY <span class="op" style="color: #5E5E5E;">=</span> area_def.area_extent[<span class="dv" style="color: #AD0000;">3</span>]</span>
+<span id="cb9-16"><span class="co" style="color: #5E5E5E;"># driver</span></span>
+<span id="cb9-17">driver <span class="op" style="color: #5E5E5E;">=</span> gdal.GetDriverByName(<span class="st" style="color: #20794D;">"GTiff"</span>)</span>
+<span id="cb9-18"><span class="co" style="color: #5E5E5E;"># create file </span></span>
+<span id="cb9-19">outRaster <span class="op" style="color: #5E5E5E;">=</span> driver.Create(filename, cols, rows, <span class="dv" style="color: #AD0000;">1</span>, gdal.GDT_Float32)</span>
+<span id="cb9-20"><span class="co" style="color: #5E5E5E;"># set resoultion and origin</span></span>
+<span id="cb9-21">outRaster.SetGeoTransform((originX, pixelWidth, <span class="dv" style="color: #AD0000;">0</span>, originY, <span class="dv" style="color: #AD0000;">0</span>, pixelHeight))</span>
+<span id="cb9-22"><span class="co" style="color: #5E5E5E;"># create one band</span></span>
+<span id="cb9-23">outband <span class="op" style="color: #5E5E5E;">=</span> outRaster.GetRasterBand(<span class="dv" style="color: #AD0000;">1</span>)</span>
+<span id="cb9-24"><span class="co" style="color: #5E5E5E;"># Float_64 no data value (or customize)</span></span>
+<span id="cb9-25">outband.SetNoDataValue(<span class="op" style="color: #5E5E5E;">-</span><span class="dv" style="color: #AD0000;">9999</span>)</span>
+<span id="cb9-26"><span class="co" style="color: #5E5E5E;"># write the resampled data to file</span></span>
+<span id="cb9-27">outband.WriteArray(np.array(res_data))</span>
+<span id="cb9-28"><span class="co" style="color: #5E5E5E;"># create a spatial reference system</span></span>
+<span id="cb9-29">outRasterSRS <span class="op" style="color: #5E5E5E;">=</span> osr.SpatialReference()</span>
+<span id="cb9-30">outRasterSRS.ImportFromEPSG(<span class="dv" style="color: #AD0000;">4326</span>)</span>
+<span id="cb9-31"><span class="co" style="color: #5E5E5E;"># write SRS to file</span></span>
+<span id="cb9-32">outRaster.SetProjection(outRasterSRS.ExportToWkt())</span>
+<span id="cb9-33"><span class="co" style="color: #5E5E5E;"># clean up</span></span>
+<span id="cb9-34">outband.FlushCache()</span>
+<span id="cb9-35">outband <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">None</span></span>
+<span id="cb9-36">outRaster <span class="op" style="color: #5E5E5E;">=</span> <span class="va" style="color: #111111;">None</span></span></code></pre></div>
+</div>
+<hr>
+<p>Now we can read in the newly created file and look at a simple plot to visualize our result. Note that, in the background, I am using R to generate this plot quickly.</p>
+<div class="cell" data-execution_count="6">
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><span class="bu" style="color: null;">file</span> <span class="op" style="color: #5E5E5E;">=</span> <span class="st" style="color: #20794D;">"bufr2tif.tif"</span></span>
+<span id="cb10-2">ds <span class="op" style="color: #5E5E5E;">=</span> gdal.Open(<span class="bu" style="color: null;">file</span>)</span>
+<span id="cb10-3">band <span class="op" style="color: #5E5E5E;">=</span> ds.GetRasterBand(<span class="dv" style="color: #AD0000;">1</span>)</span>
+<span id="cb10-4">data <span class="op" style="color: #5E5E5E;">=</span> band.ReadAsArray()</span>
+<span id="cb10-5">data <span class="op" style="color: #5E5E5E;">=</span> np.where(data <span class="op" style="color: #5E5E5E;">==</span> <span class="op" style="color: #5E5E5E;">-</span><span class="fl" style="color: #AD0000;">9999.</span>, np.NaN, data)</span>
+<span id="cb10-6">plt.imshow(data)</span></code></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="6">
+<pre><code>&lt;matplotlib.image.AxesImage at 0x7f4afc87fb80&gt;</code></pre>
+</div>
+<div class="cell-output cell-output-display">
+<p><img src="https://dariusgoergen.com/contents/blog/2020-05-10-bufr2tif/index_files/figure-html/cell-7-output-2.png" width="575" height="404"></p>
+</div>
+</div>
+
+
+
+ ]]></description>
+  <category>BUFR</category>
+  <category>TIFF</category>
+  <category>Python</category>
+  <guid>https://dariusgoergen.com/contents/blog/2020-05-10-bufr2tif/index.html</guid>
+  <pubDate>Fri, 01 May 2020 09:00:00 GMT</pubDate>
+  <media:content url="https://dariusgoergen.com/contents/blog/2020-05-10-bufr2tif/eumetsat-logo.jpg" medium="image" type="image/jpeg"/>
+</item>
+</channel>
+</rss>

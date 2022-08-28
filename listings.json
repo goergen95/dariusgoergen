@@ -1,0 +1,21 @@
+[
+  {
+    "listing": "/contents/blog.html",
+    "items": [
+      "/contents/blog/2020-10-31-wapoR/index.html",
+      "/contents/blog/2020-06-21-docker.md/index.html",
+      "/contents/blog/2020-06-14-nat2tif/index.html",
+      "/contents/blog/2020-05-10-bufr2tif/index.html"
+    ]
+  },
+  {
+    "listing": "/contents/projects.html",
+    "items": [
+      "/contents/projects/2020-04-17-pheno/index.html",
+      "/contents/projects/2020-03-20-aciASB/index.html",
+      "/contents/projects/2019-10-15-polymeRID/index.html",
+      "/contents/projects/2019-07-01-sensorboxes/index.html",
+      "/contents/projects/2019-05-31-mof/index.html"
+    ]
+  }
+]

@@ -1,126 +1,151 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang=""><head>
-  <meta charset="utf-8">
-  <meta name="generator" content="quarto-0.2.232">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-  <meta name="author" content="Darius A. Görgen">
-  <meta name="description" content="Python code to translate EUMETSAT’s .nat datasets to GTiffs.">
-  <title>Darius A. Görgen - Translating EUMETSAT’s .nat files to GTiff</title>
-  <style>
-    code{white-space: pre-wrap;}
-    span.smallcaps{font-variant: small-caps;}
-    span.underline{text-decoration: underline;}
-    div.column{display: inline-block; vertical-align: top; width: 50%;}
-    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
-    ul.task-list{list-style: none;}
-    pre > code.sourceCode { white-space: pre; position: relative; }
-    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
-    pre > code.sourceCode > span:empty { height: 1.2em; }
-    .sourceCode { overflow: visible; }
-    code.sourceCode > span { color: inherit; text-decoration: inherit; }
-    div.sourceCode { margin: 1em 0; }
-    pre.sourceCode { margin: 0; }
-    @media screen {
-    div.sourceCode { overflow: auto; }
-    }
-    @media print {
-    pre > code.sourceCode { white-space: pre-wrap; }
-    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
-    }
-    pre.numberSource code
-      { counter-reset: source-line 0; }
-    pre.numberSource code > span
-      { position: relative; left: -4em; counter-increment: source-line; }
-    pre.numberSource code > span > a:first-child::before
-      { content: counter(source-line);
-        position: relative; left: -1em; text-align: right; vertical-align: baseline;
-        border: none; display: inline-block;
-        -webkit-touch-callout: none; -webkit-user-select: none;
-        -khtml-user-select: none; -moz-user-select: none;
-        -ms-user-select: none; user-select: none;
-        padding: 0 4px; width: 4em;
-        color: #aaaaaa;
-      }
-    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
-    div.sourceCode
-      {   }
-    @media screen {
-    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
-    }
-    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-    code span.at { color: #7d9029; } /* Attribute */
-    code span.bn { color: #40a070; } /* BaseN */
-    code span.bu { } /* BuiltIn */
-    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-    code span.ch { color: #4070a0; } /* Char */
-    code span.cn { color: #880000; } /* Constant */
-    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-    code span.dt { color: #902000; } /* DataType */
-    code span.dv { color: #40a070; } /* DecVal */
-    code span.er { color: #ff0000; font-weight: bold; } /* Error */
-    code span.ex { } /* Extension */
-    code span.fl { color: #40a070; } /* Float */
-    code span.fu { color: #06287e; } /* Function */
-    code span.im { } /* Import */
-    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
-    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
-    code span.op { color: #666666; } /* Operator */
-    code span.ot { color: #007020; } /* Other */
-    code span.pp { color: #bc7a00; } /* Preprocessor */
-    code span.sc { color: #4070a0; } /* SpecialChar */
-    code span.ss { color: #bb6688; } /* SpecialString */
-    code span.st { color: #4070a0; } /* String */
-    code span.va { color: #19177c; } /* Variable */
-    code span.vs { color: #4070a0; } /* VerbatimString */
-    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-  </style>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
-  <!--[if lt IE 9]>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv-printshiv.min.js"></script>
-  <![endif]-->
-  <script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
-  <script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
-  <script src="../../../site_libs/clipboard/clipboard.min.js"></script>
-  <meta name="quarto:offset" content="../../../">
-  <script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
-  <script src="../../../site_libs/quarto-search/fuse.min.js"></script>
-  <script src="../../../site_libs/quarto-search/quarto-search.js"></script>
-  <script src="../../../site_libs/quarto-html/quarto.js"></script>
-  <script src="../../../site_libs/quarto-html/popper.min.js"></script>
-  <script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
-  <script src="../../../site_libs/quarto-html/anchor.min.js"></script>
-  <link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-  <link class="quarto-color-scheme" href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet">
-  <link class="quarto-color-scheme quarto-color-alternate" rel="prefetch" href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css">
-  <script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
-  <link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-  <link class="quarto-color-scheme" href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet">
-  <link class="quarto-color-scheme quarto-color-alternate" rel="prefetch" href="../../../site_libs/bootstrap/bootstrap-dark.min.css">
-  <script id="quarto-search-options" type="application/json">{
-    "location": "navbar",
-    "copy-button": false,
-    "collapse-after": 2,
-    "panel-placement": "end",
-    "type": "overlay",
-    "limit": 20
-  }</script>
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.1.149">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Darius A. Görgen">
+<meta name="dcterms.date" content="2020-05-10">
+<meta name="description" content="Python code to translate EUMETSAT’s .nat datasets to GTiffs.">
+
+<title>Darius A. Görgen - Translating EUMETSAT’s .nat files to GTiff</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../../">
+<script src="../../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../../site_libs/bootstrap/bootstrap-dark.min.css" rel="prefetch" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
 </head>
-<body>
+
+<body class="nav-fixed fullcontent">
+
 <div id="quarto-search-results"></div>
-<header id="quarto-header" class="headroom fixed-top">
-<nav class="navbar navbar-expand-lg navbar-light ">
-    <div class="container-fluid">
-  <a class="navbar-brand" href="../../../index.html">
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../../index.html">
     <span class="navbar-title">Darius A. Görgen</span>
-  </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
-      <div class="collapse navbar-collapse" id="navbarCollapse">
-        <ul class="navbar-nav navbar-nav-scroll ms-auto">
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item">
     <a class="nav-link" href="../../../index.html">Home</a>
   </li>  
@@ -131,28 +156,63 @@
     <a class="nav-link" href="../../../contents/projects.html">Projects</a>
   </li>  
 </ul>
-          <div>
-            <a href="" class="quarto-color-scheme-toggle nav-link" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
-          </div>
-          <div id="quarto-search" class="mb-0 " title="Search">
+              <div class="quarto-toggle-container">
+                  <a href="" class="quarto-color-scheme-toggle nav-link" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+              </div>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Translating EUMETSAT’s .nat files to GTiff</h1>
+  <div class="quarto-categories">
+    <div class="quarto-category">MSG</div>
+    <div class="quarto-category">GTIFF</div>
+    <div class="quarto-category">Python</div>
+  </div>
+  </div>
+
+<div>
+  <div class="description">
+    Python code to translate EUMETSAT’s .nat datasets to GTiffs.
+  </div>
 </div>
-      </div> <!-- /navcollapse -->
-  </div> <!-- /container-fluid -->
-</nav>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Darius A. Görgen </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">May 10, 2020</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
 </header>
- <!-- /navbar/sidebar -->
-<div class="container-fluid quarto-container d-flex flex-column page-layout-article" id="quarto-content">
-<div class="row flex-fill">
-  <div class="col mx-auto col-sm-12 col-md-11 col-lg-9 px-lg-4">
-<main>
-<header id="title-block-header">
-<h1 class="title display-7">Translating EUMETSAT’s .nat files to GTiff</h1>
-<p class="author">Darius A. Görgen</p>
-<p class="date">2020-05-10 10:00</p>
-</header>
+
 <p>In this tutorial, I am using Python to translate a Meteosat Second Generation (MSG) Native Archive Format (.nat) file to GTiff. Conveniently, there exists a driver support for these files in both, the <a href="https://gdal.org/drivers/raster/msgn.html">gdal</a> and the <a href="https://satpy.readthedocs.io/en/latest/index.html">satpy</a> library. Here, we are going to use satpy because we also want to resample the data with its “associated” library <a href="https://pyresample.readthedocs.io/en/latest/">pyresample</a>. First, we will load all the libraries we are going to need into our Python session.</p>
 <div id="libs" class="cell" data-execution_count="1">
-<div class="sourceCode" id="cb1"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> osgeo <span class="im">import</span> gdal</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> osgeo <span class="im">import</span> osr</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
@@ -162,7 +222,7 @@
 </div>
 <p>As opposed to BUFR files, reading <em>.nat</em> files is quite straightforward. All we need to do is handing the right reader to the satpy <em>Scene</em> function. We can then take a look at the available datasets.</p>
 <div class="cell" data-execution_count="2">
-<div class="sourceCode" id="cb2"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">file</span> <span class="op">=</span> <span class="st">"MSG1-SEVI-MSG15-0100-NA-20160531090417.660000000Z-20160531090437-1405098.nat"</span></span>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="bu">file</span> <span class="op">=</span> <span class="st">"MSG1-SEVI-MSG15-0100-NA-20160531090417.660000000Z-20160531090437-1405098.nat"</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co"># define reader</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>reader <span class="op">=</span> <span class="st">"seviri_l1b_native"</span></span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># read the file</span></span>
@@ -188,7 +248,7 @@ WV_073</code></pre>
 </div>
 <p>The MSG data is provided as Full Disk, meaning that roughly the complete North-South extent of the globe from the Atlantic to the Indian Ocean is present in each file. For most applications and research questions, it is not necessary to process an extent that large. This is why as an example, we are going to resample the data to the extent of Spain. For this, we are using functionality from the <em>pyresample</em> library, which allows users to create customized area definitions.</p>
 <div class="cell" data-execution_count="3">
-<div class="sourceCode" id="cb4"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create some information on the reference system</span></span>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create some information on the reference system</span></span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>area_id <span class="op">=</span> <span class="st">"Spain"</span></span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>description <span class="op">=</span> <span class="st">"Geographical Coordinate System clipped on Spain"</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>proj_id <span class="op">=</span> <span class="st">"Spain"</span></span>
@@ -223,7 +283,7 @@ Area extent: (-9.5, 35.9, 3.3, 43.8)</code></pre>
 </div>
 <p>We will show here how to proceed when we want to extract more than one specific data set. We can either apply a for loop over the desired datasets we need or write a general function that can extract the data for any specified variable. Here we are going forward with the latter approach because a function is more reusable than a simple script.</p>
 <div class="cell" data-execution_count="4">
-<div class="sourceCode" id="cb7"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> nat2tif(<span class="bu">file</span>, calibration, area_def, dataset, reader, outdir, label, dtype, radius, epsilon, nodata):</span>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> nat2tif(<span class="bu">file</span>, calibration, area_def, dataset, reader, outdir, label, dtype, radius, epsilon, nodata):</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="co"># open the file</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  scn <span class="op">=</span> Scene(filenames <span class="op">=</span> {reader: [<span class="bu">file</span>]})</span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># let us check that the specified data set is actually available</span></span>
@@ -281,7 +341,7 @@ Area extent: (-9.5, 35.9, 3.3, 43.8)</code></pre>
 </div>
 <p>Now we can apply this function to our input file and extract any available dataset. Note that some of the input variables need further explanation. The very first option which might not be self-evident is calibration. With this option we can tell satpy to pre-calibrate the data, for example, to reflectance in contrast to radiances. The option <em>label</em> appends the value of label to the ouput filename. With the <em>dtype</em> option, we can specifically choose which datatype is used for the output file. Accordingly, we should adopt the value for nodata, which flags no data values in the output file. The options <em>radius</em> and <em>epsilon</em> are options of the nearest neighbor resampling routine and can be specified to the user needs (see <a href="https://pyresample.readthedocs.io/en/latest/swath.html#pyresample-kd-tree">here</a> for more information).</p>
 <div class="cell" data-execution_count="5">
-<div class="sourceCode" id="cb8"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>nat2tif(<span class="bu">file</span> <span class="op">=</span> <span class="bu">file</span>, </span>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>nat2tif(<span class="bu">file</span> <span class="op">=</span> <span class="bu">file</span>, </span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>        calibration <span class="op">=</span> <span class="st">"radiance"</span>,  </span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>        area_def <span class="op">=</span> area_def,  </span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>        dataset <span class="op">=</span> <span class="st">"HRV"</span>, </span>
@@ -295,7 +355,7 @@ Area extent: (-9.5, 35.9, 3.3, 43.8)</code></pre>
 </div>
 <p>Now we can read in the newly created file and take a look at a simple plot to visualize our result (Note that in the background, I am using R to generate this plot quickly).</p>
 <div class="cell" data-execution_count="6">
-<div class="sourceCode" id="cb9"><pre class="sourceCode python cell-code code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="bu">file</span> <span class="op">=</span> <span class="st">"output/MSG1-SEVI-MSG15-0100-NA-20160531090417.660000000Z-20160531090437-1405098_HRV.tif"</span></span>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="bu">file</span> <span class="op">=</span> <span class="st">"output/MSG1-SEVI-MSG15-0100-NA-20160531090417.660000000Z-20160531090437-1405098_HRV.tif"</span></span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>ds <span class="op">=</span> gdal.Open(<span class="bu">file</span>)</span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>band <span class="op">=</span> ds.GetRasterBand(<span class="dv">1</span>)</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>data <span class="op">=</span> band.ReadAsArray()</span>
@@ -309,8 +369,28 @@ Area extent: (-9.5, 35.9, 3.3, 43.8)</code></pre>
 </div>
 
 
-<script type="application/javascript">
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
   const disableStylesheet = (stylesheets) => {
     for (let i=0; i < stylesheets.length; i++) {
       const stylesheet = stylesheets[i];
@@ -337,13 +417,19 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleColorMode = (alternate) => {
     // Switch the stylesheets
     const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
-    manageTransitions('div.sidebar-toc .nav-link', false);
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
     if (alternate) {
       enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
     } else {
       disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
     }
-    manageTransitions('.quarto-toc-sidebar .nav-link', true);
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
     // Switch the toggles
     const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
     for (let i=0; i < toggles.length; i++) {
@@ -355,6 +441,16 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
           toggle.classList.remove("alternate");
         }
       }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
     }
   }
   const isFileUrl = () => { 
@@ -378,12 +474,13 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
   const getColorSchemeSentinel = () => {
     if (!isFileUrl()) {
-      return window.localStorage.getItem("quarto-color-scheme");
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
     } else {
       return localAlternateSentinel;
     }
   }
-  let localAlternateSentinel = null;
+  let localAlternateSentinel = 'default';
   // Dark / light mode switch
   window.quartoToggleColorScheme = () => {
     // Read the current dark / light value 
@@ -394,8 +491,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   // Ensure there is a toggle, if there isn't float one in the top right
   if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
     const a = window.document.createElement('a');
-    a.id = "quarto-color-scheme-toggle";
     a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
     a.href = "";
     a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
     const i = window.document.createElement("i");
@@ -426,30 +523,38 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     button.blur();
     // flash "checked"
     button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
     setTimeout(function() {
+      button.setAttribute("title", currentTitle);
       button.classList.remove('code-copy-button-checked');
     }, 1000);
     // clear code selection
     e.clearSelection();
   });
   function tippyHover(el, contentFn) {
-    window.tippy(el, {
+    const config = {
       allowHTML: true,
       content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
       placement: 'bottom-start'
-    }); 
+    };
+    window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
   for (var i=0; i<noterefs.length; i++) {
     const ref = noterefs[i];
     tippyHover(ref, function() {
-      let href = ref.getAttribute('href');
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
       try { href = new URL(href).hash; } catch {}
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
@@ -477,16 +582,15 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
 });
 </script>
-</main>
-<div class="page-navigation ">
-  <div class="nav-page nav-page-previous">
+<script src="https://utteranc.es/client.js" repo="goergen95/dariusgoergen" issue-term="pathname" theme="github-light" crossorigin="anonymous" async="">
+</script>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">© Copyright 2022 Darius A. Görgen.</div>   
   </div>
-  <div class="nav-page nav-page-next">
-  </div>
-</div>
-</div> <!-- /main column -->
-</div> <!-- /row -->
-</div> <!-- /container fluid -->
+</footer>
+
 
 
 </body></html>
