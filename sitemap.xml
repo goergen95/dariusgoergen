@@ -1,195 +1,59 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>www.dariusgoergen.com/contents/blog/2020-10-31-wapoR/index.html</loc>
-    <lastmod>2022-08-28T14:59:46.440Z</lastmod>
+    <loc>www.dariusgoergen.com/contents/blog.html</loc>
+    <lastmod>2022-08-30T15:22:45.855Z</lastmod>
   </url>
   <url>
     <loc>www.dariusgoergen.com/contents/blog/2020-05-10-bufr2tif/index.html</loc>
-    <lastmod>2022-08-28T14:59:47.500Z</lastmod>
+    <lastmod>2022-08-30T15:22:46.679Z</lastmod>
   </url>
   <url>
     <loc>www.dariusgoergen.com/contents/blog/2020-06-14-nat2tif/index.html</loc>
-    <lastmod>2022-08-28T14:59:48.052Z</lastmod>
+    <lastmod>2022-08-30T15:22:47.223Z</lastmod>
   </url>
   <url>
     <loc>www.dariusgoergen.com/contents/blog/2020-06-21-docker.md/index.html</loc>
-    <lastmod>2022-08-28T14:59:48.740Z</lastmod>
+    <lastmod>2022-08-30T15:22:47.859Z</lastmod>
+  </url>
+  <url>
+    <loc>www.dariusgoergen.com/contents/blog/2020-10-31-wapoR/index.html</loc>
+    <lastmod>2022-08-30T15:22:48.483Z</lastmod>
+  </url>
+  <url>
+    <loc>www.dariusgoergen.com/contents/blog/2022-08-30-quarto/index.html</loc>
+    <lastmod>2022-08-30T15:22:48.927Z</lastmod>
   </url>
   <url>
     <loc>www.dariusgoergen.com/contents/projects.html</loc>
-    <lastmod>2022-08-28T14:59:49.228Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/contents/projects/2019-07-01-sensorboxes/index.html</loc>
-    <lastmod>2022-08-28T14:59:49.596Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/contents/projects/2019-10-15-polymeRID/index.html</loc>
-    <lastmod>2022-08-28T14:59:49.952Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/contents/projects/2020-03-20-aciASB/index.html</loc>
-    <lastmod>2022-08-28T14:59:50.332Z</lastmod>
+    <lastmod>2022-08-30T15:22:49.399Z</lastmod>
   </url>
   <url>
     <loc>www.dariusgoergen.com/contents/projects/2019-05-31-mof/index.html</loc>
-    <lastmod>2022-08-28T14:59:50.716Z</lastmod>
+    <lastmod>2022-08-30T15:22:49.747Z</lastmod>
+  </url>
+  <url>
+    <loc>www.dariusgoergen.com/contents/projects/2019-07-01-sensorboxes/index.html</loc>
+    <lastmod>2022-08-30T15:22:50.103Z</lastmod>
+  </url>
+  <url>
+    <loc>www.dariusgoergen.com/contents/projects/2019-10-15-polymeRID/index.html</loc>
+    <lastmod>2022-08-30T15:22:50.479Z</lastmod>
+  </url>
+  <url>
+    <loc>www.dariusgoergen.com/contents/projects/2020-03-20-aciASB/index.html</loc>
+    <lastmod>2022-08-30T15:22:50.867Z</lastmod>
   </url>
   <url>
     <loc>www.dariusgoergen.com/contents/projects/2020-04-17-pheno/index.html</loc>
-    <lastmod>2022-08-28T14:59:51.056Z</lastmod>
+    <lastmod>2022-08-30T15:22:51.215Z</lastmod>
   </url>
   <url>
-    <loc>www.dariusgoergen.com/contents/blog.html</loc>
-    <lastmod>2022-08-28T14:59:51.472Z</lastmod>
+    <loc>www.dariusgoergen.com/impressum.html</loc>
+    <lastmod>2022-08-30T15:22:51.543Z</lastmod>
   </url>
   <url>
     <loc>www.dariusgoergen.com/index.html</loc>
-    <lastmod>2022-08-28T14:59:51.884Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/idna-3.3.dist-info/LICENSE.html</loc>
-    <lastmod>2022-08-28T14:59:52.224Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/notebook/bundler/tests/resources/empty.html</loc>
-    <lastmod>2022-08-28T14:59:52.612Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/traitlets-5.3.0.dist-info/license_files/COPYING.html</loc>
-    <lastmod>2022-08-28T14:59:52.948Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/satpy-0.37.1.dist-info/AUTHORS.html</loc>
-    <lastmod>2022-08-28T14:59:53.352Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/QtPy-2.2.0.dist-info/AUTHORS.html</loc>
-    <lastmod>2022-08-28T14:59:53.668Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/ipykernel-6.15.1.dist-info/license_files/COPYING.html</loc>
-    <lastmod>2022-08-28T14:59:54.036Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/jupyter_client-7.3.5.dist-info/licenses/COPYING.html</loc>
-    <lastmod>2022-08-28T14:59:54.376Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/matplotlib/backends/web_backend/nbagg_uat.html</loc>
-    <lastmod>2022-08-28T14:59:54.844Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/pyzmq-23.2.1.dist-info/AUTHORS.html</loc>
-    <lastmod>2022-08-28T14:59:55.224Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/toolz-0.12.0.dist-info/AUTHORS.html</loc>
-    <lastmod>2022-08-28T14:59:55.548Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/nbformat-5.4.0.dist-info/COPYING.html</loc>
-    <lastmod>2022-08-28T14:59:55.908Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/soupsieve-2.3.2.post1.dist-info/license_files/LICENSE.html</loc>
-    <lastmod>2022-08-28T14:59:56.224Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/jupyter_core-4.11.1.dist-info/license_files/COPYING.html</loc>
-    <lastmod>2022-08-28T14:59:56.564Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/nbclient/tests/files/Autokill.html</loc>
-    <lastmod>2022-08-28T14:59:56.876Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/nbclient/tests/files/Sleep1s.html</loc>
-    <lastmod>2022-08-28T14:59:57.204Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/nbclient/tests/files/Parallel Execute A.html</loc>
-    <lastmod>2022-08-28T14:59:57.572Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/nbclient/tests/files/update-display-id.html</loc>
-    <lastmod>2022-08-28T14:59:57.912Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/nbclient/tests/files/Unicode.html</loc>
-    <lastmod>2022-08-28T14:59:58.228Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/nbclient/tests/files/Skip Exceptions.html</loc>
-    <lastmod>2022-08-28T14:59:58.588Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/nbclient/tests/files/Clear Output.html</loc>
-    <lastmod>2022-08-28T14:59:58.928Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/nbclient/tests/files/Other Comms.html</loc>
-    <lastmod>2022-08-28T14:59:59.264Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/nbclient/tests/files/Empty Cell.html</loc>
-    <lastmod>2022-08-28T14:59:59.580Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/nbclient/tests/files/Factorials.html</loc>
-    <lastmod>2022-08-28T14:59:59.900Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/nbclient/tests/files/Parallel Execute B.html</loc>
-    <lastmod>2022-08-28T15:00:00.232Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/nbclient/tests/files/UnicodePy3.html</loc>
-    <lastmod>2022-08-28T15:00:00.628Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/nbclient/tests/files/Error.html</loc>
-    <lastmod>2022-08-28T15:00:00.952Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/nbclient/tests/files/Check History in Memory.html</loc>
-    <lastmod>2022-08-28T15:00:01.264Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/nbclient/tests/files/Skip Execution with Cell Tag.html</loc>
-    <lastmod>2022-08-28T15:00:01.584Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/nbclient/tests/files/JupyterWidgets.html</loc>
-    <lastmod>2022-08-28T15:00:01.900Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/nbclient/tests/files/Output.html</loc>
-    <lastmod>2022-08-28T15:00:02.272Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/nbclient/tests/files/Disable Stdin.html</loc>
-    <lastmod>2022-08-28T15:00:02.596Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/nbclient/tests/files/Interrupt.html</loc>
-    <lastmod>2022-08-28T15:00:02.920Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/nbclient/tests/files/Inline Image.html</loc>
-    <lastmod>2022-08-28T15:00:03.240Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/nbclient/tests/files/SVG.html</loc>
-    <lastmod>2022-08-28T15:00:03.576Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/nbclient/tests/files/Skip Exceptions with Cell Tags.html</loc>
-    <lastmod>2022-08-28T15:00:03.916Z</lastmod>
-  </url>
-  <url>
-    <loc>www.dariusgoergen.com/py-env/lib/python3.10/site-packages/nbclient/tests/files/HelloWorld.html</loc>
-    <lastmod>2022-08-28T15:00:04.252Z</lastmod>
+    <lastmod>2022-08-30T15:22:51.879Z</lastmod>
   </url>
 </urlset>

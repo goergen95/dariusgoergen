@@ -10,7 +10,78 @@
 <atom:link href="www.dariusgoergen.com/contents/blog.xml" rel="self" type="application/rss+xml"/>
 <description>Geoinformation and Environmental Sciences</description>
 <generator>quarto-1.0.37</generator>
-<lastBuildDate>Sat, 31 Oct 2020 10:15:00 GMT</lastBuildDate>
+<lastBuildDate>Tue, 30 Aug 2022 15:19:00 GMT</lastBuildDate>
+<item>
+  <title>Migrating to Quarto</title>
+  <dc:creator>Darius A. Görgen</dc:creator>
+  <link>www.dariusgoergen.com/contents/blog/2022-08-30-quarto/index.html</link>
+  <description><![CDATA[ 
+
+
+
+<p>I recently migrated this very website that you are seeing to the <a href="https://quarto.org/"><code>Quarto</code></a> engine. With this post, I want to share some of my experiences of the migration process as well as some general thoughts on website generation with <code>Quarto</code>. To start with, it has really been a fun experience to set up this website using <code>Quarto</code>. Even though the tool is quite new and has only been publicly announced at <a href="https://quarto.org/docs/blog/posts/2022-06-21-rstudio-conf-2022-quarto/">rstudio::conf(2022)</a> some time ago, it really is thoughtfully engineered, feature rich and easy to use.</p>
+<p>To set up my motivation to migrate to <code>Quarto</code>, let me give you some insights of how I created content for my website before. I have been using the quite familiar <a href="http://sergiokopplin.github.io/indigo/">Indigo</a> theme base on <code>Jekyll</code> for some time. I liked it very much for its minimalist look and feel. However, creating content and get it “out there” was not quite a minimalist experience for me. Partly, that was due to my desire to feature both, content on R and Python, and very likely also due to my inexperience with websites more general. In order for you to get the picture, let me first explain how I created content using <code>Jekyll</code> and then what changed for me now that I am using <code>Quarto</code>.</p>
+<section id="the-tidious-way-to-create-content" class="level2">
+<h2 class="anchored" data-anchor-id="the-tidious-way-to-create-content">The tidious way to create content…</h2>
+<p>In my previous set up using <code>Jekyll</code> I had a <code>_drafts</code> directory. There I would write some R Markdown files drafting my posts. Thanks to the awesome <code>{reticulate}</code> package I could already use Python in these R Markdown files using a virtual environment. I would add the following <code>yaml</code> header to all drafts:</p>
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb1-1"><span class="pp" style="color: #AD0000;">---</span></span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;">output</span><span class="kw" style="color: #003B4F;">:</span></span>
+<span id="cb1-3"><span class="at" style="color: #657422;"> </span><span class="fu" style="color: #4758AB;">html_document</span><span class="kw" style="color: #003B4F;">:</span></span>
+<span id="cb1-4"><span class="at" style="color: #657422;">   </span><span class="fu" style="color: #4758AB;">keep_md</span><span class="kw" style="color: #003B4F;">:</span><span class="at" style="color: #657422;"> </span><span class="ch" style="color: #20794D;">true</span></span>
+<span id="cb1-5"><span class="pp" style="color: #AD0000;">---</span></span></code></pre></div>
+<p>That would tell the knitr engine to create both, a <code>.html</code> and a <code>.md</code> file. The files would all be rendered within the <code>_drafts</code> directory. I then would have to manually create another <code>&lt;post&gt;-header.md</code> file including the header information for the post I was currently working on, but nothing else:</p>
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode yaml code-with-copy"><code class="sourceCode yaml"><span id="cb2-1"><span class="pp" style="color: #AD0000;">---</span></span>
+<span id="cb2-2"><span class="fu" style="color: #4758AB;">title</span><span class="kw" style="color: #003B4F;">:</span><span class="at" style="color: #657422;"> </span><span class="st" style="color: #20794D;">"Some title"</span></span>
+<span id="cb2-3"><span class="fu" style="color: #4758AB;">description</span><span class="kw" style="color: #003B4F;">:</span><span class="at" style="color: #657422;"> </span><span class="st" style="color: #20794D;">"Some more description"</span></span>
+<span id="cb2-4"><span class="fu" style="color: #4758AB;">layout</span><span class="kw" style="color: #003B4F;">:</span><span class="at" style="color: #657422;"> post</span></span>
+<span id="cb2-5"><span class="fu" style="color: #4758AB;">date</span><span class="kw" style="color: #003B4F;">:</span><span class="at" style="color: #657422;"> 2020-05-10 10:00</span></span>
+<span id="cb2-6"><span class="fu" style="color: #4758AB;">tag</span><span class="kw" style="color: #003B4F;">:</span><span class="at" style="color: #657422;"> </span></span>
+<span id="cb2-7"><span class="at" style="color: #657422;"> </span><span class="kw" style="color: #003B4F;">-</span><span class="at" style="color: #657422;"> msg</span></span>
+<span id="cb2-8"><span class="at" style="color: #657422;"> </span><span class="kw" style="color: #003B4F;">-</span><span class="at" style="color: #657422;"> gtiff</span></span>
+<span id="cb2-9"><span class="at" style="color: #657422;"> </span><span class="kw" style="color: #003B4F;">-</span><span class="at" style="color: #657422;"> python</span></span>
+<span id="cb2-10"><span class="fu" style="color: #4758AB;">headerImage</span><span class="kw" style="color: #003B4F;">:</span><span class="at" style="color: #657422;"> </span><span class="ch" style="color: #20794D;">false</span></span>
+<span id="cb2-11"><span class="fu" style="color: #4758AB;">hidden</span><span class="kw" style="color: #003B4F;">:</span><span class="at" style="color: #657422;"> </span><span class="ch" style="color: #20794D;">false</span><span class="co" style="color: #5E5E5E;"> # don't count this post in blog pagination</span></span>
+<span id="cb2-12"><span class="fu" style="color: #4758AB;">category</span><span class="kw" style="color: #003B4F;">:</span><span class="at" style="color: #657422;"> blog or project?</span></span>
+<span id="cb2-13"><span class="fu" style="color: #4758AB;">author</span><span class="kw" style="color: #003B4F;">:</span><span class="at" style="color: #657422;"> darius</span></span>
+<span id="cb2-14"><span class="pp" style="color: #AD0000;">---</span></span></code></pre></div>
+<p>The template repository that I was using thankfully included a <code>bash</code> file that would then allow me to select the name of a draft post. This script would take the <code>.md</code> that was outputted by <code>{knitr}</code>, add the <code>yaml</code> header that I created and then copy this new file over to the <code>_posts</code> directory from where the website would be available once checked out to GitHub. Referring to assets that should show up in a post was tedious and more than once error-prone. As you can imagine, I was very much keen to use an alternative, simpler way to handle my website. <em>Entrance Quarto!</em></p>
+</section>
+<section id="designing-a-website-with-quarto" class="level2">
+<h2 class="anchored" data-anchor-id="designing-a-website-with-quarto">Designing a website with <code>Quarto</code></h2>
+<p>The general directory structure of my <code>Quarto</code> website (restricted here to the most important parts) is actually quite simple:</p>
+<pre><code>.
+├── contents
+      ├── blog
+      └──  projects
+├── _quarto.yaml
+├── index.qmd
+├── renv
+└── pyenv</code></pre>
+<p>I structure my contents into a blog and some information snippets about projects I have been working on. Each of those contain single directories for each post. Within a post directory, I include an <code>index.qmd</code> file and all assets that are to be referenced by this post. Note, that within the <code>.qmd</code> I can use R or Python at ease. When rendering, Quarto will automatically activate the virtual environment <code>pyenv</code> for Python code or the <code>renv</code> for R files (more on that later). The main landing page is <code>index.qmd</code> thus it is found in the top-level of the repository. Website-wide configurations, like the navbar, are included in <code>_quarto.yaml</code>. It is there that I specified to freeze the rendering of posts. That way quarto will only try to re-render posts if it finds changes in the source code. If that is not the case, the previous outputs will simply be copied to the <code>_site</code> directory where the rendered website is found. This is a very useful behavior, especially over long-time frames when package version changes might make it difficult to re-render older posts.</p>
+<p>Within each <code>.qmd</code>, I now include the <code>yaml</code> header that I had to create manually before. So instead of actually 4 different files that I created to publish a single post that was then copied to the right location, I now use a single-source-of-truth, if you will, that is automatically rendered if needed once I issue <code>quarto render</code> to the command line. This really is a significant improvement of my personal workflow to put out new content! The source repository is also much cleaner and easier to argue about and troubleshoot if something goes wrong.</p>
+</section>
+<section id="seamless-integration-of-python-and-r-in-the-same-project" class="level2">
+<h2 class="anchored" data-anchor-id="seamless-integration-of-python-and-r-in-the-same-project">Seamless integration of Python and R in the same project</h2>
+<p>I am amazed by the seamless integration of both Python and R into a single project. For the R side, I am using <code>{renv}</code> for the housekeeping of packages. For Python I simply created a virtual environment via <code>python3 -m venv pyenv</code> to create a virtual environment within the project directory. Quarto will automatically activate this environment when executing Python code. I (or others) can even set up the project easily on a different machine by updating the <code>requirements.txt</code> every once in a while by using <code>python3 -m pip freeze &gt; requirements.txt</code>. I mentioned earlier, that the freeze option is a useful feature over long time periods. It is also a very useful when collaboration with others on a website potentially using R and Python. Every contributor might only make small changes to single parts of the website. Using the freeze options ensures that the website as a whole stays intact, even for different language or version requirements between the posts.</p>
+</section>
+<section id="publishing-with-quarto" class="level2">
+<h2 class="anchored" data-anchor-id="publishing-with-quarto">Publishing with Quarto</h2>
+<p>My first idea to publish the website was using GitHub Actions to automatically build the site once changes to the main branch are checked out. While in principal this is possible, this approach has two major drawbacks. First, when version requirements are different between some posts this approach will fail when trying to set up the environment on GitHub Actions. This could be mitigated by ensuring that all posts are kept up-to-date with package developments, but maintaining this website should not be a full-time job. Second, setting up both the R and Python environment on GitHub actions takes quite some time and I would not like to wait about 30 minutes between checking out some changes and the deployment of the website. I briefly was thinking about changing the OS of the workflow to MacOS or Windows, hoping that using binaries would speed up the process. However, Quarto comes with a very nice feature which allows me to directly publish to the <code>gh-pages</code> branch from my local machine. Once I am satisfied with my changes I first checkout to the main branch. Then I issue <code>quarto publish gh-pages</code> and because of the freeze option being enabled, this quickly pushes the website to GitHub where it is then deployed. This actually saves some significant computation times on GitHub servers reducing the carbon footprint of this website.</p>
+</section>
+<section id="round-up" class="level2">
+<h2 class="anchored" data-anchor-id="round-up">Round up</h2>
+<p>Setting up a website using <code>Quarto</code> and customizing it has been a very fun experience. The design of the tool is very user-friendly and it helped me to improve the way I publish on this website. The freeze option is potentially saving an incredible amount of headaches for both single contributors who have to maintain state over longer periods of time and collaborators potentially using different programming languages. Posit (formerly known as RStudio) truly advances the way how we can work in multi-lingual projects and reduces the overhead associated with sharing content. I have been a great fan of R Markdown over the last couple of years. R Markdown has grown for over 10 years now. Quarto is meant to be its successor and I can’t wait to see what else will be possible with it over the next 10 years!</p>
+
+
+</section>
+
+ ]]></description>
+  <category>R</category>
+  <category>Quarto</category>
+  <guid>www.dariusgoergen.com/contents/blog/2022-08-30-quarto/index.html</guid>
+  <pubDate>Tue, 30 Aug 2022 15:19:00 GMT</pubDate>
+  <media:content url="https://d33wubrfki0l68.cloudfront.net/1e13e2f2b4d1760d131ad2be5096e105573341e2/db099/blog/announcing-quarto-a-new-scientific-and-technical-publishing-system/thumbnail_huc2394eec6c3beee37cf037e067ab5abf_72127_2220x0_resize_q75_box.jpg" medium="image" type="image/jpeg"/>
+</item>
 <item>
   <title>R API to download FAO’s WaPOR datasets</title>
   <dc:creator>Darius A. Görgen</dc:creator>
