@@ -4,6 +4,12 @@ project:
   output-dir: _site
   resources:
     - 	contents/files/cv-darius-goergen.pdf
+  render:
+    - "*.qmd"
+    - "!py-env"
+  favicon: contents/img/dg.png
+  twitter-card:
+    creator: "@darius_goergen"
     
 execute:
   freeze: auto
@@ -16,15 +22,23 @@ site:
     utterances:
       repo: goergen95/dariusgoergen
   navbar:
-    right:
+    left:
       - href: index.html
-        text: Home
+        text: "Home"
       - href: contents/blog.html
         text: "Blog"
       - href: contents/projects.html
         text: "Projects"
+    right:
+      - href: https://github.com/goergen95/dariusgoergen
+        icon: github
+        aria-label: "Source Code"
   page-footer:
-    left: "© Copyright 2022 Darius A. Görgen."
+    left: |
+      © Copyright 2022 Darius A. Görgen
+      [Browse source code](https://github.com/goergen95/dariusgoergen)
+    right: |
+      [Impressum](impressum.qmd)
 
 format:
   html:

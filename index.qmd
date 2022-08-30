@@ -12,7 +12,7 @@ about:
       url: "https://twitter.com/darius_goergen"
     - text: GitHub
       icon: github
-      url: "http://linkedin.com/in/darius-goergen"
+      url: "http://github.com/goergen95"
     - text: Email
       url: "mailto:darius2402@web.de"
       icon: envelope-plus
@@ -54,13 +54,13 @@ reproducible analysis of spatial data.
 
 ## Selected projects
 
-Contributor to the **MAPME Initiative**: Maps for Planning, Monitoring, and Evaluation in the Development Cooperation Sector, 
-funded by KfW, [www.mapme-initiative.org](www.mapme-initiative.org)
+**MAPME Initiative**: Maps for Planning, Monitoring, and Evaluation in the Development Cooperation Sector, funded by KfW, Contributer to several software packages [www.mapme-initiative.org](www.mapme-initiative.org).
 
-**[mapme.biodiversity](https://cran.r-project.org/web/packages/mapme.biodiversity/index.html)**: Maintainer
+**[{mapme.biodiversity}](https://cran.r-project.org/web/packages/mapme.biodiversity/index.html)**: Maintainer
 of an R package for the collection of variables for global biodiversity portfolios.
 
-M.Sc. thesis on **Predicting violent conflict in Africa - Leveraging open geodata and 
-deep learning for spatiotemporal event detection** [https://goergen95.github.io/thesis-predicting-conflict](https://goergen95.github.io/thesis-predicting-conflict)
+**Predicting violent conflict in Africa - Leveraging open geodata and 
+deep learning for spatiotemporal event detection**, M.Sc. thesis at the University of Marburg, submitted to the Chair of Climatology and Remote Sensing and the Chair of Environmental Informatics.
+([https://goergen95.github.io/thesis-predicting-conflict](https://goergen95.github.io/thesis-predicting-conflict))
 
 :::
