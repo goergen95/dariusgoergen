@@ -26,17 +26,20 @@ comments: false
 
 # About me
 
-I am anworking on a range of topics concerned with environmental change and the 
+I am working on a range of topics concerned with environmental change and the 
 associated coping strategies of our societies. I have been studying Geography 
 and Political Sciences of the MENA region at the University of Marburg, focusing 
-on Remote Sensing, Climatology, and Hydrogeography. In my projects I apply my
-Data Science skills to help teams to generate information for better decision making.
-Currently, I am working as a research associate at the Federal Institute for Geosciences
-and Resources. I also offer freelance consulting services using R and Python for
-reproducible analysis of spatial data. 
+on Remote Sensing, Climatology, and Hydrogeography. Mainly, I use R-spatial packages
+for analysis and visualization of geospatial data. With my Data Science skills
+I have helped teams in the development cooperation sector to generate information 
+for better decision making. I advocate for the use of OpenSource technologies
+to democratize access to both tools and data. Currently, I am working as a 
+research associate at the Federal Institute for Geosciences and Resources. 
+I also offer freelance consulting services using R and Python for reproducible 
+analysis of spatial data. 
 
 
-## Toolkit
+# Toolkit
 
 - R
 - R Markdown 
@@ -51,8 +54,7 @@ reproducible analysis of spatial data.
 - Bash
 
 
-
-## Selected projects
+# Selected projects
 
 **MAPME Initiative**: Maps for Planning, Monitoring, and Evaluation in the Development Cooperation Sector, funded by KfW, Contributer to several software packages [www.mapme-initiative.org](www.mapme-initiative.org).
 

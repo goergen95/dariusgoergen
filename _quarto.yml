@@ -8,8 +8,6 @@ project:
     - "*.qmd"
     - "!py-env"
   favicon: contents/img/dg.png
-  twitter-card:
-    creator: "@darius_goergen"
     
 execute:
   freeze: auto
@@ -18,6 +16,8 @@ site:
   title: "Darius A. Görgen"
   site-url: https://dariusgoergen.com
   description: Geoinformation and Environmental Sciences
+  twitter-card:
+    creator: "@darius_goergen"
   comments:
     utterances:
       repo: goergen95/dariusgoergen
@@ -38,7 +38,7 @@ site:
       © Copyright 2022 Darius A. Görgen
       [Browse source code](https://github.com/goergen95/dariusgoergen)
     right: |
-      [Impressum](impressum.qmd)
+      [Impressum](https://www.dariusgoergen.com/impressum.html)
 
 format:
   html:
