@@ -7,9 +7,6 @@ about:
     - text: LinkedIn
       url: "http://linkedin.com/in/darius-goergen"
       icon: linkedin
-    - text: Twitter
-      icon: twitter
-      url: "https://twitter.com/darius_goergen"
     - text: GitHub
       icon: github
       url: "http://github.com/goergen95"
@@ -33,10 +30,8 @@ on Remote Sensing, Climatology, and Hydrogeography. Mainly, I use R-spatial pack
 for analysis and visualization of geospatial data. With my Data Science skills
 I have helped teams in the development cooperation sector to generate information 
 for better decision making. I advocate for the use of OpenSource technologies
-to democratize access to both tools and data. Currently, I am working as a 
-research associate at the Federal Institute for Geosciences and Resources. 
-I also offer freelance consulting services using R and Python for reproducible 
-analysis of spatial data. 
+to democratize access to both tools and data. I offer freelance consulting 
+services using R and Python for reproducible analysis of spatial data. 
 
 
 # Toolkit
@@ -54,15 +49,15 @@ analysis of spatial data.
 - Bash
 
 
-# Selected projects
+# How can I help you?
 
-**MAPME Initiative**: Maps for Planning, Monitoring, and Evaluation in the Development Cooperation Sector, funded by KfW, Contributer to several software packages [www.mapme-initiative.org](www.mapme-initiative.org).
+If your are looking for an expert to help your 
+team transition towards the usage of OpenSource software and
+principles of reproducibility [contact me](mailto:darius2402@web.de) to discuss your application: 
 
-**[{mapme.biodiversity}](https://cran.r-project.org/web/packages/mapme.biodiversity/index.html)**: Maintainer
-of an R package for the collection of variables for global biodiversity portfolios.
-
-**Predicting violent conflict in Africa - Leveraging open geodata and 
-deep learning for spatiotemporal event detection**, M.Sc. thesis at the University of Marburg, submitted to the Chair of Climatology and Remote Sensing and the Chair of Environmental Informatics.
-([https://goergen95.github.io/thesis-predicting-conflict](https://goergen95.github.io/thesis-predicting-conflict))
+- Efficient OpenSource-based geospatial analysis workflows
+- Usage of machine learning to generate insights from remote sensing data
+- Building tools based on the principles of reproduciblity and parameterized reporting
+- Establishment of databases and dashboards to let everyone in your organization explore their data
 
 :::
