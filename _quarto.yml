@@ -17,8 +17,6 @@ site:
   site-url: https://www.dariusgoergen.com
   site-path: '/'
   description: Geoinformation and Environmental Sciences
-  twitter-card:
-    creator: "@darius_goergen"
   comments:
     utterances:
       repo: goergen95/dariusgoergen
@@ -36,7 +34,7 @@ site:
         aria-label: "Source Code"
   page-footer:
     left: |
-      © Copyright 2022 Darius A. Görgen
+      © Copyright 2023 Darius A. Görgen
       [Browse source code](https://github.com/goergen95/dariusgoergen)
     right: |
       [Impressum](https://www.dariusgoergen.com/impressum.html)
