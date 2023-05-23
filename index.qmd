@@ -53,7 +53,7 @@ services using R and Python for reproducible analysis of spatial data.
 
 If your are looking for an expert to help your 
 team transition towards the usage of OpenSource software and
-principles of reproducibility [contact me](mailto:info@dariusgoergen@com) to discuss your application: 
+principles of reproducibility [contact me](mailto:info@dariusgoergen.com) to discuss your application: 
 
 - Efficient OpenSource-based geospatial analysis workflows
 - Usage of machine learning to generate insights from remote sensing data
