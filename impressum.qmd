@@ -5,18 +5,17 @@ comments: false
 
 ## Angaben gemäß § 5 TMG
 
-Darius A. Görgen
-Am Linsenberg 5
-55131 Mainz
+Darius A. Görgen <br>
+Am Linsenberg 5 <br>
+55131 Mainz <br>
 
-Kontakt:
-Telefon: 0163-1999524
-E-Mail: info@dariusgoergen.com
+Telefon: 0163-1999524 <br>
+E-Mail: info@dariusgoergen.com <br>
 
-Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV:
-Darius A. Görgen
-Am Linsenberg 5
-55131 Mainz
+Verantwortlich für den Inhalt nach § 55 Abs. 2 RStV:<br>
+Darius A. Görgen <br>
+Am Linsenberg 5 <br>
+55131 Mainz <br>
 
 ## Haftungsausschluss:
 
