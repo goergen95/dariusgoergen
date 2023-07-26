@@ -1,6 +1,6 @@
 /*-- scss:defaults --*/
 $theme-darkblue: #032733;
-$them-blue: #1d7990;
+$theme-blue: #1d7990;
 $theme-orange: #f18e26;
 $theme-red: #c9310c;
 $theme-bordeaux: #641217;
@@ -12,10 +12,12 @@ $body-bg: $theme-white;
 $body-color: $theme-black;
 $link-color: $theme-bordeaux;
 $navbar-bg: $theme-darkblue;
+$navbar-fg: $theme-orange;
 $navbar-hl: $theme-white;
 $code-color: $theme-bordeaux;
-$navbar-fg: $theme-orange;
 $code-block-border-left: true;
+$text-muted: $theme-orange;
+$component-active-color: $theme-white;
 
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:wght@300&family=Merriweather:wght@300&display=swap');
 $font-family-sans-serif: 'IBM Plex Serif', serif;
