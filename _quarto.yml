@@ -1,5 +1,5 @@
 project:
-  type: site
+  type: website
   title: "Darius A. Görgen"
   output-dir: _site
   resources:
@@ -7,20 +7,27 @@ project:
   render:
     - "*.qmd"
     - "!py-env"
-  favicon: contents/img/dg.png
     
 execute:
   freeze: auto
 
-site:
+website:
   title: "Darius A. Görgen"
   site-url: https://www.dariusgoergen.com
-  site-path: '/'
+  repo-url: https://github.com/goergen95/dariusgoergen
+  repo-branch: gh-pages
+  issue-url: https://github.com/goergen95/dariusgoergen/issues
   description: Geoinformation and Environmental Sciences
+  favicon: contents/img/dg.png
+  image: contents/img/dg.png
+  search:
+    location: navbar
+    type: textbox
   comments:
     utterances:
       repo: goergen95/dariusgoergen
   navbar:
+    collapse: true
     left:
       - href: index.html
         text: "Home"
