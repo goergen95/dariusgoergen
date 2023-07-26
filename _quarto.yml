@@ -20,9 +20,6 @@ website:
   description: Geoinformation and Environmental Sciences
   favicon: contents/img/dg.png
   image: contents/img/dg.png
-  search:
-    location: navbar
-    type: textbox
   comments:
     utterances:
       repo: goergen95/dariusgoergen
@@ -45,6 +42,8 @@ website:
       [Browse source code](https://github.com/goergen95/dariusgoergen)
     right: |
       [Impressum](https://www.dariusgoergen.com/impressum.html)
+  search:
+    type: textbox
 
 format:
   html:
