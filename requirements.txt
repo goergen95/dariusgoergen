@@ -92,7 +92,7 @@ stack-data==0.5.0
 terminado==0.15.0
 tinycss2==1.1.1
 toolz==0.12.0
-tornado==6.3.2
+tornado==6.3.3
 traitlets==5.3.0
 trollimage==1.18.3
 trollsift==0.4.0
