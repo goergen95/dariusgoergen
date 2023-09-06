@@ -1,0 +1,15 @@
+---
+title: ""
+listing:
+  contents: presentations
+  sort: "date desc"
+  type: grid
+  date-format: long
+page-layout: full
+title-block-banner: true
+comments: false
+---
+
+::: {.column-page}
+
+:::

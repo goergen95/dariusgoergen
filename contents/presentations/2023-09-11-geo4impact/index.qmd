@@ -1,0 +1,233 @@
+---
+title: "Using geospatial data to improve targeting of agricultural projects in the context of climate change and resource scarcity"
+author: "Darius A. Görgen"
+date: "2023-09-11"
+bibliography: references.bib
+format:
+  revealjs:
+    logo: assets/logo.png
+    footer: "Inception Workshop of the Geo4Impact Program - September 11th, 2023, Paris"
+    slide-number: c/t
+    show-slide-number: print
+    progress: true
+    title-slide-attributes: 
+      data-background-opacity: "0.8"
+      data-background-image: assets/esa-uzbekistan.jpg
+    preview-links: true
+css: style.css
+image: assets/esa-uzbekistan.jpg
+---
+
+## Who am I? {.smaller}
+
+::: columns
+::: {.column width="60%"}
+-   🙋️ Darius A. Görgen
+
+-   🎓 M.Sc. Geography, B.Sc. Political Sciences
+
+-   🌍 Focus on Climate Change and Agriculture
+
+-   ![](assets/img/logo-mapme.png){style="vertical-align:middle" width="5%"} Part of the MAPME Initiative since 2020
+
+-   🔬 Advocating for OpenSource and OpenScience
+:::
+
+::: {.column width="40%"}
+![](assets/img/dg.png){width="60%" fig-align="center"}
+:::
+:::
+
+::: aside
+E-mail: <a href="mailto:info@dariusgoergen.com"> info\@dariusgoergen.com</a> <br> Website: <a href="https://www.dariusgoergen.com"> www.dariusgoergen.com</a> </br> Source (title slide): [ESA](https://www.esa.int/ESA_Multimedia/Images/2023/06/Earth_from_Space_Tashkent_Uzbekistan), [CC BY-SA 3.0 IGO](https://creativecommons.org/licenses/by-sa/3.0/igo/)
+:::
+
+## Content {.smaller}
+
+-   What is geospatial data?
+
+-   From visual interpretation to automated analysis
+
+    i)  Counting trees by hand
+    ii) Deep Learning for field boundary delineation
+    iii) Satellite time series for crop type identification
+    iv) Data fusion for crop biophysical monitoring
+
+-   Targeting in the context of agricultural projects
+
+    i)  Mapping flood areas
+    ii) Analyzing climatological drought
+    iii) Water accounting
+
+-   Wrap-Up
+
+## Geospatial data {.center}
+
+## Geospatial data {.smaller}
+
+![Conceptualization of space in the dominant digital formats.](assets/img/geodata.jpg){width="42%" fig-align="center"}
+
+::: aside
+Source: @saab2003
+:::
+
+## From visual interpretation to automated analysis {.center}
+
+## Visual interpretation {.smaller}
+
+![A tree plantation near the [Jordan EcoPark](https://jordanecopark.com/).](assets/img/ecopark-jordan.png){width=60%}
+
+::: {.aside}
+Source: [GoogleMaps](https://www.google.de/maps/place//@32.5219254,35.6177458,668m/data=!3m2!1e3!4b1?entry=ttu), CNES 2023
+:::
+
+
+## Field boundary delineation {.smaller}
+
+::: columns
+::: {.column width="50%"}
+::: r-stack
+-   very often our area is too large for manual interpretation
+-   we need tools that automate the interpretation of satellite imagery
+-   Meta AI's [Segment Anything](https://segment-anything.com/) Network is already used in the agricultural sector
+:::
+
+::: {.r-stack .incremental}
+-   field boundaries can be used to inform about the area distribution of farms ...
+-   ... but also they might be required for later analysis stages
+:::
+:::
+
+::: {.column width="50%"}
+![Screenshot of agricultural boundaries produces by SAM.](assets/img/sam-agriculture.jpg)
+:::
+:::
+
+::: aside
+Source: [lofty](https://www.hirelofty.com/post/3-geospatial-and-remote-sensing-use-cases-for-metas-segment-anything-model)
+:::
+
+## Crop type indentification {.smaller}
+
+::: columns
+::: {.column .incremental width="50%"}
+::: r-stack
+::: r-stack
+::: {.fragment .fade-in-then-out fragment-index="1"}
+We want something like this:
+
+![Example of an crop type classification map.](assets/img/crops-netherlands.jpg){width="80%" fig-align="left"}
+:::
+
+::: {.fragment .fade-in-then-out fragment-index="2"}
+But how do we get there ..?
+:::
+
+::: {.fragment fragment-index="3"}
+Satellite imagery timeseries ...
+
+![Animation of a Sentinel-2 timeseries over an agricultural area.](assets/img/agri-timeseries.gif){fig-align="left"}
+:::
+:::
+:::
+:::
+
+::: {.column .incremental width="50%"}
+::: r-stack
+::: {.fragment fragment-index="5"}
+</br> 
+... reveal distinct signatures of crops over time. 
+</br> 
+</br>
+
+![Temporal NDVI profiles of different crop types.](assets/img/pakistan-crops.png)
+:::
+:::
+:::
+:::
+
+::: aside
+Sources: [GeoVille](https://www.esa.int/ESA_Multimedia/Images/2019/03/Crops_in_the_Netherlands), [ESA](https://www.esa.int/ESA_Multimedia/Images/2016/12/Agricultural_monitoring_in_Spain) [CC BY-SA 3.0 IGO](https://creativecommons.org/licenses/by-sa/3.0/igo/), @tariq2022
+:::
+
+## Data fusion {.smaller}
+
+![Visualisation of an data fusion approach from Sentinel 1 and 2 for crop biophysical monitoring.](assets/img/data-fusion.jpg){width="90%"}
+
+::: aside
+Source: @perez2022
+:::
+
+## Targeting {.center}
+
+## Flood areas {.smaller}
+
+![Animation of 2022 monsoon floods in Bangladesh.](assets/img/esa-bangladesh.gif){width="45%" fig-align="center"}
+
+::: aside
+Source: [ESA](https://www.esa.int/ESA_Multimedia/Images/2022/06/Copernicus_Sentinel-1_maps_Bangladesh_flood), [CC BY-SA 3.0 IGO](https://creativecommons.org/licenses/by-sa/3.0/igo/)
+:::
+
+## Climatological drought {.smaller}
+
+::: columns
+::: {.column width="50%" style="font-size: 70%;"}
+-   SPI/SPEI to quantify intensity and duration of meteorological droughts
+-   SPEI is preferable when temperature or $ET_0$ data is available
+-   gridded datasets allow drought analysis even in data scarce regions
+-   [CHELSA](https://chelsa-climate.org/) has good performance for complex terrains and data-scarce regions
+-   includes climate projections for different CMIP6 scenarios
+
+![[CHELSA](https://chelsa-climate.org/) animation of average precipitation between 1981-2010.](assets/img/chelsa-V2-pr-1981-2010.gif)
+:::
+
+::: {.column width="50%"}
+![Comparison of SPI and SPEI to charachterize meterological drought.](assets/img/spei.jpg){fig-align="center" style="font-size: 70%;"}
+
+::: aside
+Sources: @chelsa-climatologies-2021, @serrano2010
+:::
+:::
+:::
+
+## Water accounting {.smaller style="font-size: 60%;"}
+
+::: columns
+::: {.column width="50%"}
+-   Water accounting study in the Jordan River Basin by [FAO](https://www.fao.org/documents/card/en/c/CA9181EN/)
+-   Uses remote-sensing based variables by FAO's [WAPOR](https://wapor.apps.fao.org/home/WAPOR_2/1)
+-   Differentiates between water generating ($P > ET_a$) and consuming ($P < ET_a$) land cover classes <br>
+
+::: {#fig-jordan layout-ncol="2" style="font-size: 60%;"}
+![$ET_a$](assets/img/jordan-et.png){#fig-et width="90%"}
+
+![$P$](assets/img/jordan-p.png){#fig-p width="80%"}
+
+Contribution of landcover classes to $ET_a$ (a) and precipitation (b) in the Jordan River Basin.
+:::
+:::
+
+::: {.column width="50%" style="font-size: 70%;"}
+![Difference between Precipitation ($P$) and Actual Evapotranspiration and Interception ($ET_a$).](assets/img/jordan-valley-pet.png){fig-align="center" width="70%"}
+:::
+:::
+
+::: aside
+Sources: @fao2020
+:::
+
+## Wrap Up {.smaller}
+
+-   🎯 geospatial data can help to better target areas to maximize benefit
+-   🛰️ remote sensing can deliver valuable insights in data scarce regions
+-   🗨️ *All models are wrong, but some are useful.* ([George Box](https://en.wikipedia.org/wiki/All_models_are_wrong))
+-   🍎 evaluate the low-hanging fruits first
+-   💰 gold standards require large amounts of high-quality and thus expensive data
+-   💡 SSL might be a game-changer, but the training of foundation models is expensive
+
+## Thank you for your attention! {.center}
+
+## References {.scrollable .smaller}
+
+::: {#refs style="font-size: 70%;"}
+:::

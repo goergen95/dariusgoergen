@@ -1,0 +1,28 @@
+# Presentation: Geospatial data to improve targeting of agricultural projects
+
+- Content:
+
+  - What is geospatial data? 
+    - Vector and Raster as a models of the real world
+    - example of a global precipitation raster to show 
+      that measurements are continuous in space
+      
+  - Data Archives
+    - The Landsat Mission
+    - The Copernicus Mission
+    - CHELSA High-Res Climatologies
+    - FAO's WAPOR - Agricultural Productivity
+    
+  - Applications:
+    
+    - WAPOR: Mapping water productivity to target areas with productivity below average
+    - Drought: Using climatologies to identify areas that experience climatological drought
+    - Desertification: Using optical satellite imagery timeseries to map desertification
+    - Flooding: Using radar satellites to map inundation areas of a river system
+    
+    - VHR images for manual interpretation  RGB needs NDVI and other stuff  
+    - segmentation of agricultural fields -> planning/state/SAM
+    - crop type identification -> recognize different plants
+    - irrigation/seasonality -> seasonality
+    - yield estimation -> 
+

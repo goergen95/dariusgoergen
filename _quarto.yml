@@ -32,6 +32,8 @@ website:
         text: "Blog"
       - href: contents/projects.html
         text: "Projects"
+      - href: contents/presentations.html
+        text: "Presentations"
     right:
       - href: https://github.com/goergen95/dariusgoergen
         icon: github
