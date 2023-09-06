@@ -10,6 +10,12 @@
     ]
   },
   {
+    "listing": "/contents/presentations.html",
+    "items": [
+      "/contents/presentations/2023-09-11-geo4impact/index.html"
+    ]
+  },
+  {
     "listing": "/contents/projects.html",
     "items": [
       "/contents/projects/2020-04-17-pheno/index.html",

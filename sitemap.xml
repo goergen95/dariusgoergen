@@ -1,59 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://www.dariusgoergen.com/contents/blog.html</loc>
-    <lastmod>2023-08-14T11:18:24.100Z</lastmod>
-  </url>
-  <url>
-    <loc>https://www.dariusgoergen.com/contents/blog/2020-05-10-bufr2tif/index.html</loc>
-    <lastmod>2023-08-14T11:18:24.840Z</lastmod>
-  </url>
-  <url>
-    <loc>https://www.dariusgoergen.com/contents/blog/2020-06-14-nat2tif/index.html</loc>
-    <lastmod>2023-08-14T11:18:25.508Z</lastmod>
-  </url>
-  <url>
-    <loc>https://www.dariusgoergen.com/contents/blog/2020-06-21-docker.md/index.html</loc>
-    <lastmod>2023-08-14T11:18:26.576Z</lastmod>
-  </url>
-  <url>
-    <loc>https://www.dariusgoergen.com/contents/blog/2020-10-31-wapoR/index.html</loc>
-    <lastmod>2023-08-14T11:18:27.440Z</lastmod>
-  </url>
-  <url>
-    <loc>https://www.dariusgoergen.com/contents/blog/2022-08-30-quarto/index.html</loc>
-    <lastmod>2023-08-14T11:18:28.352Z</lastmod>
-  </url>
-  <url>
-    <loc>https://www.dariusgoergen.com/contents/projects.html</loc>
-    <lastmod>2023-08-14T11:18:29.536Z</lastmod>
-  </url>
-  <url>
-    <loc>https://www.dariusgoergen.com/contents/projects/2019-05-31-mof/index.html</loc>
-    <lastmod>2023-08-14T11:18:30.076Z</lastmod>
-  </url>
-  <url>
-    <loc>https://www.dariusgoergen.com/contents/projects/2019-07-01-sensorboxes/index.html</loc>
-    <lastmod>2023-08-14T11:18:30.580Z</lastmod>
-  </url>
-  <url>
-    <loc>https://www.dariusgoergen.com/contents/projects/2019-10-15-polymeRID/index.html</loc>
-    <lastmod>2023-08-14T11:18:31.148Z</lastmod>
-  </url>
-  <url>
-    <loc>https://www.dariusgoergen.com/contents/projects/2020-03-20-aciASB/index.html</loc>
-    <lastmod>2023-08-14T11:18:31.744Z</lastmod>
+    <loc>https://www.dariusgoergen.com/index.html</loc>
+    <lastmod>2023-09-06T09:39:48.550Z</lastmod>
   </url>
   <url>
     <loc>https://www.dariusgoergen.com/contents/projects/2020-04-17-pheno/index.html</loc>
-    <lastmod>2023-08-14T11:18:32.368Z</lastmod>
+    <lastmod>2023-09-06T09:39:47.674Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.dariusgoergen.com/contents/projects/2019-10-15-polymeRID/index.html</loc>
+    <lastmod>2023-09-06T09:39:46.709Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.dariusgoergen.com/contents/projects/2019-05-31-mof/index.html</loc>
+    <lastmod>2023-09-06T09:39:45.669Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.dariusgoergen.com/contents/presentations/2023-09-11-geo4impact/index.html</loc>
+    <lastmod>2023-09-06T09:39:44.301Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.dariusgoergen.com/contents/blog/2022-08-30-quarto/index.html</loc>
+    <lastmod>2023-09-06T09:39:43.137Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.dariusgoergen.com/contents/blog/2020-06-21-docker.md/index.html</loc>
+    <lastmod>2023-09-06T09:39:41.613Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.dariusgoergen.com/contents/blog/2020-05-10-bufr2tif/index.html</loc>
+    <lastmod>2023-09-06T09:39:40.109Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.dariusgoergen.com/contents/blog.html</loc>
+    <lastmod>2023-09-06T09:39:39.337Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.dariusgoergen.com/contents/blog/2020-06-14-nat2tif/index.html</loc>
+    <lastmod>2023-09-06T09:39:40.825Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.dariusgoergen.com/contents/blog/2020-10-31-wapoR/index.html</loc>
+    <lastmod>2023-09-06T09:39:42.421Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.dariusgoergen.com/contents/presentations.html</loc>
+    <lastmod>2023-09-06T09:39:43.549Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.dariusgoergen.com/contents/projects.html</loc>
+    <lastmod>2023-09-06T09:39:45.209Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.dariusgoergen.com/contents/projects/2019-07-01-sensorboxes/index.html</loc>
+    <lastmod>2023-09-06T09:39:46.129Z</lastmod>
+  </url>
+  <url>
+    <loc>https://www.dariusgoergen.com/contents/projects/2020-03-20-aciASB/index.html</loc>
+    <lastmod>2023-09-06T09:39:47.218Z</lastmod>
   </url>
   <url>
     <loc>https://www.dariusgoergen.com/impressum.html</loc>
-    <lastmod>2023-08-14T11:18:32.984Z</lastmod>
-  </url>
-  <url>
-    <loc>https://www.dariusgoergen.com/index.html</loc>
-    <lastmod>2023-08-14T11:18:33.504Z</lastmod>
+    <lastmod>2023-09-06T09:39:48.134Z</lastmod>
   </url>
 </urlset>

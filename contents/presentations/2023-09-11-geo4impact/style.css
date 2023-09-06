@@ -1,0 +1,28 @@
+#title-slide .title {
+  font-size: 1.5em;
+  color: #000;
+  background: #F7F8F9;
+  opacity: 0.8;
+  border-radius: 25px;
+  box-shadow: 0px 0px 16px 8px #004658;
+}
+
+.quarto-title-author-name {
+  color: #000;
+  background: #F7F8F9;
+  opacity: 0.8;
+  border-radius: 25px;
+  box-shadow: 0px 0px 16px 8px #004658;
+}
+
+.date {
+  color: #000;
+  background: #F7F8F9;
+  opacity: 0.8;
+  border-radius: 25px;
+  box-shadow: 0px 0px 16px 8px #004658;
+}
+
+.reveal {
+  background-color: #F7F8F9;
+}
