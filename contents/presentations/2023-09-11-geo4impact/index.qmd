@@ -5,17 +5,17 @@ date: "2023-09-11"
 bibliography: references.bib
 format:
   revealjs:
-    logo: assets/logo.png
+    logo: assets/img/logo.png
     footer: "Inception Workshop of the Geo4Impact Program - September 11th, 2023, Paris"
     slide-number: c/t
     show-slide-number: print
     progress: true
     title-slide-attributes: 
       data-background-opacity: "0.8"
-      data-background-image: assets/esa-uzbekistan.jpg
+      data-background-image: assets/img/esa-uzbekistan.jpg
     preview-links: true
 css: style.css
-image: assets/esa-uzbekistan.jpg
+image: assets/img/esa-uzbekistan.jpg
 ---
 
 ## Who am I? {.smaller}
