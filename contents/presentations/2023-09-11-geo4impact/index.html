@@ -393,12 +393,6 @@ Darius A. Görgen
 <li>Satellite time series for crop type identification</li>
 <li>Data fusion for crop biophysical monitoring</li>
 </ol></li>
-<li><p>Targeting in the context of agricultural projects</p>
-<ol type="i">
-<li>Mapping flood areas</li>
-<li>Analyzing climatological drought</li>
-<li>Water accounting</li>
-</ol></li>
 <li><p>Wrap-Up</p></li>
 </ul>
 </section>
@@ -407,11 +401,22 @@ Darius A. Görgen
 </section>
 <section id="geospatial-data-1" class="slide level2 smaller">
 <h2>Geospatial data</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="assets/img/geodata.jpg" style="width:42.0%"></p>
+<p><img data-src="assets/img/geodata.jpg" style="width:75.0%"></p>
 <figcaption>Conceptualization of space in the dominant digital formats.</figcaption>
 </figure>
+</div>
+</div><div class="column" style="width:50%;">
+<ul>
+<li>Landsat and Copernicus mission provide access to satellite archives for free</li>
+<li>we can look back in time</li>
+<li>we can produce valuable information by intersecting vectors with rasters</li>
+<li>we can derive information for inaccessible areas</li>
+</ul>
+</div>
 </div>
 
 <aside><div>
@@ -422,11 +427,21 @@ Darius A. Görgen
 </section>
 <section id="visual-interpretation" class="slide level2 smaller">
 <h2>Visual interpretation</h2>
-<div class="quarto-figure quarto-figure-center">
+<div class="columns">
+<div class="column" style="width:50%;">
+<div class="quarto-figure quarto-figure-left">
 <figure>
-<p><img data-src="assets/img/ecopark-jordan.png" style="width:60.0%"></p>
+<p><img data-src="assets/img/ecopark-jordan.png"></p>
 <figcaption>A tree plantation near the <a href="https://jordanecopark.com/">Jordan EcoPark</a>.</figcaption>
 </figure>
+</div>
+</div><div class="column" style="width:50%;">
+<ul>
+<li>aerial imagery can help monitoring progress</li>
+<li>VHR images are usually quite expensive</li>
+<li>sensible approach for small areas and simple information requirements, e.g.&nbsp;counting trees</li>
+</ul>
+</div>
 </div>
 
 <aside><div>
@@ -450,10 +465,10 @@ Darius A. Görgen
 </ul>
 </div>
 </div><div class="column" style="width:50%;">
-<div class="quarto-figure quarto-figure-center">
+<div class="quarto-figure quarto-figure-left">
 <figure>
 <p><img data-src="assets/img/sam-agriculture.jpg"></p>
-<figcaption>Screenshot of agricultural boundaries produces by SAM.</figcaption>
+<figcaption>Screenshot of agricultural boundaries produced by SAM.</figcaption>
 </figure>
 </div>
 </div>
@@ -473,7 +488,7 @@ Darius A. Görgen
 <div class="quarto-figure quarto-figure-left">
 <figure>
 <p><img data-src="assets/img/crops-netherlands.jpg" style="width:80.0%"></p>
-<figcaption>Example of an crop type classification map.</figcaption>
+<figcaption>Example of a crop type classification map on the field level.</figcaption>
 </figure>
 </div>
 </div>
@@ -495,7 +510,7 @@ Darius A. Görgen
 <div class="r-stack">
 <div class="fragment" data-fragment-index="5">
 <p><br> … reveal distinct signatures of crops over time. <br> <br></p>
-<div class="quarto-figure quarto-figure-center">
+<div class="quarto-figure quarto-figure-left">
 <figure>
 <p><img data-src="assets/img/pakistan-crops.png"></p>
 <figcaption>Temporal NDVI profiles of different crop types.</figcaption>
@@ -509,28 +524,85 @@ Darius A. Görgen
 <aside><div>
 <p>Sources: <a href="https://www.esa.int/ESA_Multimedia/Images/2019/03/Crops_in_the_Netherlands">GeoVille</a>, <a href="https://www.esa.int/ESA_Multimedia/Images/2016/12/Agricultural_monitoring_in_Spain">ESA</a> <a href="https://creativecommons.org/licenses/by-sa/3.0/igo/">CC BY-SA 3.0 IGO</a>, <span class="citation" data-cites="tariq2022">Tariq et al. (<a href="#/references" role="doc-biblioref" onclick="">2022</a>)</span></p>
 </div></aside></section>
-<section id="data-fusion" class="slide level2 smaller">
-<h2>Data fusion</h2>
+<section id="mapping-biopyhsical-parameters" class="slide level2 smaller">
+<h2>Mapping biopyhsical parameters</h2>
+<div class="columns">
+<div class="column" style="font-size: 80%;">
+<ul>
+<li>monitoring of crop development over time</li>
+<li>derive key parameters such as:
+<ul>
+<li>crop health</li>
+<li>growing cycle</li>
+<li>water consumption</li>
+<li>yield estimation</li>
+</ul></li>
+<li>requires large amount of high-quality data collected on ground</li>
+<li>requires the application of advanced statistical methods</li>
+</ul>
+</div><div class="column" style="width:50%;">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="assets/img/data-fusion.jpg" style="width:90.0%"></p>
+<p><img data-src="assets/img/data-fusion.jpg"></p>
 <figcaption>Visualisation of an data fusion approach from Sentinel 1 and 2 for crop biophysical monitoring.</figcaption>
 </figure>
+</div>
+</div>
 </div>
 
 <aside><div>
 <p>Source: <span class="citation" data-cites="perez2022">Silva-Perez, Marino, and Cameron (<a href="#/references" role="doc-biblioref" onclick="">2022</a>)</span></p>
 </div></aside></section>
-<section id="targeting" class="slide level2 center">
-<h2>Targeting</h2>
+<section id="wrap-up" class="slide level2 smaller">
+<h2>Wrap-Up</h2>
+<div class="columns">
+<div class="column" style="width:47.5%;">
+<ul>
+<li>geospatial data can help to better target areas of intervention</li>
+<li>remote sensing can deliver valuable insights, especially in data scarce regions</li>
+<li><em>All models are wrong, but some are useful.</em> (<a href="https://en.wikipedia.org/wiki/All_models_are_wrong">George Box</a>)</li>
+<li>evaluate the low-hanging fruits first</li>
+<li>gold standards require large amounts of high-quality and thus expensive data</li>
+</ul>
+</div><div class="column" style="width:5%;">
+
+</div><div class="column" style="width:47.5%;">
+<ul>
+<li>visual interpretation is a valid approach for small areas and simple problems</li>
+<li>if the detail of required information increases, so do the data quality requirements</li>
+<li>regional analysis can reveal key information:
+<ul>
+<li>area distribution of farms</li>
+<li>distribution of crop types</li>
+<li>yield estimation and other biophysical parameters</li>
+</ul></li>
+</ul>
+</div>
+</div>
 </section>
-<section id="flood-areas" class="slide level2 smaller">
-<h2>Flood areas</h2>
+<section id="thank-you-for-your-attention" class="slide level2 center">
+<h2>Thank you for your attention!</h2>
+</section>
+<section id="extra-slides" class="slide level2 center">
+<h2>Extra Slides</h2>
+</section>
+<section id="flooded-areas" class="slide level2 smaller">
+<h2>Flooded areas</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
 <div class="quarto-figure quarto-figure-center">
 <figure>
-<p><img data-src="assets/img/esa-bangladesh.gif" style="width:45.0%"></p>
+<p><img data-src="assets/img/esa-bangladesh.gif"></p>
 <figcaption>Animation of 2022 monsoon floods in Bangladesh.</figcaption>
 </figure>
+</div>
+</div><div class="column" style="width:50%;">
+<ul>
+<li>determine areas prone to flooding to reduce risks of losses</li>
+<li>assess damages after flood events, e.g.&nbsp;for insurance claims</li>
+<li>support immediate disaster responses</li>
+</ul>
+</div>
 </div>
 
 <aside><div>
@@ -611,20 +683,6 @@ Darius A. Görgen
 <aside><div>
 <p>Sources: <span class="citation" data-cites="fao2020">FAO and Delft (<a href="#/references" role="doc-biblioref" onclick="">2020</a>)</span></p>
 </div></aside></section>
-<section id="wrap-up" class="slide level2 smaller">
-<h2>Wrap Up</h2>
-<ul>
-<li>🎯 geospatial data can help to better target areas to maximize benefit</li>
-<li>🛰️ remote sensing can deliver valuable insights in data scarce regions</li>
-<li>🗨️ <em>All models are wrong, but some are useful.</em> (<a href="https://en.wikipedia.org/wiki/All_models_are_wrong">George Box</a>)</li>
-<li>🍎 evaluate the low-hanging fruits first</li>
-<li>💰 gold standards require large amounts of high-quality and thus expensive data</li>
-<li>💡 SSL might be a game-changer, but the training of foundation models is expensive</li>
-</ul>
-</section>
-<section id="thank-you-for-your-attention" class="slide level2 center">
-<h2>Thank you for your attention!</h2>
-</section>
 <section id="references" class="slide level2 scrollable smaller">
 <h2>References</h2>
 <div id="refs" class="references csl-bib-body hanging-indent" style="font-size: 70%;" role="list">

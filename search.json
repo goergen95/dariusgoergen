@@ -39,7 +39,7 @@
     "href": "contents/presentations/2023-09-11-geo4impact/index.html#content",
     "title": "Using geospatial data to improve targeting of agricultural projects in the context of climate change and resource scarcity",
     "section": "Content",
-    "text": "Content\n\nWhat is geospatial data?\nFrom visual interpretation to automated analysis\n\nCounting trees by hand\nDeep Learning for field boundary delineation\nSatellite time series for crop type identification\nData fusion for crop biophysical monitoring\n\nTargeting in the context of agricultural projects\n\nMapping flood areas\nAnalyzing climatological drought\nWater accounting\n\nWrap-Up"
+    "text": "Content\n\nWhat is geospatial data?\nFrom visual interpretation to automated analysis\n\nCounting trees by hand\nDeep Learning for field boundary delineation\nSatellite time series for crop type identification\nData fusion for crop biophysical monitoring\n\nWrap-Up"
   },
   {
     "objectID": "contents/presentations/2023-09-11-geo4impact/index.html#geospatial-data",
@@ -53,7 +53,7 @@
     "href": "contents/presentations/2023-09-11-geo4impact/index.html#geospatial-data-1",
     "title": "Using geospatial data to improve targeting of agricultural projects in the context of climate change and resource scarcity",
     "section": "Geospatial data",
-    "text": "Geospatial data\n\n\n\nConceptualization of space in the dominant digital formats.\n\n\n\n\nSource: Saab (2003)"
+    "text": "Geospatial data\n\n\n\n\n\nConceptualization of space in the dominant digital formats.\n\n\n\n\nLandsat and Copernicus mission provide access to satellite archives for free\nwe can look back in time\nwe can produce valuable information by intersecting vectors with rasters\nwe can derive information for inaccessible areas\n\n\n\n\n\nSource: Saab (2003)"
   },
   {
     "objectID": "contents/presentations/2023-09-11-geo4impact/index.html#from-visual-interpretation-to-automated-analysis",
@@ -67,42 +67,56 @@
     "href": "contents/presentations/2023-09-11-geo4impact/index.html#visual-interpretation",
     "title": "Using geospatial data to improve targeting of agricultural projects in the context of climate change and resource scarcity",
     "section": "Visual interpretation",
-    "text": "Visual interpretation\n\n\n\nA tree plantation near the Jordan EcoPark.\n\n\n\n\nSource: GoogleMaps, CNES 2023"
+    "text": "Visual interpretation\n\n\n\n\n\nA tree plantation near the Jordan EcoPark.\n\n\n\n\naerial imagery can help monitoring progress\nVHR images are usually quite expensive\nsensible approach for small areas and simple information requirements, e.g. counting trees\n\n\n\n\n\nSource: GoogleMaps, CNES 2023"
   },
   {
     "objectID": "contents/presentations/2023-09-11-geo4impact/index.html#field-boundary-delineation",
     "href": "contents/presentations/2023-09-11-geo4impact/index.html#field-boundary-delineation",
     "title": "Using geospatial data to improve targeting of agricultural projects in the context of climate change and resource scarcity",
     "section": "Field boundary delineation",
-    "text": "Field boundary delineation\n\n\n\n\nvery often our area is too large for manual interpretation\nwe need tools that automate the interpretation of satellite imagery\nMeta AI’s Segment Anything Network is already used in the agricultural sector\n\n\n\n\nfield boundaries can be used to inform about the area distribution of farms …\n… but also they might be required for later analysis stages\n\n\n\n\n\n\nScreenshot of agricultural boundaries produces by SAM.\n\n\n\n\n\n\nSource: lofty"
+    "text": "Field boundary delineation\n\n\n\n\nvery often our area is too large for manual interpretation\nwe need tools that automate the interpretation of satellite imagery\nMeta AI’s Segment Anything Network is already used in the agricultural sector\n\n\n\n\nfield boundaries can be used to inform about the area distribution of farms …\n… but also they might be required for later analysis stages\n\n\n\n\n\n\nScreenshot of agricultural boundaries produced by SAM.\n\n\n\n\n\n\nSource: lofty"
   },
   {
     "objectID": "contents/presentations/2023-09-11-geo4impact/index.html#crop-type-indentification",
     "href": "contents/presentations/2023-09-11-geo4impact/index.html#crop-type-indentification",
     "title": "Using geospatial data to improve targeting of agricultural projects in the context of climate change and resource scarcity",
     "section": "Crop type indentification",
-    "text": "Crop type indentification\n\n\n\n\n\nWe want something like this:\n\n\n\nExample of an crop type classification map.\n\n\n\n\nBut how do we get there ..?\n\n\nSatellite imagery timeseries …\n\n\n\nAnimation of a Sentinel-2 timeseries over an agricultural area.\n\n\n\n\n\n\n\n\n … reveal distinct signatures of crops over time.  \n\n\n\nTemporal NDVI profiles of different crop types.\n\n\n\n\n\n\n\n\nSources: GeoVille, ESA CC BY-SA 3.0 IGO, Tariq et al. (2022)"
+    "text": "Crop type indentification\n\n\n\n\n\nWe want something like this:\n\n\n\nExample of a crop type classification map on the field level.\n\n\n\n\nBut how do we get there ..?\n\n\nSatellite imagery timeseries …\n\n\n\nAnimation of a Sentinel-2 timeseries over an agricultural area.\n\n\n\n\n\n\n\n\n … reveal distinct signatures of crops over time.  \n\n\n\nTemporal NDVI profiles of different crop types.\n\n\n\n\n\n\n\n\nSources: GeoVille, ESA CC BY-SA 3.0 IGO, Tariq et al. (2022)"
   },
   {
-    "objectID": "contents/presentations/2023-09-11-geo4impact/index.html#data-fusion",
-    "href": "contents/presentations/2023-09-11-geo4impact/index.html#data-fusion",
+    "objectID": "contents/presentations/2023-09-11-geo4impact/index.html#mapping-biopyhsical-parameters",
+    "href": "contents/presentations/2023-09-11-geo4impact/index.html#mapping-biopyhsical-parameters",
     "title": "Using geospatial data to improve targeting of agricultural projects in the context of climate change and resource scarcity",
-    "section": "Data fusion",
-    "text": "Data fusion\n\n\n\nVisualisation of an data fusion approach from Sentinel 1 and 2 for crop biophysical monitoring.\n\n\n\n\nSource: Silva-Perez, Marino, and Cameron (2022)"
+    "section": "Mapping biopyhsical parameters",
+    "text": "Mapping biopyhsical parameters\n\n\n\nmonitoring of crop development over time\nderive key parameters such as:\n\ncrop health\ngrowing cycle\nwater consumption\nyield estimation\n\nrequires large amount of high-quality data collected on ground\nrequires the application of advanced statistical methods\n\n\n\n\n\nVisualisation of an data fusion approach from Sentinel 1 and 2 for crop biophysical monitoring.\n\n\n\n\n\n\nSource: Silva-Perez, Marino, and Cameron (2022)"
   },
   {
-    "objectID": "contents/presentations/2023-09-11-geo4impact/index.html#targeting",
-    "href": "contents/presentations/2023-09-11-geo4impact/index.html#targeting",
+    "objectID": "contents/presentations/2023-09-11-geo4impact/index.html#wrap-up",
+    "href": "contents/presentations/2023-09-11-geo4impact/index.html#wrap-up",
     "title": "Using geospatial data to improve targeting of agricultural projects in the context of climate change and resource scarcity",
-    "section": "Targeting",
-    "text": "Targeting"
+    "section": "Wrap-Up",
+    "text": "Wrap-Up\n\n\n\ngeospatial data can help to better target areas of intervention\nremote sensing can deliver valuable insights, especially in data scarce regions\nAll models are wrong, but some are useful. (George Box)\nevaluate the low-hanging fruits first\ngold standards require large amounts of high-quality and thus expensive data\n\n\n\n\n\nvisual interpretation is a valid approach for small areas and simple problems\nif the detail of required information increases, so do the data quality requirements\nregional analysis can reveal key information:\n\narea distribution of farms\ndistribution of crop types\nyield estimation and other biophysical parameters"
   },
   {
-    "objectID": "contents/presentations/2023-09-11-geo4impact/index.html#flood-areas",
-    "href": "contents/presentations/2023-09-11-geo4impact/index.html#flood-areas",
+    "objectID": "contents/presentations/2023-09-11-geo4impact/index.html#thank-you-for-your-attention",
+    "href": "contents/presentations/2023-09-11-geo4impact/index.html#thank-you-for-your-attention",
     "title": "Using geospatial data to improve targeting of agricultural projects in the context of climate change and resource scarcity",
-    "section": "Flood areas",
-    "text": "Flood areas\n\n\n\nAnimation of 2022 monsoon floods in Bangladesh.\n\n\n\n\nSource: ESA, CC BY-SA 3.0 IGO"
+    "section": "Thank you for your attention!",
+    "text": "Thank you for your attention!"
+  },
+  {
+    "objectID": "contents/presentations/2023-09-11-geo4impact/index.html#extra-slides",
+    "href": "contents/presentations/2023-09-11-geo4impact/index.html#extra-slides",
+    "title": "Using geospatial data to improve targeting of agricultural projects in the context of climate change and resource scarcity",
+    "section": "Extra Slides",
+    "text": "Extra Slides"
+  },
+  {
+    "objectID": "contents/presentations/2023-09-11-geo4impact/index.html#flooded-areas",
+    "href": "contents/presentations/2023-09-11-geo4impact/index.html#flooded-areas",
+    "title": "Using geospatial data to improve targeting of agricultural projects in the context of climate change and resource scarcity",
+    "section": "Flooded areas",
+    "text": "Flooded areas\n\n\n\n\n\nAnimation of 2022 monsoon floods in Bangladesh.\n\n\n\n\ndetermine areas prone to flooding to reduce risks of losses\nassess damages after flood events, e.g. for insurance claims\nsupport immediate disaster responses\n\n\n\n\n\nSource: ESA, CC BY-SA 3.0 IGO"
   },
   {
     "objectID": "contents/presentations/2023-09-11-geo4impact/index.html#climatological-drought",
@@ -117,20 +131,6 @@
     "title": "Using geospatial data to improve targeting of agricultural projects in the context of climate change and resource scarcity",
     "section": "Water accounting",
     "text": "Water accounting\n\n\n\nWater accounting study in the Jordan River Basin by FAO\nUses remote-sensing based variables by FAO’s WAPOR\nDifferentiates between water generating (\\(P &gt; ET_a\\)) and consuming (\\(P &lt; ET_a\\)) land cover classes \n\n\n\n\n\n\n\n\n(a) \\(ET_a\\)\n\n\n\n\n\n\n\n(b) \\(P\\)\n\n\n\n\nFigure 1: Contribution of landcover classes to \\(ET_a\\) (a) and precipitation (b) in the Jordan River Basin.\n\n\n\n\n\n\nDifference between Precipitation (\\(P\\)) and Actual Evapotranspiration and Interception (\\(ET_a\\)).\n\n\n\n\n\n\nSources: FAO and Delft (2020)"
-  },
-  {
-    "objectID": "contents/presentations/2023-09-11-geo4impact/index.html#wrap-up",
-    "href": "contents/presentations/2023-09-11-geo4impact/index.html#wrap-up",
-    "title": "Using geospatial data to improve targeting of agricultural projects in the context of climate change and resource scarcity",
-    "section": "Wrap Up",
-    "text": "Wrap Up\n\n🎯 geospatial data can help to better target areas to maximize benefit\n🛰️ remote sensing can deliver valuable insights in data scarce regions\n🗨️ All models are wrong, but some are useful. (George Box)\n🍎 evaluate the low-hanging fruits first\n💰 gold standards require large amounts of high-quality and thus expensive data\n💡 SSL might be a game-changer, but the training of foundation models is expensive"
-  },
-  {
-    "objectID": "contents/presentations/2023-09-11-geo4impact/index.html#thank-you-for-your-attention",
-    "href": "contents/presentations/2023-09-11-geo4impact/index.html#thank-you-for-your-attention",
-    "title": "Using geospatial data to improve targeting of agricultural projects in the context of climate change and resource scarcity",
-    "section": "Thank you for your attention!",
-    "text": "Thank you for your attention!"
   },
   {
     "objectID": "contents/presentations/2023-09-11-geo4impact/index.html#references",
