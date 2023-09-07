@@ -53,19 +53,24 @@ E-mail: <a href="mailto:info@dariusgoergen.com"> info\@dariusgoergen.com</a> <br
     iii) Satellite time series for crop type identification
     iv) Data fusion for crop biophysical monitoring
 
--   Targeting in the context of agricultural projects
-
-    i)  Mapping flood areas
-    ii) Analyzing climatological drought
-    iii) Water accounting
-
 -   Wrap-Up
 
 ## Geospatial data {.center}
 
 ## Geospatial data {.smaller}
 
-![Conceptualization of space in the dominant digital formats.](assets/img/geodata.jpg){width="42%" fig-align="center"}
+::: columns
+::: {.column width="50%"}
+![Conceptualization of space in the dominant digital formats.](assets/img/geodata.jpg){width="75%" fig-align="center"}
+:::
+
+::: {.column width="50%"}
+-   Landsat and Copernicus mission provide access to satellite archives for free
+-   we can look back in time
+-   we can produce valuable information by intersecting vectors with rasters
+-   we can derive information for inaccessible areas
+:::
+:::
 
 ::: aside
 Source: @saab2003
@@ -75,12 +80,21 @@ Source: @saab2003
 
 ## Visual interpretation {.smaller}
 
-![A tree plantation near the [Jordan EcoPark](https://jordanecopark.com/).](assets/img/ecopark-jordan.png){width=60%}
-
-::: {.aside}
-Source: [GoogleMaps](https://www.google.de/maps/place//@32.5219254,35.6177458,668m/data=!3m2!1e3!4b1?entry=ttu), CNES 2023
+::: columns
+::: {.column width="50%"}
+![A tree plantation near the [Jordan EcoPark](https://jordanecopark.com/).](assets/img/ecopark-jordan.png){fig-align="left"}
 :::
 
+::: {.column width="50%"}
+-   aerial imagery can help monitoring progress
+-   VHR images are usually quite expensive
+-   sensible approach for small areas and simple information requirements, e.g. counting trees
+:::
+:::
+
+::: aside
+Source: [GoogleMaps](https://www.google.de/maps/place//@32.5219254,35.6177458,668m/data=!3m2!1e3!4b1?entry=ttu), CNES 2023
+:::
 
 ## Field boundary delineation {.smaller}
 
@@ -99,7 +113,7 @@ Source: [GoogleMaps](https://www.google.de/maps/place//@32.5219254,35.6177458,66
 :::
 
 ::: {.column width="50%"}
-![Screenshot of agricultural boundaries produces by SAM.](assets/img/sam-agriculture.jpg)
+![Screenshot of agricultural boundaries produced by SAM.](assets/img/sam-agriculture.jpg){fig-align="left"}
 :::
 :::
 
@@ -116,7 +130,7 @@ Source: [lofty](https://www.hirelofty.com/post/3-geospatial-and-remote-sensing-u
 ::: {.fragment .fade-in-then-out fragment-index="1"}
 We want something like this:
 
-![Example of an crop type classification map.](assets/img/crops-netherlands.jpg){width="80%" fig-align="left"}
+![Example of a crop type classification map on the field level.](assets/img/crops-netherlands.jpg){width="80%" fig-align="left"}
 :::
 
 ::: {.fragment .fade-in-then-out fragment-index="2"}
@@ -135,12 +149,9 @@ Satellite imagery timeseries ...
 ::: {.column .incremental width="50%"}
 ::: r-stack
 ::: {.fragment fragment-index="5"}
-</br> 
-... reveal distinct signatures of crops over time. 
-</br> 
-</br>
+</br> ... reveal distinct signatures of crops over time. </br> </br>
 
-![Temporal NDVI profiles of different crop types.](assets/img/pakistan-crops.png)
+![Temporal NDVI profiles of different crop types.](assets/img/pakistan-crops.png){fig-align="left"}
 :::
 :::
 :::
@@ -150,19 +161,72 @@ Satellite imagery timeseries ...
 Sources: [GeoVille](https://www.esa.int/ESA_Multimedia/Images/2019/03/Crops_in_the_Netherlands), [ESA](https://www.esa.int/ESA_Multimedia/Images/2016/12/Agricultural_monitoring_in_Spain) [CC BY-SA 3.0 IGO](https://creativecommons.org/licenses/by-sa/3.0/igo/), @tariq2022
 :::
 
-## Data fusion {.smaller}
+## Mapping biopyhsical parameters {.smaller}
 
-![Visualisation of an data fusion approach from Sentinel 1 and 2 for crop biophysical monitoring.](assets/img/data-fusion.jpg){width="90%"}
+::: columns
+::: {.column width="50%" style="font-size: 80%;"}
+-   monitoring of crop development over time
+-   derive key parameters such as:
+    -   crop health
+    -   growing cycle
+    -   water consumption
+    -   yield estimation
+-   requires large amount of high-quality data collected on ground
+-   requires the application of advanced statistical methods
+:::
+
+::: {.column width="50%"}
+![Visualisation of an data fusion approach from Sentinel 1 and 2 for crop biophysical monitoring.](assets/img/data-fusion.jpg)
+:::
+:::
 
 ::: aside
 Source: @perez2022
 :::
 
-## Targeting {.center}
 
-## Flood areas {.smaller}
+## Wrap-Up {.smaller}
 
-![Animation of 2022 monsoon floods in Bangladesh.](assets/img/esa-bangladesh.gif){width="45%" fig-align="center"}
+::: columns
+::: {.column width="47.5%"}
+-   geospatial data can help to better target areas of intervention
+-   remote sensing can deliver valuable insights, especially in data scarce regions
+-   *All models are wrong, but some are useful.* ([George Box](https://en.wikipedia.org/wiki/All_models_are_wrong))
+-   evaluate the low-hanging fruits first
+-   gold standards require large amounts of high-quality and thus expensive data
+:::
+
+::: {.column width="5%"}
+
+:::
+
+::: {.column width="47.5%"}
+-   visual interpretation is a valid approach for small areas and simple problems
+-   if the detail of required information increases, so do the data quality requirements
+-   regional analysis can reveal key information:
+    -   area distribution of farms
+    -   distribution of crop types
+    -   yield estimation and other biophysical parameters
+:::
+:::
+
+## Thank you for your attention! {.center}
+
+## Extra Slides {.center}
+
+## Flooded areas {.smaller}
+
+::: columns
+::: {.column width="50%"}
+![Animation of 2022 monsoon floods in Bangladesh.](assets/img/esa-bangladesh.gif){fig-align="center"}
+:::
+
+::: {.column width="50%"}
+-   determine areas prone to flooding to reduce risks of losses
+-   assess damages after flood events, e.g. for insurance claims
+-   support immediate disaster responses
+:::
+:::
 
 ::: aside
 Source: [ESA](https://www.esa.int/ESA_Multimedia/Images/2022/06/Copernicus_Sentinel-1_maps_Bangladesh_flood), [CC BY-SA 3.0 IGO](https://creativecommons.org/licenses/by-sa/3.0/igo/)
@@ -215,17 +279,6 @@ Contribution of landcover classes to $ET_a$ (a) and precipitation (b) in the Jor
 ::: aside
 Sources: @fao2020
 :::
-
-## Wrap Up {.smaller}
-
--   🎯 geospatial data can help to better target areas to maximize benefit
--   🛰️ remote sensing can deliver valuable insights in data scarce regions
--   🗨️ *All models are wrong, but some are useful.* ([George Box](https://en.wikipedia.org/wiki/All_models_are_wrong))
--   🍎 evaluate the low-hanging fruits first
--   💰 gold standards require large amounts of high-quality and thus expensive data
--   💡 SSL might be a game-changer, but the training of foundation models is expensive
-
-## Thank you for your attention! {.center}
 
 ## References {.scrollable .smaller}
 
