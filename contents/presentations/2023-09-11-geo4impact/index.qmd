@@ -39,6 +39,7 @@ image: assets/img/esa-uzbekistan.jpg
 :::
 
 ::: aside
+Slides (Online): [https://www.dariusgoergen.com/contents/presentations/2023-09-11-geo4impact](https://www.dariusgoergen.com/contents/presentations/2023-09-11-geo4impact) <br>
 E-mail: <a href="mailto:info@dariusgoergen.com"> info\@dariusgoergen.com</a> <br> Website: <a href="https://www.dariusgoergen.com"> www.dariusgoergen.com</a> </br> Source (title slide): [ESA](https://www.esa.int/ESA_Multimedia/Images/2023/06/Earth_from_Space_Tashkent_Uzbekistan), [CC BY-SA 3.0 IGO](https://creativecommons.org/licenses/by-sa/3.0/igo/)
 :::
 
