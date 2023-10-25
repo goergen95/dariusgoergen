@@ -1,5 +1,6 @@
 ---
 title: "Code Repositories"
+pagetitle: "Code Repositories"
 comments: false
 ---
 

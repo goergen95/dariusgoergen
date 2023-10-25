@@ -1,5 +1,6 @@
 ---
 title: ""
+pagetitle: "Projects"
 listing:
   contents: projects
   sort: "date desc"

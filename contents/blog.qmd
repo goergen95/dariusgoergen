@@ -1,5 +1,6 @@
 ---
 title: ""
+pagetitle: "Blog"
 listing:
   contents: blog
   sort: "date desc"

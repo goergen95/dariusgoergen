@@ -1,5 +1,6 @@
 ---
 title: ""
+pagetitle: "Presentations"
 listing:
   contents: presentations
   sort: "date desc"

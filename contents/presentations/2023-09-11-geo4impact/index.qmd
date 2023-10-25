@@ -16,7 +16,6 @@ format:
     preview-links: true
 css: style.css
 image: assets/img/esa-uzbekistan.jpg
-comments: false
 ---
 
 ## Who am I? {.smaller}
