@@ -7,8 +7,10 @@ comments: false
 
 [![](https://gh-card.dev/repos/mapme-initiative/mapme.biodiversity.svg?fullname)](https://github.com/mapme-initiative/mapme.biodiversity)
 
-[![](https://gh-card.dev/repos/mapme-initiative/mapme.agriculture.svg?fullname)](https://github.com/mapme-initiative/mapme.agriculture)
-
 [![](https://gh-card.dev/repos/goergen95/cesium.svg?fullname)](https://github.com/goergen95/cesium)
+
+[![](https://gh-card.dev/repos/BGR-Geowissenschaften-Rohstoffe/mscomposer.svg?fullname)](https://github.com/BGR-Geowissenschaften-Rohstoffe/mscomposer)
+
+[![](https://gh-card.dev/repos/mapme-initiative/mapme.agriculture.svg?fullname)](https://github.com/mapme-initiative/mapme.agriculture)
 
 [![](https://gh-card.dev/repos/goergen95/thesis-predicting-conflict.svg?fullname)](https://github.com/goergen95/thesis-predicting-conflict)
