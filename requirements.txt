@@ -97,7 +97,7 @@ traitlets==5.3.0
 trollimage==1.18.3
 trollsift==0.4.0
 typing_extensions==4.3.0
-urllib3==1.26.12
+urllib3==1.26.18
 wcwidth==0.2.5
 webencodings==0.5.1
 widgetsnbextension==4.0.2
