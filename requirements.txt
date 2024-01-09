@@ -22,7 +22,7 @@ entrypoints==0.4
 executing==0.10.0
 fasteners==0.17.3
 fastjsonschema==2.16.1
-fonttools==4.37.1
+fonttools==4.43.0
 fsspec==2022.7.1
 GDAL==3.4.1
 idna==3.3
